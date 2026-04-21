@@ -1,5 +1,5 @@
 """
-Beast+PFF stacked models.
+Beast + PFF stacked models.
 
 sc_tier uses binary label (made_it vs didnt) and recovers 2017/2018/2021
 rows where Beast text is unavailable by falling back to PFF text.
