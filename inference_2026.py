@@ -48,7 +48,7 @@ def beast_grade_feature(df):
 # ── load data ─────────────────────────────────────────────────────────────────
 
 print("Loading data...")
-df = pd.read_csv(BASE / "all_prospects.csv")
+df = pd.read_csv(BASE / "data/processed/all_prospects.csv")
 
 p26 = df[df["draft_year"] == 2026].copy().reset_index(drop=True)
 has_text = p26["beast_summary"].notna() | p26["pff_overview"].notna()
@@ -59,8 +59,8 @@ print(f"  Beast: {p26['beast_summary'].notna().sum()} | PFF-only: {(p26['beast_s
 # ── load models ───────────────────────────────────────────────────────────────
 
 print("Loading models...")
-sc_bundle  = joblib.load(BASE / "model_sc_tier.pkl")
-dv_bundle  = joblib.load(BASE / "model_draft_value.pkl")
+sc_bundle  = joblib.load(BASE / "models/model_sc_tier.pkl")
+dv_bundle  = joblib.load(BASE / "models/model_draft_value.pkl")
 
 st = SentenceTransformer(sc_bundle["st_model"])
 
@@ -135,7 +135,7 @@ results["text_source"]      = ["pff" if f else "beast" for f in X_src[:, 0]]
 results["has_br"]  = p26["br_positives"].notna()
 results["has_pff"] = p26["pff_overview"].notna()
 
-results.drop(columns=["p_made_it_rank"], errors="ignore").to_csv(BASE / "inference_2026.csv", index=False)
+results.drop(columns=["p_made_it_rank"], errors="ignore").to_csv(BASE / "data/processed/inference_2026.csv", index=False)
 print(f"Saved → inference_2026.csv\n")
 
 # ── display ───────────────────────────────────────────────────────────────────

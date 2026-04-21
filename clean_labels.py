@@ -17,10 +17,13 @@ Label 2: sc_tier  (three-class NFL success label, restricted to 2017-2021 drafts
   - 2022+ drafts: labeled "too_early" — excluded from training
 """
 
+from pathlib import Path
 import pandas as pd
 import numpy as np
 
-df = pd.read_csv("all_prospects.csv")
+BASE = Path("/Users/varunramanathan/Downloads/sentiment-analysis")
+
+df = pd.read_csv(BASE / "data/processed/all_prospects.csv")
 
 # ── Label 1: draft_value ──────────────────────────────────────────────────────
 
@@ -109,5 +112,5 @@ print()
 print("=== sc_binary ===")
 print(df["sc_binary"].value_counts())
 
-df.to_csv("all_prospects.csv", index=False)
+df.to_csv(BASE / "data/processed/all_prospects.csv", index=False)
 print("\nWrote → all_prospects.csv")

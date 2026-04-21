@@ -13,10 +13,13 @@ Strategy:
   Outputs: ht_in, wt_lbs, arm_in, hand_in, wing_in, dash40, vj_in, bj_in, shuttle, cone3, bench
 """
 
+from pathlib import Path
 import re
 import numpy as np
 import pandas as pd
 from fractions import Fraction
+
+BASE = Path("/Users/varunramanathan/Downloads/sentiment-analysis")
 
 # ── parsers ───────────────────────────────────────────────────────────────────
 
@@ -150,7 +153,7 @@ def add_position_zscores(df: pd.DataFrame) -> pd.DataFrame:
 # ── main: parse beast + append to all_prospects.csv ──────────────────────────
 
 if __name__ == "__main__":
-    beast = pd.read_csv("beast_prospects.csv")
+    beast = pd.read_csv(BASE / "data/raw/beast_prospects.csv")
     meas  = parse_beast(beast)
 
     print("=== Raw measurables fill rates ===")
@@ -164,7 +167,7 @@ if __name__ == "__main__":
     ].to_string())
 
     # Reload all_prospects and join on (draft_year, name) via beast's index
-    ap = pd.read_csv("all_prospects.csv")
+    ap = pd.read_csv(BASE / "data/processed/all_prospects.csv")
 
     # Build a lookup: (draft_year, name) → measurables row index in beast
     SUFFIXES = {"JR", "SR", "II", "III", "IV", "V"}
@@ -186,7 +189,7 @@ if __name__ == "__main__":
     # Add position z-scores
     ap = add_position_zscores(ap)
 
-    ap.to_csv("all_prospects.csv", index=False)
+    ap.to_csv(BASE / "data/processed/all_prospects.csv", index=False)
 
     print("\n=== Fill rates in all_prospects.csv ===")
     for col in MEAS_COLS:

@@ -114,7 +114,7 @@ def rpt(name, scores, metric):
 
 # ─────────────────────────────────────────────────────────────────────────────
 print("Loading data and model...")
-df = pd.read_csv(BASE / "all_prospects.csv")
+df = pd.read_csv(BASE / "data/processed/all_prospects.csv")
 st = SentenceTransformer(MODEL_NAME)
 
 has_beast = df["beast_summary"].notna()
@@ -250,7 +250,7 @@ joblib.dump({"tfidf": tfidf_sc, "svd": svd_sc, "clf": best_sc,
              "le": use_le, "st_model": MODEL_NAME, "z_cols": Z_COLS,
              "beast_cols": BEAST_COLS, "pff_cols": PFF_COLS,
              "binary": not USE_3CLASS},
-            BASE / "model_sc_tier.pkl")
+            BASE / "models/model_sc_tier.pkl")
 print("  Saved → model_sc_tier.pkl")
 
 
@@ -316,7 +316,7 @@ print(classification_report(y_te, best_dv.predict(X_te), target_names=le_dv.clas
 joblib.dump({"tfidf": tfidf_dv, "svd": svd_dv, "clf": best_dv,
              "le": le_dv, "st_model": MODEL_NAME, "z_cols": Z_COLS,
              "beast_cols": BEAST_COLS, "use_grade": True},
-            BASE / "model_draft_value.pkl")
+            BASE / "models/model_draft_value.pkl")
 print("  Saved → model_draft_value.pkl")
 
 print("\nDone.")

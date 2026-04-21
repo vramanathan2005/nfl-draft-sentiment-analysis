@@ -15,7 +15,9 @@ import re
 import pandas as pd
 from pathlib import Path
 
-BASE = Path("/Users/varunramanathan/Downloads/sentiment-analysis")
+BASE     = Path("/Users/varunramanathan/Downloads/sentiment-analysis")
+RAW      = BASE / "data" / "raw"
+PROCESSED = BASE / "data" / "processed"
 SUFFIXES = {"JR", "SR", "II", "III", "IV", "V"}
 
 
@@ -41,7 +43,7 @@ def concat_text(*parts) -> str | None:
 # ── loaders ───────────────────────────────────────────────────────────────────
 
 def load_beast() -> pd.DataFrame:
-    df = pd.read_csv(BASE / "beast_prospects.csv")
+    df = pd.read_csv(RAW / "beast_prospects.csv")
     rows = []
     for _, r in df.iterrows():
         rows.append({
@@ -81,35 +83,35 @@ def load_pff() -> pd.DataFrame:
             "pff_extra":        extra        if pd.notna(extra)        else None,
         })
 
-    df = pd.read_csv(BASE / "2017_data_pff.csv")
+    df = pd.read_csv(RAW / "2017_data_pff.csv")
     for _, r in df.iterrows():
         add(2017, r["full_name"],
             overview=r.get("overview"), pros=r.get("pros"), cons=r.get("cons"))
 
-    df = pd.read_csv(BASE / "2018_data_pff.csv")
+    df = pd.read_csv(RAW / "2018_data_pff.csv")
     for _, r in df.iterrows():
         add(2018, r["name"],
             overview=r.get("overview"), bottom_line=r.get("bottom_line"))
 
-    df = pd.read_csv(BASE / "2020_data_pff.csv")
+    df = pd.read_csv(RAW / "2020_data_pff.csv")
     for _, r in df.iterrows():
         # blurb2 is additional narrative; pros_and_cons combines both sides
         add(2020, r["name"],
             overview=r.get("blurb1"), pros=r.get("pros_and_cons"), extra=r.get("blurb2"))
 
-    df = pd.read_csv(BASE / "2021_data_pff.csv")
+    df = pd.read_csv(RAW / "2021_data_pff.csv")
     for _, r in df.iterrows():
         add(2021, r["full_name"],
             overview=r.get("blurb1"), pros=r.get("pros_a_cons"), extra=r.get("blurb2"))
 
-    df = pd.read_csv(BASE / "2022_data_pff.csv")
+    df = pd.read_csv(RAW / "2022_data_pff.csv")
     for _, r in df.iterrows():
         add(2022, r["full_name"],
             overview=r.get("blurb"), pros=r.get("pros"), cons=r.get("cons"),
             bottom_line=r.get("bottom_line"),
             extra=concat_text(r.get("where_wins"), r.get("what_role"), r.get("what_improve")))
 
-    df = pd.read_csv(BASE / "2024_data_pff.csv")
+    df = pd.read_csv(RAW / "2024_data_pff.csv")
     for _, r in df.iterrows():
         name = r["player"] if pd.notna(r.get("player")) else f"{r['first_name']} {r['last_name']}"
         add(2024, name,
@@ -125,7 +127,7 @@ def load_bleacher() -> pd.DataFrame:
     rows = []
 
     for year in [2021, 2022, 2023, 2024, 2025]:
-        df = pd.read_csv(BASE / f"Bleacher{year}.csv")
+        df = pd.read_csv(RAW / f"Bleacher{year}.csv")
         for _, r in df.iterrows():
             name = r.get("player_from_title", "")
             if not pd.notna(name) or not str(name).strip():
@@ -142,7 +144,7 @@ def load_bleacher() -> pd.DataFrame:
                 "br_pro_comparison": r.get("pro_comparison"),
             })
 
-    df = pd.read_csv(BASE / "Bleacher2026.csv")
+    df = pd.read_csv(RAW / "Bleacher2026.csv")
     for _, r in df.iterrows():
         name = r.get("player_from_title", "")
         if not pd.notna(name) or not str(name).strip():
@@ -163,7 +165,7 @@ def load_bleacher() -> pd.DataFrame:
 
 
 def load_second_contracts() -> pd.DataFrame:
-    df = pd.read_csv(BASE / "ranked_second_contracts.csv")
+    df = pd.read_csv(RAW / "ranked_second_contracts.csv")
     rows = []
     for _, r in df.iterrows():
         rows.append({
@@ -246,7 +248,7 @@ def left_join(spine: pd.DataFrame, spine_name_col: str, right: pd.DataFrame) -> 
 # ── main ──────────────────────────────────────────────────────────────────────
 
 def main():
-    spine = pd.read_csv(BASE / "player_consensus.csv", index_col=0)
+    spine = pd.read_csv(RAW / "player_consensus.csv", index_col=0)
     beast = load_beast()
     pff   = load_pff()
     br    = load_bleacher()
@@ -257,7 +259,7 @@ def main():
     merged = left_join(merged, "Player Name", br)
     merged = left_join(merged, "Player Name", sc)
 
-    out = BASE / "all_prospects.csv"
+    out = PROCESSED / "all_prospects.csv"
     merged.to_csv(out, index=False)
 
     total    = len(merged)
