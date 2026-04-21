@@ -65,10 +65,10 @@ def encode_draft_tier(dv):
     if pd.isna(dv):
         return np.nan
     if dv < -20:
-        return "mocked_higher"       # consensus had them higher than teams did
+        return "slide"
     if dv > 20:
-        return "mocked_lower"        # teams reached above where mocks had them
-    return "mocked_near_consensus"
+        return "reach"
+    return "consensus"
 
 df["draft_tier"] = df["draft_value"].map(encode_draft_tier)
 

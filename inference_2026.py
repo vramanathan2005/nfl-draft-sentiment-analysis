@@ -122,15 +122,15 @@ else:
     results["p_out_of_league"] = (sc_proba[:, idx_out]  * 100).round(1)
     results["p_made_it_rank"]  = results["p_real_contract"]  # unified ranking col
 
-idx_higher = dv_classes.index("mocked_higher")
-idx_near   = dv_classes.index("mocked_near_consensus")
-idx_lower  = dv_classes.index("mocked_lower")
+idx_slide     = dv_classes.index("slide")
+idx_consensus = dv_classes.index("consensus")
+idx_reach     = dv_classes.index("reach")
 
-results["sc_prediction"]          = sc_pred
-results["p_mocked_higher"]        = (dv_proba[:, idx_higher] * 100).round(1)
-results["p_mocked_near_consensus"]= (dv_proba[:, idx_near]   * 100).round(1)
-results["p_mocked_lower"]         = (dv_proba[:, idx_lower]  * 100).round(1)
-results["draft_prediction"]       = dv_pred
+results["sc_prediction"] = sc_pred
+results["p_slide"]       = (dv_proba[:, idx_slide]     * 100).round(1)
+results["p_consensus"]   = (dv_proba[:, idx_consensus] * 100).round(1)
+results["p_reach"]       = (dv_proba[:, idx_reach]     * 100).round(1)
+results["draft_prediction"] = dv_pred
 results["text_source"]      = ["pff" if f else "beast" for f in X_src[:, 0]]
 results["has_br"]  = p26["br_positives"].notna()
 results["has_pff"] = p26["pff_overview"].notna()
@@ -160,18 +160,18 @@ else:
     label = "P(real_contract)"
 show(f"TOP 20 — Highest {label}  [predicted NFL contributors]", top_made, sc_cols)
 
-# Top 20 by P(mocked_higher) — consensus overrated them vs where teams drafted
-top_mocked_higher = results.nlargest(20, "p_mocked_higher")
+# Top 20 by P(slide) — likely to fall below consensus
+top_slide = results.nlargest(20, "p_slide")
 rc_col = "p_real_contract" if not is_binary else "p_made_it"
-show("TOP 20 — Highest P(mocked_higher)  [consensus ranked them above where teams drafted]",
-     top_mocked_higher,
-     ["Player Name","Position","consensus","p_mocked_higher","p_mocked_near_consensus","p_mocked_lower", rc_col])
+show("TOP 20 — Highest P(slide)  [likely to fall below consensus]",
+     top_slide,
+     ["Player Name","Position","consensus","p_slide","p_consensus","p_reach", rc_col])
 
 # Potential steals: outside top 100 consensus but high P(real_contract)
 steals = results[results["consensus"] > 100].nlargest(15, "p_made_it_rank")
 show("POTENTIAL STEALS — Outside top 100 consensus, high P(real_contract)",
      steals,
-     ["Player Name","Position","consensus", rc_col, "p_mocked_higher"])
+     ["Player Name","Position","consensus", rc_col, "p_slide"])
 
 # Best per position
 rc_label = "P(real_contract)" if not is_binary else "P(made_it)"
@@ -183,6 +183,6 @@ for pos in sorted(results["Position"].unique()):
     if len(sub):
         r = sub.iloc[0]
         print(f"  {pos:<6} {r['Player Name']:<25} consensus={int(r['consensus']) if pd.notna(r['consensus']) else '?':>4}  "
-              f"{rc_label}={r[rc_col]:>5.1f}%  P(mocked_higher)={r['p_mocked_higher']:>5.1f}%")
+              f"{rc_label}={r[rc_col]:>5.1f}%  P(slide)={r['p_slide']:>5.1f}%")
 
 print(f"\nFull results → inference_2026.csv")

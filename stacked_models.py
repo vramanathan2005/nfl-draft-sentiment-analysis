@@ -258,9 +258,9 @@ print("  Saved → model_sc_tier.pkl")
 # Task 2: draft_value binary  (2019-2024, Beast text + beast_grade)
 # ─────────────────────────────────────────────────────────────────────────────
 
-section("TASK 2: draft_tier 3-class  (Beast text, 2019-2024, mocked_higher/near/lower)")
+section("TASK 2: draft_tier 3-class  (Beast text, 2019-2024, slide/consensus/reach)")
 
-dv_df = df[has_beast & df["draft_tier"].isin(["mocked_higher","mocked_near_consensus","mocked_lower"])
+dv_df = df[has_beast & df["draft_tier"].isin(["slide","consensus","reach"])
            & df["round"].notna()].copy().reset_index(drop=True)
 
 texts_dv   = beast_text(dv_df)

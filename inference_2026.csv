@@ -1,371 +1,371 @@
-Player Name,Position,College,consensus,beast_grade,br_article_grade,br_pro_comparison,p_real_contract,p_practice_only,p_out_of_league,sc_prediction,p_mocked_higher,p_mocked_near_consensus,p_mocked_lower,draft_prediction,text_source,has_br,has_pff
-Fernando Mendoza,QB,Indiana,1,1st round,8.6 (Impact Player — 1st Round),Matt Ryan with mobility,80.4,12.8,6.8,real_contract,39.0,57.8,3.2,mocked_near_consensus,beast,True,False
-Arvell Reese,LB,Ohio State,2,1st round,8.5 (Impact Player — 1st Round),Demario Davis with more length,63.4,9.5,27.1,real_contract,32.5,58.1,9.3,mocked_near_consensus,beast,True,False
-David Bailey,EDGE,Texas Tech,3,1st round,8.4 (Year 1 Starter — 1st Round),Jaelan Phillips,55.8,25.6,18.7,real_contract,80.4,16.3,3.3,mocked_higher,beast,True,False
-Jeremiyah Love,RB,Notre Dame,4,1st round,9.0 (Pro Bowl Player — 1st Round),Jamaal Charles,84.1,9.5,6.4,real_contract,28.6,66.4,5.0,mocked_near_consensus,beast,True,False
-Francis Mauigoa,OT,Miami (FL),5,1st round,8.0 (Year 1 Starter - 1st Round),Stronger Jermaine Eluemunor,51.6,14.9,33.5,real_contract,79.4,18.1,2.5,mocked_higher,beast,True,False
-Sonny Styles,LB,Ohio State,6,1st round,8.4 (Year 1 Starter — 1st Round),Skinny Anthony Barr (NFL version),78.1,7.9,14.0,real_contract,54.3,36.9,8.8,mocked_higher,beast,True,False
-Rueben Bain,EDGE,Miami (FL),7,1st round,8.5 (Impact Player — 1st Round),Brandon Graham,78.6,11.9,9.6,real_contract,34.1,61.5,4.3,mocked_near_consensus,beast,True,False
-Carnell Tate,WR,Ohio State,8,1st round,8.15 (Year 1 Starter— 1st Round),DeVonta Smith,61.7,29.9,8.4,real_contract,53.5,43.2,3.3,mocked_higher,beast,True,False
-Caleb Downs,S,Ohio State,9,1st round,9.2 (Pro Bowl Player — 1st Round),Eric Berry,55.6,24.7,19.7,real_contract,26.8,66.7,6.5,mocked_near_consensus,beast,True,False
-Mansoor Delane,CB,LSU,10,1st round,8.2 (Impact Player - 1st Round),Quinyon Mitchell,68.0,21.8,10.2,real_contract,33.2,53.8,12.9,mocked_near_consensus,beast,True,False
-Monroe Freeling,OT,Georgia,11,1st-2nd round,7.6 (Key Contributor — 2nd Round),Anthony Castonzo,64.4,18.5,17.0,real_contract,35.4,56.7,7.9,mocked_near_consensus,beast,True,False
-Spencer Fano,OT,Utah,12,1st round,8.0 (Year 1 Starter - 1st Round),Zach Tom,21.3,26.0,52.7,out_of_league,89.2,9.6,1.2,mocked_higher,beast,True,False
-Makai Lemon,WR,USC,13,1st round,8.1 (Year 1 Starter — Late 1st Round),Parker Washington / Amon Ra-St. Brown-style impact player,45.4,41.7,13.0,real_contract,35.0,61.5,3.5,mocked_near_consensus,beast,True,False
-Jermod McCoy,CB,Tennessee,14,1st round,,,40.2,35.1,24.7,real_contract,92.2,6.3,1.5,mocked_higher,beast,False,False
-Jordyn Tyson,WR,Arizona State,15,1st-2nd round,8.20 (Year 1 Starter — 1st Round),Amari Cooper,9.3,68.0,22.7,practice_only,68.0,29.2,2.8,mocked_higher,beast,True,False
-Olaivavega Ioane,IOL,Penn State,16,1st round,8.1 (Year 1 Starter - Round 1),Mike Iupati,64.8,24.4,10.9,real_contract,16.0,78.4,5.6,mocked_near_consensus,beast,True,False
-Kenyon Sadiq,TE,Oregon,17,1st-2nd round,8.0 (Impact Player — 1st Round),George Kittle,19.2,61.9,18.9,practice_only,57.5,37.7,4.8,mocked_higher,beast,True,False
-Dillon Thieneman,S,Oregon,18,1st-2nd round,8.0 (Key Contributor - Second Round),Daxton Hill but wants to tackle,44.3,17.1,38.5,real_contract,87.1,9.4,3.6,mocked_higher,beast,True,False
-Akheem Mesidor,EDGE,Miami (FL),19,1st-2nd round,7.8 (Key Contributor — 2nd Round),Byron Young (LAR/Tennessee),66.6,21.9,11.6,real_contract,17.4,76.1,6.6,mocked_near_consensus,beast,True,False
-Keldric Faulk,EDGE,Auburn,20,1st-2nd round,8.0 (Year 1 Starter — Late 1st - Early 2nd Round),Carlos Dunlap,45.4,28.5,26.1,real_contract,87.8,9.0,3.2,mocked_higher,beast,True,False
-Kadyn Proctor,OT,Alabama,21,1st-2nd round,7.7 (Key Contributor - 2nd Round),Rodger Saffold,36.3,44.8,18.8,practice_only,38.6,55.3,6.1,mocked_near_consensus,beast,True,False
-Omar Cooper,WR,Indiana,22,1st-2nd round,7.95 (Key Contributor — 2nd Round),Shades of DJ Moore,53.9,33.4,12.7,real_contract,89.4,8.0,2.5,mocked_higher,beast,True,False
-Emmanuel McNeil-Warren,S,Toledo,23,1st-2nd round,8.0 (Year 1 Starter - Late First Round),Justin Reid,66.1,11.8,22.1,real_contract,44.0,52.2,3.8,mocked_near_consensus,beast,True,False
-Avieon Terrell,CB,Clemson,24,1st-2nd round,8.0 (Year 1 Starter - First Round),DJ Turner,12.3,60.1,27.7,practice_only,85.9,11.5,2.5,mocked_higher,beast,True,False
-Caleb Lomu,OT,Utah,25,1st-2nd round,7.5 (Key Contributor - 2nd Round),Walker Little,46.6,24.3,29.1,real_contract,32.4,59.8,7.7,mocked_near_consensus,beast,True,False
-TJ Parker,EDGE,Clemson,26,1st-2nd round,7.9 (Key Contributor — 2nd Round),Less explosive Bradley Chubb,73.7,16.4,9.9,real_contract,36.1,58.6,5.3,mocked_near_consensus,beast,True,False
-Blake Miller,OT,Clemson,27,1st-2nd round,7.7 (Key Contributor — 2nd Round),Colton McKivitz,16.7,29.5,53.8,out_of_league,86.0,12.1,2.0,mocked_higher,beast,True,False
-Peter Woods,DL,Clemson,28,1st-2nd round,8.0 (Impact Player — 1st Round),Jeffery Simmons,35.4,43.0,21.5,practice_only,54.7,43.9,1.4,mocked_higher,beast,True,False
-Kevin Concepcion,WR,Texas A&M,29,1st-2nd round,8.08 (Year 1 Starter — Late 1st-Early 2nd Round),Emmanuel Sanders,49.4,34.2,16.4,real_contract,33.6,60.7,5.7,mocked_near_consensus,beast,True,False
-Ty Simpson,QB,Alabama,30,2nd round,7.7 (Key Contributor — 2nd Round),An athletic Kirk Cousins,41.5,39.1,19.4,real_contract,32.1,61.6,6.3,mocked_near_consensus,beast,True,False
-Denzel Boston,WR,Washington,31,1st-2nd round,7.85 (Key Contributor — 2nd Round),Michael Pittman,67.1,22.0,10.9,real_contract,89.1,9.7,1.2,mocked_higher,beast,True,False
-Kayden McDonald,DL,Ohio State,32,1st-2nd round,7.9 (High-Level Backup/Starter Upside — 3rd Round),Shades of Vince Wilfork,23.9,36.0,40.1,out_of_league,37.1,58.2,4.7,mocked_near_consensus,beast,True,False
-CJ Allen,LB,Georgia,33,2nd round,7.8 (Key Contributor — 2nd Round),Daiyan Henley,35.8,52.7,11.6,practice_only,58.5,25.7,15.7,mocked_higher,beast,True,False
-Cashius Howell,EDGE,Texas A&M,34,2nd round,7.8 (Key Contributor — 2nd),Harold Landry III,16.9,60.1,23.1,practice_only,84.0,11.6,4.4,mocked_higher,beast,True,False
-Colton Hood,CB,Tennessee,35,1st-2nd round,7.6 (Key Contributor — Second Round),Kamari Lassiter,53.1,36.1,10.8,real_contract,48.2,40.6,11.2,mocked_higher,beast,True,False
-Max Iheanachor,OT,Arizona State,36,1st-2nd round,7.4 (High-Level Backup/Starter Upside — 3rd Round),Yosh Nijman,36.1,33.6,30.3,real_contract,26.3,69.6,4.1,mocked_near_consensus,beast,True,False
-Zion Young,EDGE,Missouri,37,1st-2nd round,7.7 (2nd Round — Key Contributor),Tyree Wilson,53.1,10.3,36.6,real_contract,91.4,6.8,1.8,mocked_higher,beast,True,False
-Caleb Banks,DL,Florida,38,2nd-3rd round,7.5 (Key Contributor — 2nd Round),Gervon Dexter,39.6,11.5,48.9,out_of_league,91.7,5.8,2.5,mocked_higher,beast,True,False
-Brandon Cisse,CB,South Carolina,39,2nd round,7.4 (High-Level Backup/Starter Upside— Third Round),Jaycee Horn,11.9,33.2,54.9,out_of_league,92.5,5.2,2.3,mocked_higher,beast,True,False
-Emmanuel Pregnon,IOL,Oregon,40,2nd-3rd round,7.5 (Key Contributor - Round 2),Robert Hunt,18.7,36.7,44.5,out_of_league,90.6,5.5,3.9,mocked_higher,beast,True,False
-Chris Johnson,CB,San Diego State,41,1st-2nd round,7.7 (Key Contributor - Second Round),Coby Bryant,33.8,38.1,28.1,practice_only,97.6,2.0,0.4,mocked_higher,beast,True,False
-Malachi Lawrence,EDGE,UCF,42,1st-2nd round,,,38.6,18.5,42.8,out_of_league,81.2,16.3,2.4,mocked_higher,beast,False,False
-Chase Bisontis,IOL,Texas A&M,43,1st-2nd round,7.5 (Key Contributor — 2nd Round),Mark Glowinski,11.0,27.7,61.2,out_of_league,92.6,6.1,1.4,mocked_higher,beast,True,False
-Jadarian Price,RB,Notre Dame,44,2nd-3rd round,,,16.1,49.1,34.8,practice_only,97.6,1.5,0.8,mocked_higher,beast,False,False
-Jacob Rodriguez,LB,Texas Tech,45,2nd round,7.3 (High-Level Backup/Starter Upside — 3rd Round),Jack Sanborn,20.4,59.2,20.4,practice_only,50.3,43.4,6.2,mocked_higher,beast,True,False
-Christen Miller,DL,Georgia,47,2nd round,7.6 (Key Contributor — 2nd Round),Kenny Clark,45.0,36.7,18.3,real_contract,35.0,53.4,11.6,mocked_near_consensus,beast,True,False
-Anthony Hill,LB,Texas,49,2nd-3rd round,7.4 (High-Level Backup/Starter Upside — 3rd Round),Kenneth Murray,17.8,33.2,49.1,out_of_league,95.6,2.4,1.9,mocked_higher,beast,True,False
-Gabe Jacas,EDGE,Illinois,50,2nd-3rd round,7.6 (Key Contributor — 2nd Round),Jonathan Greenard without the length,12.7,64.1,23.2,practice_only,58.0,35.0,7.0,mocked_higher,beast,True,False
-Jake Golday,LB,Cincinnati,51,2nd-3rd round,7.7 (Key Contributor — 2nd Round),Devin Lloyd,16.7,45.8,37.5,practice_only,91.3,5.9,2.8,mocked_higher,beast,True,False
-Chris Bell,WR,Louisville,52,2nd round,7.80 (Key Contributor — 2nd Round),Xavier Legette,54.6,36.6,8.8,real_contract,37.8,52.9,9.4,mocked_near_consensus,beast,True,False
-Eli Stowers,TE,Vanderbilt,53,2nd-3rd round,,,46.8,42.0,11.2,real_contract,23.2,65.1,11.7,mocked_near_consensus,beast,False,False
-Chris Brazzell,WR,Tennessee,54,3rd-4th round,7.90 (Key Contributor — 2nd Round),Martavis Bryant,36.0,51.8,12.3,practice_only,57.4,30.4,12.2,mocked_higher,beast,True,False
-Dangelo Ponds,CB,Indiana,55,2nd round,7.8 (Key Contributor — 2nd Round),Jason Verrett,52.8,34.7,12.5,real_contract,32.6,60.9,6.5,mocked_near_consensus,beast,True,False
-Germie Bernard,WR,Alabama,56,2nd round,7.11 (High-Level Backup/Starter Upside — 3rd Round),Shades of Jarvis Landry,41.4,45.3,13.3,practice_only,46.6,41.1,12.3,mocked_higher,beast,True,False
-AJ Haulcy,S,LSU,57,2nd-3rd round,7.6 (Key Contributor -Second Round),Xavier Watts,44.0,43.4,12.6,real_contract,23.3,67.2,9.5,mocked_near_consensus,beast,True,False
-Keylan Rutledge,IOL,Georgia Tech,58,2nd-3rd round,7.6 (Key Contributor - 2nd Round),Dylan Fairchild,15.5,60.2,24.2,practice_only,51.9,40.3,7.8,mocked_higher,beast,True,False
-Derrick Moore,EDGE,Michigan,59,3rd round,7.4 (High-Level Backup/Starter Upside — 3rd Round),Boye Mafe,68.7,6.5,24.8,real_contract,82.3,13.0,4.7,mocked_higher,beast,True,False
-Gennings Dunker,OT,Iowa,60,3rd round,7.1 (High-Level Backup/Starter Upside - Round 3),Mason McCormick,25.6,33.7,40.7,out_of_league,53.0,32.0,14.9,mocked_higher,beast,True,False
-Keionte Scott,CB,Miami (FL),61,2nd-3rd round,6.8 (Role Player/Part-Time Contributor - Fourth Round),Alontae Taylor,44.1,28.5,27.3,real_contract,79.3,16.1,4.6,mocked_higher,beast,True,False
-Josiah Trotter,LB,Missouri,62,3rd round,,,18.7,58.7,22.6,practice_only,56.1,24.9,19.0,mocked_higher,beast,False,False
-Treydan Stukes,CB,Arizona,63,2nd-3rd round,7.4 (High-Level Backup/Starter Upside — 3rd Round),Shades of Devon Witherspoon,10.6,48.8,40.6,practice_only,76.8,15.4,7.7,mocked_higher,beast,True,False
-Zachariah Branch,WR,Georgia,64,3rd round,7.66 (Key Contributor — 2nd Round),Zay Flowers,1.8,82.1,16.0,practice_only,96.8,2.1,1.2,mocked_higher,beast,True,False
-Caleb Tiernan,OT,Northwestern,65,2nd-3rd round,7.1 (High-Level Backup/Starter Upside - Round 3),Doug Free,63.9,16.6,19.6,real_contract,21.8,66.5,11.7,mocked_near_consensus,beast,True,False
-Domonique Orange,DL,Iowa State,66,2nd-3rd round,7.3 (High-Level Backup/Starter Upside — 3rd Round),T.J. Slaton,51.9,23.9,24.1,real_contract,14.3,77.4,8.3,mocked_near_consensus,beast,True,False
-Keith Abney,CB,Arizona State,67,2nd-3rd round,7.1 (High-Level Backup/Starter Upside — 3rd Round),Michael Carter II,10.1,82.7,7.2,practice_only,51.4,39.0,9.6,mocked_higher,beast,True,False
-Dani Dennis-Sutton,EDGE,Penn State,68,2nd-3rd round,7.3 (High-Level Backup/Starter Upside — 3rd Round),Dorance Armstrong,17.1,42.3,40.5,practice_only,84.0,11.1,4.9,mocked_higher,beast,True,False
-Mike Washington,RB,Arkansas,69,3rd round,7.71 (Key Contributor — 2nd Round),Chris Carson,22.4,18.3,59.3,out_of_league,97.6,0.9,1.5,mocked_higher,beast,True,False
-Malachi Fields,WR,Notre Dame,70,2nd-3rd round,7.7 (Key Contributor — 2nd Round),Shades of Brandon Marshall,17.5,29.3,53.2,out_of_league,97.0,2.1,0.9,mocked_higher,beast,True,False
-Antonio Williams,WR,Clemson,71,2nd-3rd round,,,18.1,67.3,14.7,practice_only,39.4,53.9,6.7,mocked_near_consensus,beast,False,False
-Kyle Louis,LB,Pittsburgh,72,3rd round,,,10.2,67.0,22.8,practice_only,60.1,22.3,17.6,mocked_higher,beast,False,False
-Davison Igbinosun,CB,Ohio State,73,2nd-3rd round,7.5 (2nd Round - Key Contributor),Charvarius Ward,60.8,20.7,18.5,real_contract,79.9,15.3,4.8,mocked_higher,beast,True,False
-Gracen Halton,DL,Oklahoma,74,4th round,6.8 (Role Player/Part-Time Contributor — 4th Round),Colby Wooden,30.2,60.7,9.1,practice_only,13.4,72.8,13.8,mocked_near_consensus,beast,True,False
-Max Klare,TE,Ohio State,75,2nd-3rd round,7.7 (Key Contributor - 2nd Round),Mark Andrews,36.7,33.1,30.2,real_contract,40.3,54.9,4.8,mocked_near_consensus,beast,True,False
-Connor Lew,IOL,Auburn,76,3rd-4th round,7.0 (High-Level Backup/Starter Upside - 3rd Round),Matt Hennessy,25.8,45.5,28.7,practice_only,41.7,46.4,12.0,mocked_near_consensus,beast,True,False
-Ted Hurst,WR,Georgia State,77,3rd round,,,41.0,47.4,11.6,practice_only,30.7,61.8,7.5,mocked_near_consensus,beast,False,False
-Romello Height,EDGE,Texas Tech,78,3rd round,7.2 (3rd Round — High-Level Backup/Starter Upside),Nick Herbig,41.9,19.2,38.9,real_contract,92.2,4.0,3.8,mocked_higher,beast,True,False
-Elijah Sarratt,WR,Indiana,79,2nd-3rd round,7.4 (High-Level Backup/Starter Upside — 3rd Round),Shades of Keenan Allen,17.4,72.9,9.7,practice_only,64.7,28.9,6.4,mocked_higher,beast,True,False
-Sam Hecht,IOL,Kansas State,80,3rd-4th round,7.2 (High-Level Backup/Starter Upside — 3rd Round),Tyler Biadasz,27.8,40.1,32.1,practice_only,90.0,4.7,5.2,mocked_higher,beast,True,False
-Skyler Bell,WR,UConn,81,4th round,7.5 (Key Contributor— 2nd Round),Jayden Reed,27.0,57.2,15.8,practice_only,95.7,1.9,2.5,mocked_higher,beast,True,False
-Joshua Josephs,EDGE,Tennessee,82,4th-5th round,7.0 (High-Level Backup/Starter Upside — 3rd Round),Uchenna Nwosu,59.2,20.2,20.6,real_contract,47.9,28.6,23.5,mocked_higher,beast,True,False
-Garrett Nussmeier,QB,LSU,83,3rd round,7.05 (High-Level Backup/Starter Upside— 3rd Round),Brock Purdy,55.8,32.0,12.2,real_contract,19.3,74.0,6.7,mocked_near_consensus,beast,True,False
-Kamari Ramsey,S,USC,84,4th round,7.4 (High-Level Backup/Starter Upside - Third Round),Ashton Davis,29.9,39.1,31.1,practice_only,83.7,5.5,10.8,mocked_higher,beast,True,False
-Jaishawn Barham,LB,Michigan,85,3rd-4th round,,,42.1,15.1,42.8,out_of_league,93.1,2.4,4.5,mocked_higher,beast,False,False
-Darrell Jackson,DL,Florida State,86,4th round,7.2 (High-Level Backup/Starter Upside — 3rd Round),Dalvin Tomlinson,65.5,14.9,19.6,real_contract,52.9,28.7,18.4,mocked_higher,beast,True,False
-Oscar Delp,TE,Georgia,87,3rd round,7.1 (High-Level Backup/Starter Upside — 3rd round),Robert Tonyan,8.5,66.2,25.3,practice_only,91.5,3.7,4.8,mocked_higher,beast,True,False
-Zakee Wheatley,S,Penn State,88,3rd round,7.7 (Key Contributor - 2nd Round),Kyle Hamilton,24.7,26.1,49.2,out_of_league,91.5,6.3,2.2,mocked_higher,beast,True,False
-Bud Clark,S,TCU,89,3rd round,7.4 (High-Level Backup/Starter Upside- 3rd Round),Calen Bullock,44.4,28.4,27.1,real_contract,89.4,5.8,4.8,mocked_higher,beast,True,False
-Bryce Lance,WR,North Dakota State,90,3rd-4th round,,,38.9,43.3,17.7,practice_only,80.9,10.7,8.5,mocked_higher,beast,False,False
-Keyron Crawford,EDGE,Auburn,91,2nd-3rd round,,,55.5,20.2,24.3,real_contract,26.1,65.1,8.8,mocked_near_consensus,beast,False,False
-Julian Neal,CB,Arkansas,92,4th round,7.2 (High-Level Backup/Starter Upside — 3rd Round),Riq Woolen,8.4,54.7,36.9,practice_only,95.9,1.4,2.7,mocked_higher,beast,True,False
-Malik Muhammad,CB,Texas,93,3rd round,7.7 (Key Contributor- 2nd round),Nate Wiggins,60.4,26.1,13.5,real_contract,85.7,8.2,6.0,mocked_higher,beast,True,False
-Deion Burks,WR,Oklahoma,94,3rd-4th round,7.55 (Key Contributor — 2nd Round),Sterling Shepard,2.7,81.6,15.7,practice_only,74.5,14.8,10.7,mocked_higher,beast,True,False
-Genesis Smith,S,Arizona,95,4th round,7.3 (High-Level Backup/Starter Upside — 3rd Round),Shades of Jaquan Brisker,56.4,29.3,14.3,real_contract,50.9,27.1,21.9,mocked_higher,beast,True,False
-Jalon Kilgore,S,South Carolina,96,3rd round,7.5,Jamel Dean,30.4,30.2,39.4,out_of_league,81.7,11.3,7.0,mocked_higher,beast,True,False
-Jalen Farmer,IOL,Kentucky,97,3rd-4th round,6.8 (Role Player/Part-Time Contributor — 4th Round),Chris Paul,53.9,12.0,34.1,real_contract,85.7,7.0,7.3,mocked_higher,beast,True,False
-Devin Moore,CB,Florida,98,4th round,,,37.8,16.6,45.6,out_of_league,49.7,31.7,18.6,mocked_higher,beast,False,False
-Dametrious Crownover,OT,Texas A&M,99,4th-5th round,6.3 (Developmental Prospect - Round 5),Kiran Amegadjie,51.9,27.0,21.1,real_contract,36.7,33.6,29.7,mocked_higher,beast,True,False
-Logan Jones,IOL,Iowa,100,3rd-4th round,6.5 (Role Player/Part-time Contributor - 4th Round),Diet Coke Tyler Linderbaum,0.1,95.1,4.7,practice_only,96.8,3.1,0.1,mocked_higher,beast,True,False
-Chandler Rivers,CB,Duke,101,3rd-4th round,7.8 (Second round - Key contributor),Skinny Trent McDuffie,11.8,55.3,32.9,practice_only,90.5,4.9,4.6,mocked_higher,beast,True,False
-Jonah Coleman,RB,Washington,102,4th-5th round,6.7 (Role Player/Part-Time Contributor — 4th Round),Mike Davis,5.5,77.7,16.8,practice_only,66.7,17.9,15.4,mocked_higher,beast,True,False
-Jake Slaughter,IOL,Florida,103,3rd-4th round,7.0 (High-Level Backup/Starter Upside — 3rd Round),Chase Roullier,35.5,46.9,17.6,practice_only,53.1,32.3,14.6,mocked_higher,beast,True,False
-Kaleb Proctor,DL,Southeastern Louisiana,104,5th round,,,18.7,61.7,19.7,practice_only,37.0,29.6,33.4,mocked_higher,beast,False,False
-LT Overton,EDGE,Alabama,105,4th round,7.1 (High-Level Backup/Starter Upside — 3rd Round),Pre-injuries Mario Edwards Jr.,40.6,37.4,22.1,real_contract,67.8,18.0,14.2,mocked_higher,beast,True,False
-Sam Roush,TE,Stanford,106,3rd-4th round,7.2 (High-Level Backup/Starter Upside - Third Round),Tucker Kraft,11.5,71.8,16.7,practice_only,66.3,25.4,8.2,mocked_higher,beast,True,False
-Emmett Johnson,RB,Nebraska,107,3rd-4th round,7.37 (High-Level Backup/Starter Upside — 3rd Round),Jashaun Corbin,25.0,55.4,19.6,practice_only,72.0,18.9,9.1,mocked_higher,beast,True,False
-Chris McClellan,DL,Missouri,108,3rd-4th round,,,20.8,72.5,6.8,practice_only,34.7,31.5,33.8,mocked_higher,beast,False,False
-JaKobi Lane,WR,USC,109,5th round,7.0 (High-Level Backup/Starter Upside — 3rd Round),Shades of Corey Davis,33.9,44.3,21.8,practice_only,50.3,20.3,29.4,mocked_higher,beast,True,False
-Will Lee,CB,Texas A&M,110,5th round,6.9 (Role Player/Part-Time Contributor — Fourth Round),Carrington Valentine,26.9,41.0,32.1,practice_only,82.3,4.7,13.0,mocked_higher,beast,True,False
-Deontae Lawson,LB,Alabama,111,6th-7th round,7.1 (Key Contributor — 2nd Round),Shaq Thompson,26.7,53.5,19.9,practice_only,22.1,12.7,65.2,mocked_lower,beast,True,False
-Daylen Everette,CB,Georgia,112,3rd-4th round,7.3 (High-Level Backup/Starter Upside — 3rd Round),Deonte Banks,42.0,44.1,13.9,practice_only,70.3,17.9,11.8,mocked_higher,beast,True,False
-Cole Payton,QB,North Dakota State,113,4th round,,,72.7,17.0,10.3,real_contract,29.0,40.9,30.1,mocked_near_consensus,beast,False,False
-Brian Parker,OT,Duke,114,4th round,7.0 (High-Level Backup/Starter Upside - Round 3),Ryan Bates,17.8,51.2,31.1,practice_only,52.8,24.8,22.4,mocked_higher,beast,True,False
-Brenen Thompson,WR,Mississippi State,115,3rd round,6.88 (Role Player/Part-Time Contributor — 4th Round),Shades of Tank Dell,18.7,69.5,11.8,practice_only,38.0,51.2,10.8,mocked_near_consensus,beast,True,False
-Justin Joly,TE,NC State,116,3rd-4th round,7.1 (High-Level Backup/Starter Upside - Third round),Isaiah Likely,42.6,48.6,8.8,practice_only,25.8,56.0,18.2,mocked_near_consensus,beast,True,False
-Drew Allar,QB,Penn State,117,3rd-4th round,7.09 (High-Level Backup/Starter Upside — 3rd Round),Daniel Jones with Joe Flacco's arm talent,63.1,26.0,10.9,real_contract,55.8,29.5,14.7,mocked_higher,beast,True,False
-Michael Trigg,TE,Baylor,118,5th-6th round,7.4 (Third Round-High-Level Backup/Starter Upside),Evan Engram,37.1,38.8,24.2,practice_only,19.9,19.2,60.9,mocked_lower,beast,True,False
-Markel Bell,OT,Miami (FL),119,3rd-4th round,7.3 (High-Level Backup/Starter Upside - Round 3),King Dunlap,67.0,12.1,20.9,real_contract,41.0,39.6,19.4,mocked_higher,beast,True,False
-Jude Bowry,OT,Boston College,120,4th-5th round,7.0 (High-Level Backup/Starter Upside - 3rd Round),Austin Jackson,19.3,48.7,32.0,practice_only,47.0,18.4,34.6,mocked_higher,beast,True,False
-Dontay Corleone,DL,Cincinnati,121,7th round-Free,6.6 (Role Player/Part-Time Contributor — 4th Round),Andrew Billings,24.9,63.0,12.2,practice_only,13.9,7.9,78.2,mocked_lower,beast,True,False
-Zxavian Harris,DL,Mississippi,122,Free Agent,6.1 (Developmental Prospect — 5th Round),Eyioma Uwazurike,15.5,46.1,38.3,practice_only,9.5,3.1,87.4,mocked_lower,beast,True,False
-DeZhaun Stribling,WR,Mississippi,123,2nd-3rd round,7.4 (High-Level Backup/Starter Upside — Third Round),Shades of Romeo Doubs,38.9,52.6,8.6,practice_only,34.5,54.2,11.2,mocked_near_consensus,beast,True,False
-Keyshaun Elliott,LB,Arizona State,124,3rd round,,,8.5,37.1,54.4,out_of_league,92.9,2.4,4.8,mocked_higher,beast,False,False
-Kage Casey,OT,Boise State,125,4th-5th round,6.8 (Role Player/Part-Time Contributor - 4th Round),Wyatt Milum,26.4,43.3,30.2,practice_only,88.0,6.1,5.8,mocked_higher,beast,True,False
-Kaleb Elarms-Orr,LB,TCU,126,3rd-4th round,,,9.1,50.1,40.8,practice_only,91.0,4.1,5.0,mocked_higher,beast,False,False
-Carson Beck,QB,Miami (FL),127,4th-5th round,6.97 (Role Player/Part-Time Contributor — 4th Round),Kenny Pickett,51.1,39.0,9.8,real_contract,48.1,38.9,13.0,mocked_higher,beast,True,False
-VJ Payne,S,Kansas State,129,4th-5th round,,,19.5,21.1,59.4,out_of_league,87.2,3.7,9.1,mocked_higher,beast,False,False
-Tacario Davis,CB,Washington,130,4th round,,,32.2,23.6,44.2,out_of_league,90.7,2.1,7.2,mocked_higher,beast,False,False
-Harold Perkins,LB,LSU,131,5th-6th round,6.6 (Role Player/Part-Time Contributor — 4th Round),Christian Elliss,2.1,14.5,83.4,out_of_league,97.4,0.6,2.0,mocked_higher,beast,True,False
-Zane Durant,DL,Penn State,132,5th-6th round,6.9 (Role Player/Part-Time Contributor — 4th Round),Tyler Davis,14.3,69.0,16.6,practice_only,44.4,24.1,31.5,mocked_higher,beast,True,False
-DeMonte Capehart,DL,Clemson,133,5th-6th round,,,23.4,53.6,23.0,practice_only,41.1,13.5,45.4,mocked_lower,beast,False,False
-Rayshaun Benny,DL,Michigan,134,4th-5th round,6.5 (Developmental Prospect — 5th Round),Maurice Hurst (NFL version),52.0,35.2,12.7,real_contract,14.7,73.6,11.7,mocked_near_consensus,beast,True,False
-Anthony Lucas,EDGE,USC,135,5th-6th round,6.4 (Developmental Prospect — 5th Round),Chauncey Golston,57.6,13.5,28.9,real_contract,49.4,12.6,38.0,mocked_higher,beast,True,False
-Billy Schrauth,IOL,Notre Dame,136,3rd-4th round,,,61.6,26.2,12.2,real_contract,26.7,53.9,19.4,mocked_near_consensus,beast,False,False
-Nick Singleton,RB,Penn State,137,5th round,6.45 (Developmental Prospect — 5th Round),David Johnson,32.6,55.8,11.6,practice_only,36.9,10.4,52.7,mocked_lower,beast,True,False
-Trey Zuhn,OT,Texas A&M,138,3rd-4th round,6.5 (Role Player/Part-Time Contributor — 4th Round),Tom Compton,9.5,35.0,55.5,out_of_league,92.3,4.1,3.6,mocked_higher,beast,True,False
-Ephesians Prysock,CB,Washington,139,4th-5th round,,,60.4,24.6,14.9,real_contract,93.3,2.2,4.5,mocked_higher,beast,False,False
-Hezekiah Masses,CB,California,140,6th round,,,36.4,41.2,22.4,practice_only,39.8,23.5,36.7,mocked_higher,beast,False,False
-Eli Raridon,TE,Notre Dame,141,4th round,7.2 (Third round - High-Level Backup/Starter Upside),Kyle Rudolph-lite,21.1,41.7,37.2,practice_only,84.6,9.5,5.9,mocked_higher,beast,True,False
-Tim Keenan,DL,Alabama,142,6th-7th round,6.7 (Role Player/Part-Time Contributor — 4th Round),Davon Godchaux,5.5,46.5,47.9,out_of_league,93.9,1.1,5.0,mocked_higher,beast,True,False
-Bryce Boettcher,LB,Oregon,143,4th round,6.4 (Developmental Prospect — 5th Round),Cole Holcomb,6.6,68.9,24.5,practice_only,60.5,19.7,19.9,mocked_higher,beast,True,False
-Isaiah World,OT,Oregon,144,5th-6th round,6.2 (Developmental Prospect - Round 5),Ja'Wuan James,50.2,30.0,19.8,real_contract,41.1,30.7,28.2,mocked_higher,beast,True,False
-Matt Gulbin,IOL,Michigan State,145,5th round,,,12.3,53.3,34.4,practice_only,83.4,6.1,10.6,mocked_higher,beast,False,False
-Taylen Green,QB,Arkansas,146,4th-5th round,6.80 (Role Player/Part-Time Contributor — 4th Round),Shades of Terrelle Pryor,85.5,10.2,4.4,real_contract,6.5,60.7,32.8,mocked_near_consensus,beast,True,False
-Charles Demmings,CB,Stephen F. Austin,147,5th round,,,24.9,46.7,28.4,practice_only,91.7,1.4,6.9,mocked_higher,beast,False,False
-Kaytron Allen,RB,Penn State,148,4th round,7.51 (Key Contributor — 2nd Round),Rhamondre Stevenson,30.8,58.3,10.9,practice_only,63.1,10.8,26.1,mocked_higher,beast,True,False
-Taurean York,LB,Texas A&M,149,6th-7th round,7.0 (High-Level Backup/Starter Upside — 3rd Round),Shades of Zach Thomas,3.7,47.5,48.9,out_of_league,66.0,4.3,29.7,mocked_higher,beast,True,False
-Jager Burton,IOL,Kentucky,150,5th-6th round,,,9.0,65.4,25.7,practice_only,74.6,6.1,19.3,mocked_higher,beast,False,False
-Jeff Caldwell,WR,Cincinnati,151,5th-6th round,,,18.4,58.7,22.9,practice_only,85.4,1.9,12.7,mocked_higher,beast,False,False
-Max Llewellyn,EDGE,Iowa,152,4th round,,,8.5,59.5,32.0,practice_only,18.5,66.4,15.1,mocked_near_consensus,beast,False,False
-Joe Royer,TE,Cincinnati,153,4th-5th round,6.6 (4th round - Role Player/Part-Time Contributor),Noah Gray,53.2,41.2,5.6,real_contract,47.8,28.0,24.2,mocked_higher,beast,True,False
-Parker Brailsford,IOL,Alabama,154,5th round,6.7 (Role Player/Part-Time Contributor - Round 4),Coleman Shelton,5.9,62.7,31.4,practice_only,42.5,21.2,36.3,mocked_higher,beast,True,False
-Tyler Onyedim,DL,Texas A&M,155,3rd round,,,14.3,50.3,35.4,practice_only,75.9,18.3,5.7,mocked_higher,beast,False,False
-Beau Stephens,IOL,Iowa,156,4th-5th round,6.9 (Role Player/Part-Time Contributor — 4th Round),Jarrett Patterson,28.3,16.5,55.2,out_of_league,87.2,6.8,5.9,mocked_higher,beast,True,False
-Drew Shelton,OT,Penn State,157,5th round,6.2 (Developmental Prospect - Round 5),Geron Christian,24.0,32.6,43.4,out_of_league,81.5,4.1,14.4,mocked_higher,beast,True,False
-Jadon Canady,CB,Oregon,158,4th-5th round,7.0 (High-Level Backup/Starter Upside — Third Round),Jourdan Lewis,28.7,56.3,15.0,practice_only,59.8,16.2,24.0,mocked_higher,beast,True,False
-Travis Burke,OT,Memphis,159,3rd round,,,26.6,28.3,45.2,out_of_league,86.8,5.4,7.8,mocked_higher,beast,False,False
-TJ Hall,CB,Iowa,160,6th round,,,9.5,55.2,35.3,practice_only,91.2,1.0,7.7,mocked_higher,beast,False,False
-Josh Cameron,WR,Baylor,161,6th round,7.0 (High-Level Backup/Starter Upside — 3rd Round),A Quicker Hakeem Nicks,37.7,54.5,7.7,practice_only,26.3,7.3,66.4,mocked_lower,beast,True,False
-Keagen Trost,IOL,Missouri,162,5th round,6.2 (Developmental Prospect — 5th Round),Larry Borom,8.4,46.8,44.8,practice_only,83.0,5.3,11.7,mocked_higher,beast,True,False
-Caden Curry,EDGE,Ohio State,163,4th-5th round,,,9.3,73.9,16.8,practice_only,13.4,78.6,8.0,mocked_near_consensus,beast,False,False
-Adam Randall,RB,Clemson,164,7th round-​,6.0 (Developmental Prospect — 5th Round),Kalel Mullings,1.4,39.8,58.8,out_of_league,95.2,0.3,4.4,mocked_higher,beast,True,False
-Demond Claiborne,RB,Wake Forest,165,4th-5th round,,,26.1,62.1,11.9,practice_only,40.7,21.3,38.0,mocked_higher,beast,False,False
-Diego Pounds,OT,Mississippi,166,4th round,,,20.9,29.3,49.8,out_of_league,85.4,3.9,10.7,mocked_higher,beast,False,False
-Kevin Coleman,WR,Missouri,167,5th-6th round,,,10.2,76.6,13.2,practice_only,54.5,16.8,28.7,mocked_higher,beast,False,False
-Jack Endries,TE,Texas,168,4th-5th round,7.0 (High-Level Backup/Starter Upside - 3rd Round),Souped-up Dalton Schultz,9.9,62.2,27.9,practice_only,87.7,5.2,7.1,mocked_higher,beast,True,False
-Jimmy Rolder,LB,Michigan,169,4th round,,,19.8,30.4,49.8,out_of_league,96.6,1.2,2.2,mocked_higher,beast,False,False
-Nadame Tucker,EDGE,Western Michigan,170,6th-7th round,,,5.7,72.7,21.6,practice_only,68.6,8.0,23.4,mocked_higher,beast,False,False
-Marlin Klein,TE,Michigan,171,4th round,,,31.0,30.7,38.3,out_of_league,89.9,1.9,8.3,mocked_higher,beast,False,False
-Nate Boerkircher,TE,Texas A&M,172,4th round,,,15.3,57.7,27.1,practice_only,69.4,17.0,13.6,mocked_higher,beast,False,False
-Jack Kelly,LB,BYU,173,5th round,,,14.2,43.0,42.8,practice_only,93.5,2.3,4.2,mocked_higher,beast,False,False
-Landon Robinson,DL,Navy,174,6th round,,,12.0,26.0,62.0,out_of_league,7.1,6.6,86.4,mocked_lower,beast,False,False
-Nick Barrett,DL,South Carolina,175,5th round,,,3.3,70.5,26.2,practice_only,25.7,47.2,27.1,mocked_near_consensus,beast,False,False
-Aiden Fisher,LB,Indiana,176,5th round,6.2 (Developmental Prospect — 5th Round),Tommy Eichenberg,15.2,63.3,21.5,practice_only,46.1,18.0,35.9,mocked_higher,beast,True,False
-Febechi Nwaiwu,IOL,Oklahoma,177,4th round,,,14.9,55.0,30.2,practice_only,51.2,29.5,19.3,mocked_higher,beast,False,False
-Jaydn Ott,RB,Oklahoma,178,7th round-​,,,19.0,44.7,36.3,practice_only,19.5,9.3,71.1,mocked_lower,beast,False,False
-Jeremiah Wright,IOL,Auburn,179,5th-6th round,6.3 (Developmental Prospect — 5th Round),Anthony Belton,46.5,37.9,15.7,real_contract,32.6,15.6,51.7,mocked_lower,beast,True,False
-JC Davis,OT,Illinois,180,6th-7th round,5.9 (Backup/Draftable — 6th Round),Trent Scott,43.5,26.4,30.1,real_contract,29.6,10.7,59.7,mocked_lower,beast,True,False
-Kaelon Black,RB,Indiana,181,5th-6th round,5.9 (Backup/Draftable — 5th Round),Kyle Monangai,47.0,36.3,16.6,real_contract,35.9,17.4,46.7,mocked_lower,beast,True,False
-Kendrick Law,WR,Kentucky,182,4th-5th round,,,3.4,75.5,21.1,practice_only,90.7,3.1,6.3,mocked_higher,beast,False,False
-Michael Taaffe,S,Texas,183,5th round,6.5 (Role Player/Part-Time Contributor — 4th Round),Julian Blackmon,32.9,52.6,14.4,practice_only,22.0,25.5,52.5,mocked_lower,beast,True,False
-Jakobe Thomas,S,Miami (FL),184,4th-5th round,7.3 (High-Level Backup/Starter Upside — Third Round),Minkah Fitzpatrick-lite,51.0,36.5,12.6,real_contract,91.2,3.7,5.1,mocked_higher,beast,True,False
-Dallen Bentley,TE,Utah,185,4th-5th round,,,13.6,60.6,25.8,practice_only,74.0,9.2,16.9,mocked_higher,beast,False,False
-George Gumbs,EDGE,Florida,186,5th round,,,8.1,20.0,71.8,out_of_league,90.9,2.0,7.2,mocked_higher,beast,False,False
-Seth McGowan,RB,Kentucky,187,6th-7th round,,,38.4,38.5,23.2,practice_only,27.2,11.0,61.8,mocked_lower,beast,False,False
-Will Kacmarek,TE,Ohio State,188,4th round,,,10.1,49.9,40.0,practice_only,84.8,10.3,4.9,mocked_higher,beast,False,False
-Reggie Virgil,WR,Texas Tech,190,5th round,,,36.6,35.8,27.6,real_contract,88.0,3.4,8.6,mocked_higher,beast,False,False
-Cade Klubnik,QB,Clemson,191,5th-6th round,6.0 (Role Player/Part-Time Contributor — 4th Round),Matt Corrall,40.7,33.4,25.9,real_contract,47.3,23.0,29.7,mocked_higher,beast,True,False
-Mikail Kamara,EDGE,Indiana,192,7th round,,,26.6,50.4,22.9,practice_only,33.2,12.1,54.7,mocked_lower,beast,False,False
-Trey Moore,EDGE,Texas,193,5th-6th round,,,43.2,44.7,12.2,practice_only,17.6,58.9,23.4,mocked_near_consensus,beast,False,False
-Pat Coogan,IOL,Indiana,194,6th-7th round,5.9 (Backup/Draftable — 6th Round),Will Clapp,9.3,55.1,35.7,practice_only,81.7,3.3,15.0,mocked_higher,beast,True,False
-Albert Regis,DL,Texas A&M,195,4th-5th round,,,5.2,61.8,33.0,practice_only,76.1,16.0,7.9,mocked_higher,beast,False,False
-Roman Hemby,RB,Indiana,196,7th round,6.3 (Developmental Prospect — 5th Round),Shades of Rico Dowdle,11.4,67.6,21.0,practice_only,30.0,5.2,64.8,mocked_lower,beast,True,False
-Justin Jefferson,LB,Alabama,197,5th-6th round,6.5 (Developmental Prospect – 5th Round),Jamien Sherwood,32.7,58.2,9.1,practice_only,23.3,33.2,43.5,mocked_lower,beast,True,False
-Anez Cooper,IOL,Miami (FL),198,5th-6th round,6.5 (Role Player/Part-Time Contributor — 4th Round),Quinton Spain,52.2,33.3,14.5,real_contract,36.8,10.7,52.5,mocked_lower,beast,True,False
-Armaj Reed-Adams,IOL,Texas A&M,199,6th-7th round,,,37.9,36.3,25.8,real_contract,27.9,9.2,62.8,mocked_lower,beast,False,False
-Tyreak Sapp,EDGE,Florida,200,6th round,6.8 (Role Player/Part-Time Contributor — 4th Round),Sawed-off Michael Clemons,2.0,85.3,12.7,practice_only,49.4,16.6,34.0,mocked_higher,beast,True,False
-Domani Jackson,CB,Alabama,201,6th-7th round,6.8 (Role Player/Part-Time Contributor - Fourth Round),Greedy Williams,2.5,63.1,34.4,practice_only,42.9,12.5,44.5,mocked_lower,beast,True,False
-Riley Nowakowski,TE,Indiana,202,5th round,6.2 (Developmental Prospect - Fifth Round),Connor Heyward,13.8,54.4,31.8,practice_only,32.7,27.4,39.9,mocked_lower,beast,True,False
-Logan Taylor,IOL,Boston College,203,4th round,6.7 (Role Player/Part-Time Contributor - Round 4),Brandon Linder,41.7,26.8,31.5,real_contract,83.6,7.4,8.9,mocked_higher,beast,True,False
-LeVeon Moss,RB,Texas A&M,204,6th round,6.8 (Role Player/Part-Time Contributor — 4th round),Less-explosive Josh Jacobs,40.0,53.6,6.5,practice_only,15.9,9.3,74.8,mocked_lower,beast,True,False
-Cyrus Allen,WR,Cincinnati,205,5th-6th round,,,11.4,52.4,36.2,practice_only,31.0,12.3,56.7,mocked_lower,beast,False,False
-Thaddeus Dixon,CB,North Carolina,206,5th-6th round,,,41.2,47.2,11.6,practice_only,29.3,7.0,63.7,mocked_lower,beast,False,False
-Red Murdock,LB,Buffalo,207,4th-5th round,,,24.0,62.7,13.3,practice_only,52.5,17.7,29.8,mocked_higher,beast,False,False
-Cameron Ball,DL,Arkansas,208,5th round,,,11.2,50.4,38.5,practice_only,71.1,10.8,18.0,mocked_higher,beast,False,False
-Bishop Fitzgerald,S,USC,209,6th round,,,19.8,51.7,28.4,practice_only,79.6,3.3,17.2,mocked_higher,beast,False,False
-Mason Reiger,EDGE,Wisconsin,210,5th-6th round,,,26.9,34.9,38.2,out_of_league,85.0,5.1,9.9,mocked_higher,beast,False,False
-Kaden Wetjen,WR,Iowa,211,6th round,,,16.9,77.8,5.3,practice_only,42.7,10.7,46.7,mocked_lower,beast,False,False
-JMari Taylor,RB,Virginia,212,6th round,,,31.4,54.1,14.5,practice_only,33.8,12.6,53.6,mocked_lower,beast,False,False
-Matthew Hibner,TE,SMU,213,6th round,,,4.6,71.1,24.3,practice_only,78.5,4.3,17.2,mocked_higher,beast,False,False
-Lander Barton,LB,Utah,214,7th round-​,6.7 (Role Player/Part-Time Contributor — 4th Round),Justin Strnad,24.6,39.1,36.3,practice_only,69.9,0.8,29.3,mocked_higher,beast,True,False
-Aamil Wagner,OT,Notre Dame,215,7th round,,,12.0,42.5,45.5,out_of_league,43.0,7.3,49.7,mocked_lower,beast,False,False
-Robert Spears-Jennings,S,Oklahoma,216,5th round,,,31.9,28.1,40.0,out_of_league,86.0,2.7,11.3,mocked_higher,beast,False,False
-CJ Daniels,WR,Miami (FL),218,Free Agent,,,21.4,48.5,30.1,practice_only,36.4,5.9,57.7,mocked_lower,beast,False,False
-Louis Moore,S,Indiana,219,6th-7th round,7.1 (High-Level Backup/Starter Upside - Third Round),Geno Stone,19.6,51.3,29.1,practice_only,81.4,3.8,14.8,mocked_higher,beast,True,False
-Tanner Koziol,TE,Houston,220,6th round,6.5 (Role Player/Part-Time Contributor — 4th Round),Nuanced Ryan Griffin,20.5,68.8,10.7,practice_only,20.8,18.8,60.4,mocked_lower,beast,True,False
-Wesley Williams,DL,Duke,221,4th-5th round,,,14.7,59.9,25.4,practice_only,10.5,75.9,13.7,mocked_near_consensus,beast,False,False
-Vincent Anthony,EDGE,Duke,222,7th round-​,,,16.6,45.5,37.8,practice_only,27.0,12.6,60.4,mocked_lower,beast,False,False
-Eric Gentry,LB,USC,223,Free Agent,,,16.5,58.1,25.4,practice_only,36.8,2.8,60.4,mocked_lower,beast,False,False
-Eric McAlister,WR,TCU,225,Free Agent,,,11.2,78.5,10.3,practice_only,25.0,6.2,68.8,mocked_lower,beast,False,False
-Caleb Douglas,WR,Texas Tech,226,6th-7th round,,,37.2,51.5,11.2,practice_only,39.3,14.5,46.2,mocked_lower,beast,False,False
-Carver Willis,OT,Washington,228,6th round,6.7 (Role Player/Part-Time Contributor — 4th Round),Robert Hainsey,17.7,60.4,21.9,practice_only,47.1,12.6,40.4,mocked_higher,beast,True,False
-Bryson Eason,DL,Tennessee,229,6th round,,,10.2,55.9,33.9,practice_only,21.2,22.2,56.6,mocked_lower,beast,False,False
-Lorenzo Styles,CB,Ohio State,230,7th round,,,34.2,28.5,37.3,out_of_league,67.1,2.5,30.4,mocked_higher,beast,False,False
-Eli Heidenreich,WR,Navy,231,5th round,,,4.7,83.4,11.9,practice_only,82.0,3.3,14.7,mocked_higher,beast,False,False
-Brandon Cleveland,DL,NC State,232,6th round,,,21.0,62.8,16.2,practice_only,19.0,41.9,39.2,mocked_near_consensus,beast,False,False
-Jeremiah Williams,EDGE,Texas A&M,233,7th round-​,,,8.9,49.7,41.5,practice_only,2.9,5.5,91.6,mocked_lower,beast,False,False
-Tyren Montgomery,WR,John Carroll,234,Free Agent,,,14.9,74.1,11.1,practice_only,6.9,7.1,86.0,mocked_lower,beast,False,False
-Luke Altmyer,QB,Illinois,236,7th round-​,,,26.2,48.6,25.1,practice_only,54.4,5.9,39.7,mocked_higher,beast,False,False
-Jamarion Miller,RB,Alabama,237,6th-7th round,,,21.1,60.0,19.0,practice_only,22.4,14.4,63.2,mocked_lower,beast,False,False
-Micah Morris,IOL,Georgia,238,7th round-​,,,9.7,63.9,26.5,practice_only,25.8,6.8,67.4,mocked_lower,beast,False,False
-Cole Wisniewski,S,Texas Tech,239,7th round-Free,,,20.7,50.1,29.2,practice_only,13.7,7.9,78.4,mocked_lower,beast,False,False
-Josh Cuevas,TE,Alabama,240,5th round,6.7 (Role Player/Part-Time Contributor — 4th Round),Cade Otton,38.0,48.3,13.7,practice_only,73.5,7.5,19.0,mocked_higher,beast,True,False
-Faalili Faamoe,OT,Wake Forest,241,6th-7th round,,,28.6,45.2,26.1,practice_only,28.2,12.4,59.4,mocked_lower,beast,False,False
-Logan Fano,EDGE,Utah,244,5th round,,,21.2,40.2,38.6,practice_only,91.3,2.0,6.7,mocked_higher,beast,False,False
-Fernando Carmona,IOL,Arkansas,245,6th round,5.9 (Backup/Draftable - 6th Round),Joe Looney,13.5,48.1,38.3,practice_only,82.2,2.9,14.9,mocked_higher,beast,True,False
-Alex Harkey,OT,Oregon,246,5th round,5.8 (Backup/Draftable - 6th Round),Jalen Mayfield,17.9,38.7,43.4,out_of_league,76.9,6.0,17.1,mocked_higher,beast,True,False
-Kendal Daniels,S,Oklahoma,247,6th round,,,40.2,23.7,36.1,real_contract,31.6,12.2,56.2,mocked_lower,beast,False,False
-David Gusta,DL,Kentucky,248,6th-7th round,,,0.4,80.1,19.4,practice_only,82.0,0.7,17.3,mocked_higher,beast,False,False
-Collin Wright,CB,Stanford,249,6th round,,,22.9,52.2,24.9,practice_only,87.3,2.5,10.2,mocked_higher,beast,False,False
-Deven Eastern,DL,Minnesota,250,Free Agent,,,9.1,55.6,35.3,practice_only,16.9,14.4,68.7,mocked_lower,beast,False,False
-Malik Benson,WR,Oregon,251,4th-5th round,,,32.0,56.4,11.6,practice_only,48.7,26.5,24.8,mocked_higher,beast,False,False
-Toriano Pride,CB,Missouri,252,6th-7th round,,,7.2,74.8,18.0,practice_only,21.7,13.4,64.8,mocked_lower,beast,False,False
-Andre Fuller,CB,Toledo,253,6th-7th round,,,13.9,33.1,53.0,out_of_league,79.8,2.5,17.7,mocked_higher,beast,False,False
-Quintayvious Hutchins,EDGE,Boston College,254,6th-7th round,,,21.6,45.4,33.1,practice_only,38.8,12.2,49.0,mocked_lower,beast,False,False
-Barion Brown,WR,LSU,255,7th round-​,,,12.9,57.3,29.8,practice_only,74.1,2.2,23.7,mocked_higher,beast,False,False
-Jaeden Roberts,IOL,Alabama,256,Free Agent,,,2.9,67.8,29.3,practice_only,10.8,3.1,86.1,mocked_lower,beast,False,False
-Chase Roberts,WR,BYU,257,7th round-​,,,20.7,69.5,9.8,practice_only,90.4,0.9,8.7,mocked_higher,beast,False,False
-Owen Heinecke,LB,Oklahoma,258,6th round,,,10.2,78.3,11.5,practice_only,23.7,17.5,58.8,mocked_lower,beast,False,False
-DeShon Singleton,S,Nebraska,259,5th-6th round,,,40.6,45.5,13.9,practice_only,47.2,12.4,40.5,mocked_higher,beast,False,False
-Desmond Reid,RB,Pittsburgh,260,Free Agent,,,7.9,65.2,26.9,practice_only,30.0,1.0,68.9,mocked_lower,beast,False,False
-Rene Konga,DL,Louisville,261,5th-6th round,,,9.8,33.4,56.7,out_of_league,8.4,16.7,74.9,mocked_lower,beast,False,False
-Xavian Sorey,LB,Arkansas,262,6th-7th round,,,6.4,55.4,38.2,practice_only,31.5,9.4,59.1,mocked_lower,beast,False,False
-Caden Barnett,OT,Wyoming,263,5th-6th round,6.0 (Developmental Prospect - Late 5th/Early 6th Round),Discount Gennings Dunker,51.4,31.3,17.3,real_contract,40.5,15.2,44.4,mocked_lower,beast,True,False
-Harrison Wallace,WR,Mississippi,264,6th-7th round,,,8.2,24.7,67.1,out_of_league,57.3,3.5,39.2,mocked_higher,beast,False,False
-Colbie Young,WR,Georgia,265,4th-5th round,,,3.7,40.5,55.9,out_of_league,96.4,1.4,2.2,mocked_higher,beast,False,False
-Avery Smith,CB,Toledo,266,5th-6th round,,,12.2,54.1,33.8,practice_only,52.3,21.6,26.1,mocked_higher,beast,False,False
-Dalton Johnson,S,Arizona,267,5th-6th round,,,19.4,42.1,38.4,practice_only,77.0,3.8,19.2,mocked_higher,beast,False,False
-Michael Heldman,EDGE,Central Michigan,268,7th round,,,16.4,59.0,24.6,practice_only,9.5,3.2,87.3,mocked_lower,beast,False,False
-DJ Campbell,IOL,Texas,269,6th-7th round,,,22.5,53.4,24.1,practice_only,21.4,8.6,70.0,mocked_lower,beast,False,False
-Noah Whittington,RB,Oregon,270,6th-7th round,6.7 (Role Player/Part-Time Contributor — 4th Round),Ray Davis,5.2,64.2,30.6,practice_only,58.3,10.8,31.0,mocked_higher,beast,True,False
-Eric Rivers,WR,Georgia Tech,271,Free Agent,,,12.3,62.2,25.5,practice_only,71.1,1.7,27.2,mocked_higher,beast,False,False
-Nolan Rucci,OT,Penn State,272,7th round-​,,,29.6,50.6,19.8,practice_only,27.6,4.2,68.2,mocked_lower,beast,False,False
-Max Bredeson,RB,Michigan,273,7th round,,,7.0,62.1,30.8,practice_only,52.2,2.7,45.1,mocked_higher,beast,False,False
-Skyler Gill-Howard,DL,Texas Tech,274,7th round-Free,,,3.0,82.8,14.1,practice_only,43.8,11.0,45.2,mocked_lower,beast,False,False
-Jack Pyburn,EDGE,LSU,275,6th round,,,51.1,34.4,14.5,real_contract,7.8,52.3,39.9,mocked_near_consensus,beast,False,False
-Joe Fagnano,QB,UConn,276,7th round,,,30.0,36.3,33.7,practice_only,31.5,6.4,62.0,mocked_lower,beast,False,False
-Ethan Burke,EDGE,Texas,277,Free Agent,,,4.3,34.4,61.3,out_of_league,6.8,3.0,90.3,mocked_lower,beast,False,False
-Chip Trayanum,RB,Toledo,278,7th round-​,,,12.1,33.9,54.0,out_of_league,7.7,10.5,81.8,mocked_lower,beast,False,False
-Enrique Cruz,OT,Kansas,279,6th round,,,32.4,36.7,30.9,practice_only,59.4,4.8,35.8,mocked_higher,beast,False,False
-Dillon Bell,WR,Georgia,280,Free Agent,,,2.9,85.6,11.4,practice_only,84.3,0.4,15.3,mocked_higher,beast,False,False
-Ceyair Wright,CB,Nebraska,281,7th round-​,,,19.6,60.1,20.3,practice_only,6.4,5.4,88.2,mocked_lower,beast,False,False
-Zavion Thomas,WR,LSU,282,7th round,,,3.6,76.6,19.8,practice_only,90.5,0.9,8.6,mocked_higher,beast,False,False
-Latrell McCutchin,CB,Houston,283,4th-5th round,,,64.7,25.7,9.6,real_contract,55.2,18.9,26.0,mocked_higher,beast,False,False
-Aaron Anderson,WR,LSU,284,Free Agent,5.70 (Backup/Draftable — 6th-7th Round),Demario Douglas,2.3,78.1,19.6,practice_only,84.9,0.6,14.5,mocked_higher,beast,True,False
-James Thompson,DL,Illinois,286,7th round-​,,,6.8,38.3,54.9,out_of_league,9.5,4.9,85.6,mocked_lower,beast,False,False
-Garrett DiGiorgio,OT,UCLA,290,7th round,6.5 (Role Player/Part-Time Contributor — 4th Round),Oday Aboushi,12.1,54.1,33.8,practice_only,22.3,6.3,71.3,mocked_lower,beast,True,False
-Evan Beerntsen,IOL,Northwestern,291,5th-6th round,,,7.2,68.3,24.5,practice_only,54.7,17.3,27.9,mocked_higher,beast,False,False
-Jalon Daniels,QB,Kansas,292,Free Agent,,,15.6,48.4,36.0,practice_only,15.8,3.9,80.2,mocked_lower,beast,False,False
-Behren Morton,QB,Texas Tech,294,Free Agent,,,22.1,60.6,17.3,practice_only,18.8,2.9,78.3,mocked_lower,beast,False,False
-Patrick Payton,EDGE,LSU,295,Free Agent,,,22.9,30.9,46.2,out_of_league,21.1,4.4,74.5,mocked_lower,beast,False,False
-Marcus Allen,CB,North Carolina,296,7th round-​,,,28.8,28.7,42.5,out_of_league,79.6,1.4,19.0,mocked_higher,beast,False,False
-Rahsul Faison,RB,South Carolina,297,7th round-​,,,10.3,63.4,26.2,practice_only,29.8,10.2,60.0,mocked_lower,beast,False,False
-RJ Maryland,TE,SMU,298,7th round-​,,,7.4,38.3,54.3,out_of_league,59.8,5.7,34.6,mocked_higher,beast,False,False
-CJ Donaldson,RB,Ohio State,299,Free Agent,,,5.3,44.8,49.9,out_of_league,12.4,1.9,85.7,mocked_lower,beast,False,False
-Lewis Bond,WR,Boston College,300,7th round-​,6.55 (Role Player/Part-Time Contributor — 4th Round),K.J. Osborn,30.4,46.1,23.5,practice_only,18.2,9.0,72.8,mocked_lower,beast,True,False
-Carsen Ryan,TE,BYU,302,5th-6th round,,,29.1,68.4,2.5,practice_only,26.0,26.0,48.1,mocked_lower,beast,False,False
-Haynes King,QB,Georgia Tech,303,6th-7th round,,,37.4,41.9,20.6,practice_only,9.7,55.1,35.2,mocked_near_consensus,beast,False,False
-Caullin Lacy,WR,Louisville,304,Free Agent,,,7.9,81.2,10.9,practice_only,11.1,1.6,87.3,mocked_lower,beast,False,False
-Bobby Jamison-Travis,DL,Auburn,305,Free Agent,,,0.5,45.7,53.9,out_of_league,30.2,1.9,67.9,mocked_lower,beast,False,False
-Emmanuel Henderson,WR,Kansas,306,7th round-​,,,13.2,36.4,50.4,out_of_league,72.8,2.4,24.8,mocked_higher,beast,False,False
-Ahmaad Moses,S,SMU,307,7th round-Free,,,27.2,37.2,35.6,practice_only,47.0,3.9,49.1,mocked_lower,beast,False,False
-Karson Sharar,LB,Iowa,308,7th round,,,12.8,62.2,25.0,practice_only,87.4,0.8,11.8,mocked_higher,beast,False,False
-Keyshawn James-Newby,EDGE,New Mexico,309,Free Agent,,,13.2,54.0,32.8,practice_only,15.5,6.9,77.6,mocked_lower,beast,False,False
-Shadrach Banks,LB,UTSA,310,Free Agent,,,7.8,69.1,23.0,practice_only,5.7,4.2,90.2,mocked_lower,beast,False,False
-Joshua Braun,IOL,Kentucky,311,7th round-​,,,5.6,44.7,49.6,out_of_league,14.7,6.8,78.4,mocked_lower,beast,False,False
-Xavier Nwankpa,S,Iowa,312,7th round-Free,6.8 (Role Player/Part-Time Contributor - Fourth Round),Bryan Cook,23.8,43.3,32.9,practice_only,36.5,9.1,54.3,mocked_lower,beast,True,False
-Nyjalik Kelly,EDGE,UCF,314,7th round-​,,,17.1,46.9,36.0,practice_only,35.3,13.2,51.5,mocked_lower,beast,False,False
-Dan Villari,TE,Syracuse,315,Free Agent,,,6.1,63.7,30.2,practice_only,7.9,3.2,88.9,mocked_lower,beast,False,False
-Marvin Jones,EDGE,Oklahoma,316,Free Agent,,,5.1,41.5,53.4,out_of_league,7.9,17.7,74.4,mocked_lower,beast,False,False
-DJ Rogers,TE,TCU,317,6th-7th round,,,31.8,46.8,21.4,practice_only,33.0,12.8,54.2,mocked_lower,beast,False,False
-Bryan Thomas,EDGE,South Carolina,318,Free Agent,,,9.0,72.8,18.2,practice_only,9.3,3.3,87.4,mocked_lower,beast,False,False
-Jackson Kuwatch,EDGE,Miami (OH),319,7th round,,,7.4,43.5,49.1,out_of_league,6.8,6.1,87.1,mocked_lower,beast,False,False
-Jordan Hudson,WR,SMU,320,6th-7th round,,,10.3,37.3,52.3,out_of_league,73.4,2.7,23.9,mocked_higher,beast,False,False
-Jaylon Guilbeau,CB,Texas,322,7th round-Free,,,1.7,74.5,23.8,practice_only,13.8,3.3,82.9,mocked_lower,beast,False,False
-Anterio Thompson,DL,Washington,323,6th-7th round,,,6.2,47.4,46.3,practice_only,6.9,7.2,85.9,mocked_lower,beast,False,False
-Joey Aguilar,QB,Tennessee,324,7th round-​,,,12.2,49.8,38.1,practice_only,26.6,10.0,63.4,mocked_lower,beast,False,False
-Alan Herron,IOL,Maryland,325,7th round-​,,,6.4,15.2,78.3,out_of_league,77.4,1.8,20.8,mocked_higher,beast,False,False
-Josh Gesky,IOL,Illinois,326,7th round-​,,,8.5,38.5,52.9,out_of_league,11.3,2.9,85.8,mocked_lower,beast,False,False
-Jaren Kanak,TE,Oklahoma,327,6th-7th round,,,3.0,71.5,25.5,practice_only,60.3,9.4,30.3,mocked_higher,beast,False,False
-James Brockermeyer,IOL,Miami (FL),328,7th round-​,,,19.4,58.4,22.1,practice_only,28.3,10.6,61.1,mocked_lower,beast,False,False
-Jaden Dugger,LB,Louisiana-Lafayette,329,7th round,,,26.1,48.6,25.3,practice_only,4.3,2.6,93.0,mocked_lower,beast,False,False
-Riley Mahlman,OT,Wisconsin,330,Free Agent,,,5.6,41.0,53.4,out_of_league,9.7,4.2,86.1,mocked_lower,beast,False,False
-Robert Henry,RB,UTSA,331,Free Agent,,,1.7,52.2,46.2,practice_only,82.3,0.7,17.1,mocked_higher,beast,False,False
-Lake McRee,TE,USC,332,7th round,,,4.4,55.9,39.7,practice_only,46.8,7.4,45.8,mocked_higher,beast,False,False
-Diego Pavia,QB,Vanderbilt,333,7th round-​,,,18.2,60.6,21.2,practice_only,45.3,12.7,42.0,mocked_higher,beast,False,False
-Athan Kaliakmanis,QB,Rutgers,334,7th round-​,,,5.5,56.3,38.2,practice_only,10.3,7.6,82.2,mocked_lower,beast,False,False
-Vinny Anthony,WR,Wisconsin,335,7th round-​,,,3.1,57.5,39.4,practice_only,89.8,0.7,9.5,mocked_higher,beast,False,False
-Micah Pettus,OT,Florida State,336,Free Agent,,,4.2,57.8,38.0,practice_only,3.2,1.5,95.3,mocked_lower,beast,False,False
-Bauer Sharp,TE,LSU,337,7th round,,,1.6,57.3,41.2,practice_only,34.3,5.1,60.6,mocked_lower,beast,False,False
-Wade Woodaz,LB,Clemson,338,6th round,,,28.1,34.8,37.1,out_of_league,29.4,12.4,58.2,mocked_lower,beast,False,False
-Dean Connors,RB,Houston,340,Free Agent,,,8.4,37.8,53.8,out_of_league,6.0,4.2,89.8,mocked_lower,beast,False,False
-Khalil Dinkins,TE,Penn State,341,6th-7th round,,,3.5,79.8,16.7,practice_only,20.5,18.9,60.6,mocked_lower,beast,False,False
-Lance Mason,TE,Wisconsin,342,7th round-​,,,10.0,50.4,39.6,practice_only,4.1,2.2,93.7,mocked_lower,beast,False,False
-Ethan Onianwa,OT,Ohio State,343,Free Agent,,,6.5,49.0,44.6,practice_only,3.4,2.1,94.5,mocked_lower,beast,False,False
-Jalen Stroman,S,Notre Dame,345,Free Agent,,,12.3,65.5,22.3,practice_only,4.8,2.2,93.0,mocked_lower,beast,False,False
-Aidan Hubbard,EDGE,Northwestern,351,6th-7th round,,,8.9,62.6,28.5,practice_only,68.7,7.6,23.7,mocked_higher,beast,False,False
-Miles Scott,S,Illinois,352,Free Agent,,,5.4,48.5,46.1,practice_only,4.3,2.1,93.7,mocked_lower,beast,False,False
-Mark Gronowski,QB,Iowa,353,7th round-​,,,16.4,72.5,11.1,practice_only,29.0,9.6,61.5,mocked_lower,beast,False,False
-Trebor Pena,WR,Penn State,356,Free Agent,,,6.8,69.3,23.9,practice_only,9.3,4.9,85.8,mocked_lower,beast,False,False
-Wesley Bissainthe,LB,Miami (FL),358,Free Agent,,,7.8,72.9,19.3,practice_only,20.4,2.1,77.5,mocked_lower,beast,False,False
-Tristan Leigh,OT,Clemson,363,Free Agent,,,10.4,44.9,44.7,practice_only,5.1,3.9,91.0,mocked_lower,beast,False,False
-Skyler Thomas,S,Oregon State,364,7th round,,,35.8,39.0,25.3,practice_only,26.9,8.7,64.4,mocked_lower,beast,False,False
-Will Pauling,WR,Notre Dame,367,Free Agent,,,6.0,67.4,26.5,practice_only,15.6,4.2,80.2,mocked_lower,beast,False,False
-Delby Lemieux,IOL,Dartmouth,368,Free Agent,5.3 (UDFA with Roster Potential — UDFA),Nick Zakelj,8.4,40.7,50.9,out_of_league,3.0,1.0,96.0,mocked_lower,beast,True,False
-Miles Kitselman,TE,Tennessee,371,7th round-​,,,7.7,57.0,35.3,practice_only,6.2,2.5,91.4,mocked_lower,beast,False,False
-Donaven Mcculley,WR,Michigan,372,Free Agent,,,18.2,64.9,17.0,practice_only,74.8,0.8,24.4,mocked_higher,beast,False,False
-Tyre West,EDGE,Tennessee,373,7th round,,,24.2,52.2,23.6,practice_only,10.4,3.1,86.5,mocked_lower,beast,False,False
-Romello Brinson,WR,SMU,374,Free Agent,,,8.8,54.8,36.4,practice_only,8.1,2.8,89.1,mocked_lower,beast,False,False
-Aaron Hall,DL,Duke,376,Free Agent,,,9.5,67.7,22.8,practice_only,7.2,2.8,90.1,mocked_lower,beast,False,False
-Ahmari Harvey,CB,Georgia Tech,377,7th round-​,,,1.7,65.5,32.8,practice_only,65.0,1.6,33.3,mocked_higher,beast,False,False
-Chris Hilton,WR,LSU,379,Free Agent,,,16.0,48.7,35.3,practice_only,6.4,1.9,91.7,mocked_lower,beast,False,False
-Austin Brown,S,Wisconsin,380,7th round-Free,,,13.2,43.0,43.8,out_of_league,9.3,6.2,84.5,mocked_lower,beast,False,False
-Declan Williams,LB,Incarnate Word,384,7th round,,,12.2,47.1,40.7,practice_only,5.6,6.1,88.4,mocked_lower,beast,False,False
-Brent Austin,CB,California,388,Free Agent,,,24.3,63.5,12.2,practice_only,17.6,8.2,74.2,mocked_lower,beast,False,False
-Zach Durfee,EDGE,Washington,392,7th round-​,,,6.8,41.9,51.3,out_of_league,5.8,5.3,88.9,mocked_lower,beast,False,False
-Namdi Obiazor,LB,TCU,398,7th round-​,,,5.2,61.3,33.5,practice_only,87.7,0.3,12.0,mocked_higher,beast,False,False
-Dillon Wade,IOL,Auburn,399,7th round-​,,,11.9,62.4,25.7,practice_only,39.2,4.2,56.6,mocked_lower,beast,False,False
-Kapena Gushiken,S,Mississippi,400,Free Agent,,,5.1,59.3,35.6,practice_only,5.9,4.4,89.7,mocked_lower,beast,False,False
-Cash Jones,RB,Georgia,401,Free Agent,,,13.2,50.8,35.9,practice_only,15.1,2.8,82.1,mocked_lower,beast,False,False
-Seydou Traore,TE,Mississippi State,409,7th round-​,,,7.9,50.3,41.8,practice_only,5.1,4.1,90.7,mocked_lower,beast,False,False
-Chris Adams,IOL,Memphis,413,Free Agent,,,9.1,41.3,49.5,out_of_league,72.0,0.8,27.2,mocked_higher,beast,False,False
-Jackie Marshall,DL,Baylor,416,7th round,,,16.6,73.2,10.3,practice_only,20.4,18.3,61.3,mocked_lower,beast,False,False
-Cian Slone,EDGE,NC State,417,7th round-​,,,41.2,41.3,17.6,practice_only,36.1,6.9,57.0,mocked_lower,beast,False,False
-Tyreek Chappell,CB,Texas A&M,433,Free Agent,,,11.9,47.0,41.1,practice_only,3.7,1.3,95.0,mocked_lower,beast,False,False
-Gary Smith,DL,UCLA,439,7th round,,,2.8,26.0,71.3,out_of_league,52.3,3.5,44.2,mocked_higher,beast,False,False
-David Blay,DL,Miami (FL),444,Free Agent,,,5.1,74.5,20.4,practice_only,5.2,3.0,91.9,mocked_lower,beast,False,False
-James Neal,IOL,Iowa State,446,Free Agent,,,4.3,53.4,42.4,practice_only,13.9,8.5,77.7,mocked_lower,beast,False,False
-Kolbey Taylor,CB,Vanderbilt,464,Free Agent,,,11.6,63.4,25.0,practice_only,5.1,3.5,91.4,mocked_lower,beast,False,False
-Jaren Kump,IOL,Utah,466,Free Agent,,,6.3,60.4,33.2,practice_only,11.0,3.9,85.1,mocked_lower,beast,False,False
-Jalen Walthall,WR,Incarnate Word,469,7th round-​,,,20.1,53.6,26.3,practice_only,79.7,1.9,18.5,mocked_higher,beast,False,False
-Maverick McIvor,QB,Western Kentucky,474,Free Agent,,,10.3,68.5,21.2,practice_only,14.2,5.5,80.4,mocked_lower,beast,False,False
-Jeadyn Lukus,CB,Clemson,479,Free Agent,,,23.7,45.3,31.0,practice_only,12.7,1.4,85.8,mocked_lower,beast,False,False
-West Weeks,LB,LSU,482,Free Agent,,,9.1,64.8,26.2,practice_only,4.1,1.4,94.5,mocked_lower,beast,False,False
-Jalen McMurray,CB,Tennessee,485,Free Agent,,,9.5,58.9,31.6,practice_only,4.7,2.4,93.0,mocked_lower,beast,False,False
-Dasan McCullough,EDGE,Nebraska,528,Free Agent,,,12.5,58.7,28.9,practice_only,3.2,2.6,94.1,mocked_lower,beast,False,False
-Tywone Malone,DL,Ohio State,604,Free Agent,,,5.3,53.1,41.6,practice_only,5.1,3.7,91.1,mocked_lower,beast,False,False
-Khordae Sydnor,EDGE,Vanderbilt,643,Free Agent,,,8.1,46.9,45.0,practice_only,5.8,6.1,88.1,mocked_lower,beast,False,False
-Barika Kpeenu,RB,North Dakota State,645,Free Agent,,,6.5,71.2,22.4,practice_only,7.3,5.7,87.0,mocked_lower,beast,False,False
-Jordan White,IOL,Vanderbilt,686,Free Agent,,,36.5,43.5,19.9,practice_only,14.1,4.4,81.5,mocked_lower,beast,False,False
-Nick Dawkins,IOL,Penn State,692,Free Agent,,,3.2,62.6,34.1,practice_only,3.3,3.5,93.2,mocked_lower,beast,False,False
+Player Name,Position,College,consensus,beast_grade,br_article_grade,br_pro_comparison,p_real_contract,p_practice_only,p_out_of_league,sc_prediction,p_slide,p_consensus,p_reach,draft_prediction,text_source,has_br,has_pff
+Fernando Mendoza,QB,Indiana,1,1st round,8.6 (Impact Player — 1st Round),Matt Ryan with mobility,80.4,12.8,6.8,real_contract,37.7,58.5,3.8,consensus,beast,True,False
+Arvell Reese,LB,Ohio State,2,1st round,8.5 (Impact Player — 1st Round),Demario Davis with more length,63.4,9.5,27.1,real_contract,31.1,59.3,9.7,consensus,beast,True,False
+David Bailey,EDGE,Texas Tech,3,1st round,8.4 (Year 1 Starter — 1st Round),Jaelan Phillips,55.8,25.6,18.7,real_contract,81.7,10.9,7.4,slide,beast,True,False
+Jeremiyah Love,RB,Notre Dame,4,1st round,9.0 (Pro Bowl Player — 1st Round),Jamaal Charles,84.1,9.5,6.4,real_contract,20.3,75.1,4.7,consensus,beast,True,False
+Francis Mauigoa,OT,Miami (FL),5,1st round,8.0 (Year 1 Starter - 1st Round),Stronger Jermaine Eluemunor,51.6,14.9,33.5,real_contract,79.4,14.8,5.7,slide,beast,True,False
+Sonny Styles,LB,Ohio State,6,1st round,8.4 (Year 1 Starter — 1st Round),Skinny Anthony Barr (NFL version),78.1,7.9,14.0,real_contract,55.7,36.1,8.2,slide,beast,True,False
+Rueben Bain,EDGE,Miami (FL),7,1st round,8.5 (Impact Player — 1st Round),Brandon Graham,78.6,11.9,9.6,real_contract,30.6,64.2,5.1,consensus,beast,True,False
+Carnell Tate,WR,Ohio State,8,1st round,8.15 (Year 1 Starter— 1st Round),DeVonta Smith,61.7,29.9,8.4,real_contract,44.5,51.7,3.7,consensus,beast,True,False
+Caleb Downs,S,Ohio State,9,1st round,9.2 (Pro Bowl Player — 1st Round),Eric Berry,55.6,24.7,19.7,real_contract,26.5,67.6,5.9,consensus,beast,True,False
+Mansoor Delane,CB,LSU,10,1st round,8.2 (Impact Player - 1st Round),Quinyon Mitchell,68.0,21.8,10.2,real_contract,24.8,63.5,11.8,consensus,beast,True,False
+Monroe Freeling,OT,Georgia,11,1st-2nd round,7.6 (Key Contributor — 2nd Round),Anthony Castonzo,64.4,18.5,17.0,real_contract,34.6,59.4,6.0,consensus,beast,True,False
+Spencer Fano,OT,Utah,12,1st round,8.0 (Year 1 Starter - 1st Round),Zach Tom,21.3,26.0,52.7,out_of_league,89.6,8.9,1.5,slide,beast,True,False
+Makai Lemon,WR,USC,13,1st round,8.1 (Year 1 Starter — Late 1st Round),Parker Washington / Amon Ra-St. Brown-style impact player,45.4,41.7,13.0,real_contract,41.7,53.6,4.7,consensus,beast,True,False
+Jermod McCoy,CB,Tennessee,14,1st round,,,40.2,35.1,24.7,real_contract,85.4,10.7,3.9,slide,beast,False,False
+Jordyn Tyson,WR,Arizona State,15,1st-2nd round,8.20 (Year 1 Starter — 1st Round),Amari Cooper,9.3,68.0,22.7,practice_only,44.9,52.9,2.2,consensus,beast,True,False
+Olaivavega Ioane,IOL,Penn State,16,1st round,8.1 (Year 1 Starter - Round 1),Mike Iupati,64.8,24.4,10.9,real_contract,12.8,79.0,8.2,consensus,beast,True,False
+Kenyon Sadiq,TE,Oregon,17,1st-2nd round,8.0 (Impact Player — 1st Round),George Kittle,19.2,61.9,18.9,practice_only,44.0,52.7,3.3,consensus,beast,True,False
+Dillon Thieneman,S,Oregon,18,1st-2nd round,8.0 (Key Contributor - Second Round),Daxton Hill but wants to tackle,44.3,17.1,38.5,real_contract,72.7,15.0,12.2,slide,beast,True,False
+Akheem Mesidor,EDGE,Miami (FL),19,1st-2nd round,7.8 (Key Contributor — 2nd Round),Byron Young (LAR/Tennessee),66.6,21.9,11.6,real_contract,22.8,70.5,6.7,consensus,beast,True,False
+Keldric Faulk,EDGE,Auburn,20,1st-2nd round,8.0 (Year 1 Starter — Late 1st - Early 2nd Round),Carlos Dunlap,45.4,28.5,26.1,real_contract,75.9,14.6,9.4,slide,beast,True,False
+Kadyn Proctor,OT,Alabama,21,1st-2nd round,7.7 (Key Contributor - 2nd Round),Rodger Saffold,36.3,44.8,18.8,practice_only,14.7,80.7,4.6,consensus,beast,True,False
+Omar Cooper,WR,Indiana,22,1st-2nd round,7.95 (Key Contributor — 2nd Round),Shades of DJ Moore,53.9,33.4,12.7,real_contract,81.6,12.7,5.7,slide,beast,True,False
+Emmanuel McNeil-Warren,S,Toledo,23,1st-2nd round,8.0 (Year 1 Starter - Late First Round),Justin Reid,66.1,11.8,22.1,real_contract,39.8,56.1,4.0,consensus,beast,True,False
+Avieon Terrell,CB,Clemson,24,1st-2nd round,8.0 (Year 1 Starter - First Round),DJ Turner,12.3,60.1,27.7,practice_only,56.6,36.0,7.5,slide,beast,True,False
+Caleb Lomu,OT,Utah,25,1st-2nd round,7.5 (Key Contributor - 2nd Round),Walker Little,46.6,24.3,29.1,real_contract,41.5,54.4,4.1,consensus,beast,True,False
+TJ Parker,EDGE,Clemson,26,1st-2nd round,7.9 (Key Contributor — 2nd Round),Less explosive Bradley Chubb,73.7,16.4,9.9,real_contract,31.7,61.7,6.7,consensus,beast,True,False
+Blake Miller,OT,Clemson,27,1st-2nd round,7.7 (Key Contributor — 2nd Round),Colton McKivitz,16.7,29.5,53.8,out_of_league,73.2,21.1,5.8,slide,beast,True,False
+Peter Woods,DL,Clemson,28,1st-2nd round,8.0 (Impact Player — 1st Round),Jeffery Simmons,35.4,43.0,21.5,practice_only,52.9,41.8,5.3,slide,beast,True,False
+Kevin Concepcion,WR,Texas A&M,29,1st-2nd round,8.08 (Year 1 Starter — Late 1st-Early 2nd Round),Emmanuel Sanders,49.4,34.2,16.4,real_contract,42.4,52.4,5.1,consensus,beast,True,False
+Ty Simpson,QB,Alabama,30,2nd round,7.7 (Key Contributor — 2nd Round),An athletic Kirk Cousins,41.5,39.1,19.4,real_contract,30.3,64.4,5.4,consensus,beast,True,False
+Denzel Boston,WR,Washington,31,1st-2nd round,7.85 (Key Contributor — 2nd Round),Michael Pittman,67.1,22.0,10.9,real_contract,87.8,10.0,2.1,slide,beast,True,False
+Kayden McDonald,DL,Ohio State,32,1st-2nd round,7.9 (High-Level Backup/Starter Upside — 3rd Round),Shades of Vince Wilfork,23.9,36.0,40.1,out_of_league,28.7,67.0,4.3,consensus,beast,True,False
+CJ Allen,LB,Georgia,33,2nd round,7.8 (Key Contributor — 2nd Round),Daiyan Henley,35.8,52.7,11.6,practice_only,45.9,33.8,20.3,slide,beast,True,False
+Cashius Howell,EDGE,Texas A&M,34,2nd round,7.8 (Key Contributor — 2nd),Harold Landry III,16.9,60.1,23.1,practice_only,75.9,17.3,6.8,slide,beast,True,False
+Colton Hood,CB,Tennessee,35,1st-2nd round,7.6 (Key Contributor — Second Round),Kamari Lassiter,53.1,36.1,10.8,real_contract,53.3,35.9,10.8,slide,beast,True,False
+Max Iheanachor,OT,Arizona State,36,1st-2nd round,7.4 (High-Level Backup/Starter Upside — 3rd Round),Yosh Nijman,36.1,33.6,30.3,real_contract,20.4,75.5,4.1,consensus,beast,True,False
+Zion Young,EDGE,Missouri,37,1st-2nd round,7.7 (2nd Round — Key Contributor),Tyree Wilson,53.1,10.3,36.6,real_contract,88.9,7.2,3.9,slide,beast,True,False
+Caleb Banks,DL,Florida,38,2nd-3rd round,7.5 (Key Contributor — 2nd Round),Gervon Dexter,39.6,11.5,48.9,out_of_league,80.7,8.8,10.5,slide,beast,True,False
+Brandon Cisse,CB,South Carolina,39,2nd round,7.4 (High-Level Backup/Starter Upside— Third Round),Jaycee Horn,11.9,33.2,54.9,out_of_league,81.0,11.3,7.7,slide,beast,True,False
+Emmanuel Pregnon,IOL,Oregon,40,2nd-3rd round,7.5 (Key Contributor - Round 2),Robert Hunt,18.7,36.7,44.5,out_of_league,78.5,13.1,8.4,slide,beast,True,False
+Chris Johnson,CB,San Diego State,41,1st-2nd round,7.7 (Key Contributor - Second Round),Coby Bryant,33.8,38.1,28.1,practice_only,90.1,7.4,2.5,slide,beast,True,False
+Malachi Lawrence,EDGE,UCF,42,1st-2nd round,,,38.6,18.5,42.8,out_of_league,82.1,14.1,3.7,slide,beast,False,False
+Chase Bisontis,IOL,Texas A&M,43,1st-2nd round,7.5 (Key Contributor — 2nd Round),Mark Glowinski,11.0,27.7,61.2,out_of_league,85.0,10.7,4.3,slide,beast,True,False
+Jadarian Price,RB,Notre Dame,44,2nd-3rd round,,,16.1,49.1,34.8,practice_only,88.0,7.3,4.7,slide,beast,False,False
+Jacob Rodriguez,LB,Texas Tech,45,2nd round,7.3 (High-Level Backup/Starter Upside — 3rd Round),Jack Sanborn,20.4,59.2,20.4,practice_only,46.8,49.5,3.7,consensus,beast,True,False
+Christen Miller,DL,Georgia,47,2nd round,7.6 (Key Contributor — 2nd Round),Kenny Clark,45.0,36.7,18.3,real_contract,32.2,53.3,14.4,consensus,beast,True,False
+Anthony Hill,LB,Texas,49,2nd-3rd round,7.4 (High-Level Backup/Starter Upside — 3rd Round),Kenneth Murray,17.8,33.2,49.1,out_of_league,87.5,4.6,7.8,slide,beast,True,False
+Gabe Jacas,EDGE,Illinois,50,2nd-3rd round,7.6 (Key Contributor — 2nd Round),Jonathan Greenard without the length,12.7,64.1,23.2,practice_only,42.2,53.9,3.9,consensus,beast,True,False
+Jake Golday,LB,Cincinnati,51,2nd-3rd round,7.7 (Key Contributor — 2nd Round),Devin Lloyd,16.7,45.8,37.5,practice_only,77.6,12.3,10.1,slide,beast,True,False
+Chris Bell,WR,Louisville,52,2nd round,7.80 (Key Contributor — 2nd Round),Xavier Legette,54.6,36.6,8.8,real_contract,49.7,43.9,6.4,slide,beast,True,False
+Eli Stowers,TE,Vanderbilt,53,2nd-3rd round,,,46.8,42.0,11.2,real_contract,31.0,59.1,9.8,consensus,beast,False,False
+Chris Brazzell,WR,Tennessee,54,3rd-4th round,7.90 (Key Contributor — 2nd Round),Martavis Bryant,36.0,51.8,12.3,practice_only,54.6,35.3,10.1,slide,beast,True,False
+Dangelo Ponds,CB,Indiana,55,2nd round,7.8 (Key Contributor — 2nd Round),Jason Verrett,52.8,34.7,12.5,real_contract,23.1,65.5,11.4,consensus,beast,True,False
+Germie Bernard,WR,Alabama,56,2nd round,7.11 (High-Level Backup/Starter Upside — 3rd Round),Shades of Jarvis Landry,41.4,45.3,13.3,practice_only,43.0,42.5,14.5,slide,beast,True,False
+AJ Haulcy,S,LSU,57,2nd-3rd round,7.6 (Key Contributor -Second Round),Xavier Watts,44.0,43.4,12.6,real_contract,15.5,75.9,8.6,consensus,beast,True,False
+Keylan Rutledge,IOL,Georgia Tech,58,2nd-3rd round,7.6 (Key Contributor - 2nd Round),Dylan Fairchild,15.5,60.2,24.2,practice_only,36.1,54.1,9.9,consensus,beast,True,False
+Derrick Moore,EDGE,Michigan,59,3rd round,7.4 (High-Level Backup/Starter Upside — 3rd Round),Boye Mafe,68.7,6.5,24.8,real_contract,80.0,10.5,9.5,slide,beast,True,False
+Gennings Dunker,OT,Iowa,60,3rd round,7.1 (High-Level Backup/Starter Upside - Round 3),Mason McCormick,25.6,33.7,40.7,out_of_league,39.1,47.2,13.7,consensus,beast,True,False
+Keionte Scott,CB,Miami (FL),61,2nd-3rd round,6.8 (Role Player/Part-Time Contributor - Fourth Round),Alontae Taylor,44.1,28.5,27.3,real_contract,67.6,16.9,15.5,slide,beast,True,False
+Josiah Trotter,LB,Missouri,62,3rd round,,,18.7,58.7,22.6,practice_only,37.8,44.9,17.2,consensus,beast,False,False
+Treydan Stukes,CB,Arizona,63,2nd-3rd round,7.4 (High-Level Backup/Starter Upside — 3rd Round),Shades of Devon Witherspoon,10.6,48.8,40.6,practice_only,65.9,25.0,9.1,slide,beast,True,False
+Zachariah Branch,WR,Georgia,64,3rd round,7.66 (Key Contributor — 2nd Round),Zay Flowers,1.8,82.1,16.0,practice_only,89.7,4.7,5.6,slide,beast,True,False
+Caleb Tiernan,OT,Northwestern,65,2nd-3rd round,7.1 (High-Level Backup/Starter Upside - Round 3),Doug Free,63.9,16.6,19.6,real_contract,24.2,61.9,13.9,consensus,beast,True,False
+Domonique Orange,DL,Iowa State,66,2nd-3rd round,7.3 (High-Level Backup/Starter Upside — 3rd Round),T.J. Slaton,51.9,23.9,24.1,real_contract,21.0,70.1,8.9,consensus,beast,True,False
+Keith Abney,CB,Arizona State,67,2nd-3rd round,7.1 (High-Level Backup/Starter Upside — 3rd Round),Michael Carter II,10.1,82.7,7.2,practice_only,38.8,48.5,12.7,consensus,beast,True,False
+Dani Dennis-Sutton,EDGE,Penn State,68,2nd-3rd round,7.3 (High-Level Backup/Starter Upside — 3rd Round),Dorance Armstrong,17.1,42.3,40.5,practice_only,60.9,30.5,8.6,slide,beast,True,False
+Mike Washington,RB,Arkansas,69,3rd round,7.71 (Key Contributor — 2nd Round),Chris Carson,22.4,18.3,59.3,out_of_league,90.3,3.0,6.7,slide,beast,True,False
+Malachi Fields,WR,Notre Dame,70,2nd-3rd round,7.7 (Key Contributor — 2nd Round),Shades of Brandon Marshall,17.5,29.3,53.2,out_of_league,90.5,6.0,3.5,slide,beast,True,False
+Antonio Williams,WR,Clemson,71,2nd-3rd round,,,18.1,67.3,14.7,practice_only,32.3,60.7,7.0,consensus,beast,False,False
+Kyle Louis,LB,Pittsburgh,72,3rd round,,,10.2,67.0,22.8,practice_only,46.2,33.5,20.3,slide,beast,False,False
+Davison Igbinosun,CB,Ohio State,73,2nd-3rd round,7.5 (2nd Round - Key Contributor),Charvarius Ward,60.8,20.7,18.5,real_contract,73.2,17.9,8.9,slide,beast,True,False
+Gracen Halton,DL,Oklahoma,74,4th round,6.8 (Role Player/Part-Time Contributor — 4th Round),Colby Wooden,30.2,60.7,9.1,practice_only,16.8,68.0,15.2,consensus,beast,True,False
+Max Klare,TE,Ohio State,75,2nd-3rd round,7.7 (Key Contributor - 2nd Round),Mark Andrews,36.7,33.1,30.2,real_contract,37.2,56.1,6.7,consensus,beast,True,False
+Connor Lew,IOL,Auburn,76,3rd-4th round,7.0 (High-Level Backup/Starter Upside - 3rd Round),Matt Hennessy,25.8,45.5,28.7,practice_only,24.9,62.1,13.0,consensus,beast,True,False
+Ted Hurst,WR,Georgia State,77,3rd round,,,41.0,47.4,11.6,practice_only,45.4,43.1,11.5,slide,beast,False,False
+Romello Height,EDGE,Texas Tech,78,3rd round,7.2 (3rd Round — High-Level Backup/Starter Upside),Nick Herbig,41.9,19.2,38.9,real_contract,85.2,3.2,11.6,slide,beast,True,False
+Elijah Sarratt,WR,Indiana,79,2nd-3rd round,7.4 (High-Level Backup/Starter Upside — 3rd Round),Shades of Keenan Allen,17.4,72.9,9.7,practice_only,56.4,38.1,5.4,slide,beast,True,False
+Sam Hecht,IOL,Kansas State,80,3rd-4th round,7.2 (High-Level Backup/Starter Upside — 3rd Round),Tyler Biadasz,27.8,40.1,32.1,practice_only,78.2,10.8,11.0,slide,beast,True,False
+Skyler Bell,WR,UConn,81,4th round,7.5 (Key Contributor— 2nd Round),Jayden Reed,27.0,57.2,15.8,practice_only,92.4,1.6,6.0,slide,beast,True,False
+Joshua Josephs,EDGE,Tennessee,82,4th-5th round,7.0 (High-Level Backup/Starter Upside — 3rd Round),Uchenna Nwosu,59.2,20.2,20.6,real_contract,36.1,34.7,29.2,slide,beast,True,False
+Garrett Nussmeier,QB,LSU,83,3rd round,7.05 (High-Level Backup/Starter Upside— 3rd Round),Brock Purdy,55.8,32.0,12.2,real_contract,20.5,72.0,7.5,consensus,beast,True,False
+Kamari Ramsey,S,USC,84,4th round,7.4 (High-Level Backup/Starter Upside - Third Round),Ashton Davis,29.9,39.1,31.1,practice_only,67.5,5.1,27.4,slide,beast,True,False
+Jaishawn Barham,LB,Michigan,85,3rd-4th round,,,42.1,15.1,42.8,out_of_league,86.5,2.2,11.3,slide,beast,False,False
+Darrell Jackson,DL,Florida State,86,4th round,7.2 (High-Level Backup/Starter Upside — 3rd Round),Dalvin Tomlinson,65.5,14.9,19.6,real_contract,48.3,26.9,24.8,slide,beast,True,False
+Oscar Delp,TE,Georgia,87,3rd round,7.1 (High-Level Backup/Starter Upside — 3rd round),Robert Tonyan,8.5,66.2,25.3,practice_only,85.1,5.3,9.6,slide,beast,True,False
+Zakee Wheatley,S,Penn State,88,3rd round,7.7 (Key Contributor - 2nd Round),Kyle Hamilton,24.7,26.1,49.2,out_of_league,80.9,9.5,9.7,slide,beast,True,False
+Bud Clark,S,TCU,89,3rd round,7.4 (High-Level Backup/Starter Upside- 3rd Round),Calen Bullock,44.4,28.4,27.1,real_contract,84.8,4.7,10.5,slide,beast,True,False
+Bryce Lance,WR,North Dakota State,90,3rd-4th round,,,38.9,43.3,17.7,practice_only,78.1,12.7,9.1,slide,beast,False,False
+Keyron Crawford,EDGE,Auburn,91,2nd-3rd round,,,55.5,20.2,24.3,real_contract,26.5,63.5,10.0,consensus,beast,False,False
+Julian Neal,CB,Arkansas,92,4th round,7.2 (High-Level Backup/Starter Upside — 3rd Round),Riq Woolen,8.4,54.7,36.9,practice_only,81.9,4.1,14.0,slide,beast,True,False
+Malik Muhammad,CB,Texas,93,3rd round,7.7 (Key Contributor- 2nd round),Nate Wiggins,60.4,26.1,13.5,real_contract,82.7,7.8,9.5,slide,beast,True,False
+Deion Burks,WR,Oklahoma,94,3rd-4th round,7.55 (Key Contributor — 2nd Round),Sterling Shepard,2.7,81.6,15.7,practice_only,55.8,33.4,10.8,slide,beast,True,False
+Genesis Smith,S,Arizona,95,4th round,7.3 (High-Level Backup/Starter Upside — 3rd Round),Shades of Jaquan Brisker,56.4,29.3,14.3,real_contract,46.9,22.6,30.5,slide,beast,True,False
+Jalon Kilgore,S,South Carolina,96,3rd round,7.5,Jamel Dean,30.4,30.2,39.4,out_of_league,59.8,13.2,27.0,slide,beast,True,False
+Jalen Farmer,IOL,Kentucky,97,3rd-4th round,6.8 (Role Player/Part-Time Contributor — 4th Round),Chris Paul,53.9,12.0,34.1,real_contract,83.1,4.6,12.3,slide,beast,True,False
+Devin Moore,CB,Florida,98,4th round,,,37.8,16.6,45.6,out_of_league,54.8,28.4,16.9,slide,beast,False,False
+Dametrious Crownover,OT,Texas A&M,99,4th-5th round,6.3 (Developmental Prospect - Round 5),Kiran Amegadjie,51.9,27.0,21.1,real_contract,35.0,34.4,30.6,slide,beast,True,False
+Logan Jones,IOL,Iowa,100,3rd-4th round,6.5 (Role Player/Part-time Contributor - 4th Round),Diet Coke Tyler Linderbaum,0.1,95.1,4.7,practice_only,94.0,5.6,0.4,slide,beast,True,False
+Chandler Rivers,CB,Duke,101,3rd-4th round,7.8 (Second round - Key contributor),Skinny Trent McDuffie,11.8,55.3,32.9,practice_only,62.2,18.1,19.7,slide,beast,True,False
+Jonah Coleman,RB,Washington,102,4th-5th round,6.7 (Role Player/Part-Time Contributor — 4th Round),Mike Davis,5.5,77.7,16.8,practice_only,52.4,24.6,23.0,slide,beast,True,False
+Jake Slaughter,IOL,Florida,103,3rd-4th round,7.0 (High-Level Backup/Starter Upside — 3rd Round),Chase Roullier,35.5,46.9,17.6,practice_only,40.8,46.4,12.8,consensus,beast,True,False
+Kaleb Proctor,DL,Southeastern Louisiana,104,5th round,,,18.7,61.7,19.7,practice_only,19.7,24.4,55.8,reach,beast,False,False
+LT Overton,EDGE,Alabama,105,4th round,7.1 (High-Level Backup/Starter Upside — 3rd Round),Pre-injuries Mario Edwards Jr.,40.6,37.4,22.1,real_contract,47.2,16.3,36.5,slide,beast,True,False
+Sam Roush,TE,Stanford,106,3rd-4th round,7.2 (High-Level Backup/Starter Upside - Third Round),Tucker Kraft,11.5,71.8,16.7,practice_only,41.2,49.7,9.2,consensus,beast,True,False
+Emmett Johnson,RB,Nebraska,107,3rd-4th round,7.37 (High-Level Backup/Starter Upside — 3rd Round),Jashaun Corbin,25.0,55.4,19.6,practice_only,60.8,28.9,10.2,slide,beast,True,False
+Chris McClellan,DL,Missouri,108,3rd-4th round,,,20.8,72.5,6.8,practice_only,21.6,44.9,33.6,consensus,beast,False,False
+JaKobi Lane,WR,USC,109,5th round,7.0 (High-Level Backup/Starter Upside — 3rd Round),Shades of Corey Davis,33.9,44.3,21.8,practice_only,45.7,21.3,33.0,slide,beast,True,False
+Will Lee,CB,Texas A&M,110,5th round,6.9 (Role Player/Part-Time Contributor — Fourth Round),Carrington Valentine,26.9,41.0,32.1,practice_only,63.2,6.5,30.3,slide,beast,True,False
+Deontae Lawson,LB,Alabama,111,6th-7th round,7.1 (Key Contributor — 2nd Round),Shaq Thompson,26.7,53.5,19.9,practice_only,13.8,23.5,62.8,reach,beast,True,False
+Daylen Everette,CB,Georgia,112,3rd-4th round,7.3 (High-Level Backup/Starter Upside — 3rd Round),Deonte Banks,42.0,44.1,13.9,practice_only,53.4,27.1,19.5,slide,beast,True,False
+Cole Payton,QB,North Dakota State,113,4th round,,,72.7,17.0,10.3,real_contract,30.4,45.1,24.5,consensus,beast,False,False
+Brian Parker,OT,Duke,114,4th round,7.0 (High-Level Backup/Starter Upside - Round 3),Ryan Bates,17.8,51.2,31.1,practice_only,35.4,44.4,20.2,consensus,beast,True,False
+Brenen Thompson,WR,Mississippi State,115,3rd round,6.88 (Role Player/Part-Time Contributor — 4th Round),Shades of Tank Dell,18.7,69.5,11.8,practice_only,47.7,40.9,11.5,slide,beast,True,False
+Justin Joly,TE,NC State,116,3rd-4th round,7.1 (High-Level Backup/Starter Upside - Third round),Isaiah Likely,42.6,48.6,8.8,practice_only,16.6,70.5,12.9,consensus,beast,True,False
+Drew Allar,QB,Penn State,117,3rd-4th round,7.09 (High-Level Backup/Starter Upside — 3rd Round),Daniel Jones with Joe Flacco's arm talent,63.1,26.0,10.9,real_contract,53.2,32.8,13.9,slide,beast,True,False
+Michael Trigg,TE,Baylor,118,5th-6th round,7.4 (Third Round-High-Level Backup/Starter Upside),Evan Engram,37.1,38.8,24.2,practice_only,13.4,28.4,58.2,reach,beast,True,False
+Markel Bell,OT,Miami (FL),119,3rd-4th round,7.3 (High-Level Backup/Starter Upside - Round 3),King Dunlap,67.0,12.1,20.9,real_contract,50.3,37.2,12.6,slide,beast,True,False
+Jude Bowry,OT,Boston College,120,4th-5th round,7.0 (High-Level Backup/Starter Upside - 3rd Round),Austin Jackson,19.3,48.7,32.0,practice_only,35.3,26.6,38.0,reach,beast,True,False
+Dontay Corleone,DL,Cincinnati,121,7th round-Free,6.6 (Role Player/Part-Time Contributor — 4th Round),Andrew Billings,24.9,63.0,12.2,practice_only,11.2,10.0,78.8,reach,beast,True,False
+Zxavian Harris,DL,Mississippi,122,Free Agent,6.1 (Developmental Prospect — 5th Round),Eyioma Uwazurike,15.5,46.1,38.3,practice_only,12.1,6.5,81.3,reach,beast,True,False
+DeZhaun Stribling,WR,Mississippi,123,2nd-3rd round,7.4 (High-Level Backup/Starter Upside — Third Round),Shades of Romeo Doubs,38.9,52.6,8.6,practice_only,31.1,56.5,12.4,consensus,beast,True,False
+Keyshaun Elliott,LB,Arizona State,124,3rd round,,,8.5,37.1,54.4,out_of_league,85.4,2.3,12.3,slide,beast,False,False
+Kage Casey,OT,Boise State,125,4th-5th round,6.8 (Role Player/Part-Time Contributor - 4th Round),Wyatt Milum,26.4,43.3,30.2,practice_only,76.4,9.8,13.8,slide,beast,True,False
+Kaleb Elarms-Orr,LB,TCU,126,3rd-4th round,,,9.1,50.1,40.8,practice_only,81.1,4.9,14.0,slide,beast,False,False
+Carson Beck,QB,Miami (FL),127,4th-5th round,6.97 (Role Player/Part-Time Contributor — 4th Round),Kenny Pickett,51.1,39.0,9.8,real_contract,55.0,34.2,10.8,slide,beast,True,False
+VJ Payne,S,Kansas State,129,4th-5th round,,,19.5,21.1,59.4,out_of_league,59.3,3.9,36.8,slide,beast,False,False
+Tacario Davis,CB,Washington,130,4th round,,,32.2,23.6,44.2,out_of_league,73.0,4.8,22.1,slide,beast,False,False
+Harold Perkins,LB,LSU,131,5th-6th round,6.6 (Role Player/Part-Time Contributor — 4th Round),Christian Elliss,2.1,14.5,83.4,out_of_league,85.3,1.6,13.1,slide,beast,True,False
+Zane Durant,DL,Penn State,132,5th-6th round,6.9 (Role Player/Part-Time Contributor — 4th Round),Tyler Davis,14.3,69.0,16.6,practice_only,40.4,19.9,39.8,slide,beast,True,False
+DeMonte Capehart,DL,Clemson,133,5th-6th round,,,23.4,53.6,23.0,practice_only,25.5,16.4,58.2,reach,beast,False,False
+Rayshaun Benny,DL,Michigan,134,4th-5th round,6.5 (Developmental Prospect — 5th Round),Maurice Hurst (NFL version),52.0,35.2,12.7,real_contract,17.9,70.3,11.8,consensus,beast,True,False
+Anthony Lucas,EDGE,USC,135,5th-6th round,6.4 (Developmental Prospect — 5th Round),Chauncey Golston,57.6,13.5,28.9,real_contract,33.5,23.6,42.9,reach,beast,True,False
+Billy Schrauth,IOL,Notre Dame,136,3rd-4th round,,,61.6,26.2,12.2,real_contract,13.5,66.6,19.9,consensus,beast,False,False
+Nick Singleton,RB,Penn State,137,5th round,6.45 (Developmental Prospect — 5th Round),David Johnson,32.6,55.8,11.6,practice_only,38.1,9.0,53.0,reach,beast,True,False
+Trey Zuhn,OT,Texas A&M,138,3rd-4th round,6.5 (Role Player/Part-Time Contributor — 4th Round),Tom Compton,9.5,35.0,55.5,out_of_league,77.0,12.9,10.2,slide,beast,True,False
+Ephesians Prysock,CB,Washington,139,4th-5th round,,,60.4,24.6,14.9,real_contract,80.3,5.2,14.6,slide,beast,False,False
+Hezekiah Masses,CB,California,140,6th round,,,36.4,41.2,22.4,practice_only,42.3,23.1,34.7,slide,beast,False,False
+Eli Raridon,TE,Notre Dame,141,4th round,7.2 (Third round - High-Level Backup/Starter Upside),Kyle Rudolph-lite,21.1,41.7,37.2,practice_only,68.6,17.9,13.5,slide,beast,True,False
+Tim Keenan,DL,Alabama,142,6th-7th round,6.7 (Role Player/Part-Time Contributor — 4th Round),Davon Godchaux,5.5,46.5,47.9,out_of_league,65.2,2.2,32.5,slide,beast,True,False
+Bryce Boettcher,LB,Oregon,143,4th round,6.4 (Developmental Prospect — 5th Round),Cole Holcomb,6.6,68.9,24.5,practice_only,53.7,24.5,21.8,slide,beast,True,False
+Isaiah World,OT,Oregon,144,5th-6th round,6.2 (Developmental Prospect - Round 5),Ja'Wuan James,50.2,30.0,19.8,real_contract,49.4,28.5,22.1,slide,beast,True,False
+Matt Gulbin,IOL,Michigan State,145,5th round,,,12.3,53.3,34.4,practice_only,67.8,6.1,26.1,slide,beast,False,False
+Taylen Green,QB,Arkansas,146,4th-5th round,6.80 (Role Player/Part-Time Contributor — 4th Round),Shades of Terrelle Pryor,85.5,10.2,4.4,real_contract,12.1,57.1,30.8,consensus,beast,True,False
+Charles Demmings,CB,Stephen F. Austin,147,5th round,,,24.9,46.7,28.4,practice_only,76.8,3.8,19.4,slide,beast,False,False
+Kaytron Allen,RB,Penn State,148,4th round,7.51 (Key Contributor — 2nd Round),Rhamondre Stevenson,30.8,58.3,10.9,practice_only,48.3,13.4,38.4,slide,beast,True,False
+Taurean York,LB,Texas A&M,149,6th-7th round,7.0 (High-Level Backup/Starter Upside — 3rd Round),Shades of Zach Thomas,3.7,47.5,48.9,out_of_league,51.6,8.7,39.7,slide,beast,True,False
+Jager Burton,IOL,Kentucky,150,5th-6th round,,,9.0,65.4,25.7,practice_only,55.2,7.9,36.9,slide,beast,False,False
+Jeff Caldwell,WR,Cincinnati,151,5th-6th round,,,18.4,58.7,22.9,practice_only,75.0,1.2,23.8,slide,beast,False,False
+Max Llewellyn,EDGE,Iowa,152,4th round,,,8.5,59.5,32.0,practice_only,7.4,83.3,9.3,consensus,beast,False,False
+Joe Royer,TE,Cincinnati,153,4th-5th round,6.6 (4th round - Role Player/Part-Time Contributor),Noah Gray,53.2,41.2,5.6,real_contract,50.5,33.3,16.2,slide,beast,True,False
+Parker Brailsford,IOL,Alabama,154,5th round,6.7 (Role Player/Part-Time Contributor - Round 4),Coleman Shelton,5.9,62.7,31.4,practice_only,34.9,30.7,34.4,slide,beast,True,False
+Tyler Onyedim,DL,Texas A&M,155,3rd round,,,14.3,50.3,35.4,practice_only,58.1,27.2,14.7,slide,beast,False,False
+Beau Stephens,IOL,Iowa,156,4th-5th round,6.9 (Role Player/Part-Time Contributor — 4th Round),Jarrett Patterson,28.3,16.5,55.2,out_of_league,75.5,9.3,15.3,slide,beast,True,False
+Drew Shelton,OT,Penn State,157,5th round,6.2 (Developmental Prospect - Round 5),Geron Christian,24.0,32.6,43.4,out_of_league,64.6,3.1,32.3,slide,beast,True,False
+Jadon Canady,CB,Oregon,158,4th-5th round,7.0 (High-Level Backup/Starter Upside — Third Round),Jourdan Lewis,28.7,56.3,15.0,practice_only,37.1,21.7,41.2,reach,beast,True,False
+Travis Burke,OT,Memphis,159,3rd round,,,26.6,28.3,45.2,out_of_league,66.0,8.8,25.2,slide,beast,False,False
+TJ Hall,CB,Iowa,160,6th round,,,9.5,55.2,35.3,practice_only,64.9,2.5,32.6,slide,beast,False,False
+Josh Cameron,WR,Baylor,161,6th round,7.0 (High-Level Backup/Starter Upside — 3rd Round),A Quicker Hakeem Nicks,37.7,54.5,7.7,practice_only,18.9,7.8,73.4,reach,beast,True,False
+Keagen Trost,IOL,Missouri,162,5th round,6.2 (Developmental Prospect — 5th Round),Larry Borom,8.4,46.8,44.8,practice_only,71.4,6.7,22.0,slide,beast,True,False
+Caden Curry,EDGE,Ohio State,163,4th-5th round,,,9.3,73.9,16.8,practice_only,4.3,89.3,6.4,consensus,beast,False,False
+Adam Randall,RB,Clemson,164,7th round-​,6.0 (Developmental Prospect — 5th Round),Kalel Mullings,1.4,39.8,58.8,out_of_league,66.4,1.8,31.8,slide,beast,True,False
+Demond Claiborne,RB,Wake Forest,165,4th-5th round,,,26.1,62.1,11.9,practice_only,48.1,16.7,35.2,slide,beast,False,False
+Diego Pounds,OT,Mississippi,166,4th round,,,20.9,29.3,49.8,out_of_league,74.8,6.8,18.4,slide,beast,False,False
+Kevin Coleman,WR,Missouri,167,5th-6th round,,,10.2,76.6,13.2,practice_only,50.9,11.0,38.1,slide,beast,False,False
+Jack Endries,TE,Texas,168,4th-5th round,7.0 (High-Level Backup/Starter Upside - 3rd Round),Souped-up Dalton Schultz,9.9,62.2,27.9,practice_only,70.6,11.3,18.1,slide,beast,True,False
+Jimmy Rolder,LB,Michigan,169,4th round,,,19.8,30.4,49.8,out_of_league,83.7,3.8,12.5,slide,beast,False,False
+Nadame Tucker,EDGE,Western Michigan,170,6th-7th round,,,5.7,72.7,21.6,practice_only,32.0,6.9,61.1,reach,beast,False,False
+Marlin Klein,TE,Michigan,171,4th round,,,31.0,30.7,38.3,out_of_league,81.3,3.0,15.7,slide,beast,False,False
+Nate Boerkircher,TE,Texas A&M,172,4th round,,,15.3,57.7,27.1,practice_only,56.4,19.1,24.5,slide,beast,False,False
+Jack Kelly,LB,BYU,173,5th round,,,14.2,43.0,42.8,practice_only,83.1,2.7,14.3,slide,beast,False,False
+Landon Robinson,DL,Navy,174,6th round,,,12.0,26.0,62.0,out_of_league,10.6,11.7,77.7,reach,beast,False,False
+Nick Barrett,DL,South Carolina,175,5th round,,,3.3,70.5,26.2,practice_only,16.1,60.3,23.7,consensus,beast,False,False
+Aiden Fisher,LB,Indiana,176,5th round,6.2 (Developmental Prospect — 5th Round),Tommy Eichenberg,15.2,63.3,21.5,practice_only,32.3,28.5,39.2,reach,beast,True,False
+Febechi Nwaiwu,IOL,Oklahoma,177,4th round,,,14.9,55.0,30.2,practice_only,31.1,50.8,18.1,consensus,beast,False,False
+Jaydn Ott,RB,Oklahoma,178,7th round-​,,,19.0,44.7,36.3,practice_only,16.4,10.4,73.2,reach,beast,False,False
+Jeremiah Wright,IOL,Auburn,179,5th-6th round,6.3 (Developmental Prospect — 5th Round),Anthony Belton,46.5,37.9,15.7,real_contract,22.4,17.1,60.4,reach,beast,True,False
+JC Davis,OT,Illinois,180,6th-7th round,5.9 (Backup/Draftable — 6th Round),Trent Scott,43.5,26.4,30.1,real_contract,26.1,12.6,61.3,reach,beast,True,False
+Kaelon Black,RB,Indiana,181,5th-6th round,5.9 (Backup/Draftable — 5th Round),Kyle Monangai,47.0,36.3,16.6,real_contract,38.3,20.7,41.1,reach,beast,True,False
+Kendrick Law,WR,Kentucky,182,4th-5th round,,,3.4,75.5,21.1,practice_only,73.2,8.7,18.1,slide,beast,False,False
+Michael Taaffe,S,Texas,183,5th round,6.5 (Role Player/Part-Time Contributor — 4th Round),Julian Blackmon,32.9,52.6,14.4,practice_only,20.7,26.9,52.4,reach,beast,True,False
+Jakobe Thomas,S,Miami (FL),184,4th-5th round,7.3 (High-Level Backup/Starter Upside — Third Round),Minkah Fitzpatrick-lite,51.0,36.5,12.6,real_contract,71.6,6.3,22.1,slide,beast,True,False
+Dallen Bentley,TE,Utah,185,4th-5th round,,,13.6,60.6,25.8,practice_only,63.5,11.0,25.4,slide,beast,False,False
+George Gumbs,EDGE,Florida,186,5th round,,,8.1,20.0,71.8,out_of_league,74.9,3.3,21.8,slide,beast,False,False
+Seth McGowan,RB,Kentucky,187,6th-7th round,,,38.4,38.5,23.2,practice_only,33.6,8.6,57.7,reach,beast,False,False
+Will Kacmarek,TE,Ohio State,188,4th round,,,10.1,49.9,40.0,practice_only,63.4,18.4,18.2,slide,beast,False,False
+Reggie Virgil,WR,Texas Tech,190,5th round,,,36.6,35.8,27.6,real_contract,81.1,2.6,16.3,slide,beast,False,False
+Cade Klubnik,QB,Clemson,191,5th-6th round,6.0 (Role Player/Part-Time Contributor — 4th Round),Matt Corrall,40.7,33.4,25.9,real_contract,48.2,23.8,28.0,slide,beast,True,False
+Mikail Kamara,EDGE,Indiana,192,7th round,,,26.6,50.4,22.9,practice_only,38.7,10.1,51.3,reach,beast,False,False
+Trey Moore,EDGE,Texas,193,5th-6th round,,,43.2,44.7,12.2,practice_only,28.0,47.1,24.9,consensus,beast,False,False
+Pat Coogan,IOL,Indiana,194,6th-7th round,5.9 (Backup/Draftable — 6th Round),Will Clapp,9.3,55.1,35.7,practice_only,67.2,4.1,28.6,slide,beast,True,False
+Albert Regis,DL,Texas A&M,195,4th-5th round,,,5.2,61.8,33.0,practice_only,68.0,18.1,13.9,slide,beast,False,False
+Roman Hemby,RB,Indiana,196,7th round,6.3 (Developmental Prospect — 5th Round),Shades of Rico Dowdle,11.4,67.6,21.0,practice_only,30.5,9.2,60.3,reach,beast,True,False
+Justin Jefferson,LB,Alabama,197,5th-6th round,6.5 (Developmental Prospect – 5th Round),Jamien Sherwood,32.7,58.2,9.1,practice_only,17.5,36.4,46.1,reach,beast,True,False
+Anez Cooper,IOL,Miami (FL),198,5th-6th round,6.5 (Role Player/Part-Time Contributor — 4th Round),Quinton Spain,52.2,33.3,14.5,real_contract,29.3,19.3,51.4,reach,beast,True,False
+Armaj Reed-Adams,IOL,Texas A&M,199,6th-7th round,,,37.9,36.3,25.8,real_contract,33.0,7.8,59.2,reach,beast,False,False
+Tyreak Sapp,EDGE,Florida,200,6th round,6.8 (Role Player/Part-Time Contributor — 4th Round),Sawed-off Michael Clemons,2.0,85.3,12.7,practice_only,41.5,23.6,34.9,slide,beast,True,False
+Domani Jackson,CB,Alabama,201,6th-7th round,6.8 (Role Player/Part-Time Contributor - Fourth Round),Greedy Williams,2.5,63.1,34.4,practice_only,34.4,18.6,47.0,reach,beast,True,False
+Riley Nowakowski,TE,Indiana,202,5th round,6.2 (Developmental Prospect - Fifth Round),Connor Heyward,13.8,54.4,31.8,practice_only,28.9,29.9,41.1,reach,beast,True,False
+Logan Taylor,IOL,Boston College,203,4th round,6.7 (Role Player/Part-Time Contributor - Round 4),Brandon Linder,41.7,26.8,31.5,real_contract,70.3,8.6,21.1,slide,beast,True,False
+LeVeon Moss,RB,Texas A&M,204,6th round,6.8 (Role Player/Part-Time Contributor — 4th round),Less-explosive Josh Jacobs,40.0,53.6,6.5,practice_only,19.5,11.1,69.4,reach,beast,True,False
+Cyrus Allen,WR,Cincinnati,205,5th-6th round,,,11.4,52.4,36.2,practice_only,19.9,14.3,65.8,reach,beast,False,False
+Thaddeus Dixon,CB,North Carolina,206,5th-6th round,,,41.2,47.2,11.6,practice_only,23.7,10.7,65.6,reach,beast,False,False
+Red Murdock,LB,Buffalo,207,4th-5th round,,,24.0,62.7,13.3,practice_only,42.5,25.9,31.6,slide,beast,False,False
+Cameron Ball,DL,Arkansas,208,5th round,,,11.2,50.4,38.5,practice_only,50.2,11.2,38.6,slide,beast,False,False
+Bishop Fitzgerald,S,USC,209,6th round,,,19.8,51.7,28.4,practice_only,52.1,2.0,45.9,slide,beast,False,False
+Mason Reiger,EDGE,Wisconsin,210,5th-6th round,,,26.9,34.9,38.2,out_of_league,74.6,4.5,20.9,slide,beast,False,False
+Kaden Wetjen,WR,Iowa,211,6th round,,,16.9,77.8,5.3,practice_only,33.2,10.6,56.2,reach,beast,False,False
+JMari Taylor,RB,Virginia,212,6th round,,,31.4,54.1,14.5,practice_only,32.4,12.6,55.0,reach,beast,False,False
+Matthew Hibner,TE,SMU,213,6th round,,,4.6,71.1,24.3,practice_only,52.6,8.0,39.4,slide,beast,False,False
+Lander Barton,LB,Utah,214,7th round-​,6.7 (Role Player/Part-Time Contributor — 4th Round),Justin Strnad,24.6,39.1,36.3,practice_only,32.4,0.7,66.8,reach,beast,True,False
+Aamil Wagner,OT,Notre Dame,215,7th round,,,12.0,42.5,45.5,out_of_league,42.8,12.9,44.2,reach,beast,False,False
+Robert Spears-Jennings,S,Oklahoma,216,5th round,,,31.9,28.1,40.0,out_of_league,61.8,3.8,34.4,slide,beast,False,False
+CJ Daniels,WR,Miami (FL),218,Free Agent,,,21.4,48.5,30.1,practice_only,24.2,5.4,70.4,reach,beast,False,False
+Louis Moore,S,Indiana,219,6th-7th round,7.1 (High-Level Backup/Starter Upside - Third Round),Geno Stone,19.6,51.3,29.1,practice_only,64.3,3.6,32.1,slide,beast,True,False
+Tanner Koziol,TE,Houston,220,6th round,6.5 (Role Player/Part-Time Contributor — 4th Round),Nuanced Ryan Griffin,20.5,68.8,10.7,practice_only,31.2,20.0,48.8,reach,beast,True,False
+Wesley Williams,DL,Duke,221,4th-5th round,,,14.7,59.9,25.4,practice_only,5.6,85.5,8.9,consensus,beast,False,False
+Vincent Anthony,EDGE,Duke,222,7th round-​,,,16.6,45.5,37.8,practice_only,24.4,22.3,53.2,reach,beast,False,False
+Eric Gentry,LB,USC,223,Free Agent,,,16.5,58.1,25.4,practice_only,16.3,7.4,76.3,reach,beast,False,False
+Eric McAlister,WR,TCU,225,Free Agent,,,11.2,78.5,10.3,practice_only,25.0,4.1,70.9,reach,beast,False,False
+Caleb Douglas,WR,Texas Tech,226,6th-7th round,,,37.2,51.5,11.2,practice_only,34.7,13.4,51.9,reach,beast,False,False
+Carver Willis,OT,Washington,228,6th round,6.7 (Role Player/Part-Time Contributor — 4th Round),Robert Hainsey,17.7,60.4,21.9,practice_only,29.8,20.2,50.0,reach,beast,True,False
+Bryson Eason,DL,Tennessee,229,6th round,,,10.2,55.9,33.9,practice_only,14.2,26.6,59.2,reach,beast,False,False
+Lorenzo Styles,CB,Ohio State,230,7th round,,,34.2,28.5,37.3,out_of_league,45.2,2.0,52.8,reach,beast,False,False
+Eli Heidenreich,WR,Navy,231,5th round,,,4.7,83.4,11.9,practice_only,63.4,7.6,29.0,slide,beast,False,False
+Brandon Cleveland,DL,NC State,232,6th round,,,21.0,62.8,16.2,practice_only,13.8,32.6,53.6,reach,beast,False,False
+Jeremiah Williams,EDGE,Texas A&M,233,7th round-​,,,8.9,49.7,41.5,practice_only,5.0,7.3,87.8,reach,beast,False,False
+Tyren Montgomery,WR,John Carroll,234,Free Agent,,,14.9,74.1,11.1,practice_only,9.9,5.4,84.7,reach,beast,False,False
+Luke Altmyer,QB,Illinois,236,7th round-​,,,26.2,48.6,25.1,practice_only,41.9,8.9,49.2,reach,beast,False,False
+Jamarion Miller,RB,Alabama,237,6th-7th round,,,21.1,60.0,19.0,practice_only,18.4,10.5,71.1,reach,beast,False,False
+Micah Morris,IOL,Georgia,238,7th round-​,,,9.7,63.9,26.5,practice_only,23.3,10.8,65.9,reach,beast,False,False
+Cole Wisniewski,S,Texas Tech,239,7th round-Free,,,20.7,50.1,29.2,practice_only,18.6,8.0,73.4,reach,beast,False,False
+Josh Cuevas,TE,Alabama,240,5th round,6.7 (Role Player/Part-Time Contributor — 4th Round),Cade Otton,38.0,48.3,13.7,practice_only,44.8,12.1,43.1,slide,beast,True,False
+Faalili Faamoe,OT,Wake Forest,241,6th-7th round,,,28.6,45.2,26.1,practice_only,24.0,11.1,64.9,reach,beast,False,False
+Logan Fano,EDGE,Utah,244,5th round,,,21.2,40.2,38.6,practice_only,87.1,1.3,11.6,slide,beast,False,False
+Fernando Carmona,IOL,Arkansas,245,6th round,5.9 (Backup/Draftable - 6th Round),Joe Looney,13.5,48.1,38.3,practice_only,68.9,4.8,26.3,slide,beast,True,False
+Alex Harkey,OT,Oregon,246,5th round,5.8 (Backup/Draftable - 6th Round),Jalen Mayfield,17.9,38.7,43.4,out_of_league,63.0,7.7,29.3,slide,beast,True,False
+Kendal Daniels,S,Oklahoma,247,6th round,,,40.2,23.7,36.1,real_contract,27.4,12.9,59.8,reach,beast,False,False
+David Gusta,DL,Kentucky,248,6th-7th round,,,0.4,80.1,19.4,practice_only,48.0,1.5,50.5,reach,beast,False,False
+Collin Wright,CB,Stanford,249,6th round,,,22.9,52.2,24.9,practice_only,56.0,2.5,41.5,slide,beast,False,False
+Deven Eastern,DL,Minnesota,250,Free Agent,,,9.1,55.6,35.3,practice_only,11.2,16.2,72.5,reach,beast,False,False
+Malik Benson,WR,Oregon,251,4th-5th round,,,32.0,56.4,11.6,practice_only,51.6,25.4,23.0,slide,beast,False,False
+Toriano Pride,CB,Missouri,252,6th-7th round,,,7.2,74.8,18.0,practice_only,16.1,19.4,64.5,reach,beast,False,False
+Andre Fuller,CB,Toledo,253,6th-7th round,,,13.9,33.1,53.0,out_of_league,53.6,2.7,43.6,slide,beast,False,False
+Quintayvious Hutchins,EDGE,Boston College,254,6th-7th round,,,21.6,45.4,33.1,practice_only,20.6,9.8,69.7,reach,beast,False,False
+Barion Brown,WR,LSU,255,7th round-​,,,12.9,57.3,29.8,practice_only,56.0,1.4,42.6,slide,beast,False,False
+Jaeden Roberts,IOL,Alabama,256,Free Agent,,,2.9,67.8,29.3,practice_only,11.2,6.3,82.5,reach,beast,False,False
+Chase Roberts,WR,BYU,257,7th round-​,,,20.7,69.5,9.8,practice_only,79.4,1.2,19.4,slide,beast,False,False
+Owen Heinecke,LB,Oklahoma,258,6th round,,,10.2,78.3,11.5,practice_only,22.6,17.0,60.4,reach,beast,False,False
+DeShon Singleton,S,Nebraska,259,5th-6th round,,,40.6,45.5,13.9,practice_only,33.6,16.0,50.4,reach,beast,False,False
+Desmond Reid,RB,Pittsburgh,260,Free Agent,,,7.9,65.2,26.9,practice_only,12.2,0.5,87.4,reach,beast,False,False
+Rene Konga,DL,Louisville,261,5th-6th round,,,9.8,33.4,56.7,out_of_league,11.5,26.0,62.5,reach,beast,False,False
+Xavian Sorey,LB,Arkansas,262,6th-7th round,,,6.4,55.4,38.2,practice_only,23.5,14.4,62.1,reach,beast,False,False
+Caden Barnett,OT,Wyoming,263,5th-6th round,6.0 (Developmental Prospect - Late 5th/Early 6th Round),Discount Gennings Dunker,51.4,31.3,17.3,real_contract,28.8,14.4,56.8,reach,beast,True,False
+Harrison Wallace,WR,Mississippi,264,6th-7th round,,,8.2,24.7,67.1,out_of_league,40.7,1.5,57.8,reach,beast,False,False
+Colbie Young,WR,Georgia,265,4th-5th round,,,3.7,40.5,55.9,out_of_league,86.7,3.1,10.2,slide,beast,False,False
+Avery Smith,CB,Toledo,266,5th-6th round,,,12.2,54.1,33.8,practice_only,37.2,29.0,33.9,slide,beast,False,False
+Dalton Johnson,S,Arizona,267,5th-6th round,,,19.4,42.1,38.4,practice_only,71.4,2.2,26.4,slide,beast,False,False
+Michael Heldman,EDGE,Central Michigan,268,7th round,,,16.4,59.0,24.6,practice_only,15.3,3.6,81.1,reach,beast,False,False
+DJ Campbell,IOL,Texas,269,6th-7th round,,,22.5,53.4,24.1,practice_only,23.1,8.9,68.0,reach,beast,False,False
+Noah Whittington,RB,Oregon,270,6th-7th round,6.7 (Role Player/Part-Time Contributor — 4th Round),Ray Davis,5.2,64.2,30.6,practice_only,40.3,18.7,41.0,reach,beast,True,False
+Eric Rivers,WR,Georgia Tech,271,Free Agent,,,12.3,62.2,25.5,practice_only,39.7,0.9,59.4,reach,beast,False,False
+Nolan Rucci,OT,Penn State,272,7th round-​,,,29.6,50.6,19.8,practice_only,27.2,4.9,67.8,reach,beast,False,False
+Max Bredeson,RB,Michigan,273,7th round,,,7.0,62.1,30.8,practice_only,32.7,9.8,57.5,reach,beast,False,False
+Skyler Gill-Howard,DL,Texas Tech,274,7th round-Free,,,3.0,82.8,14.1,practice_only,29.2,13.1,57.6,reach,beast,False,False
+Jack Pyburn,EDGE,LSU,275,6th round,,,51.1,34.4,14.5,real_contract,8.8,42.6,48.6,reach,beast,False,False
+Joe Fagnano,QB,UConn,276,7th round,,,30.0,36.3,33.7,practice_only,26.3,6.1,67.6,reach,beast,False,False
+Ethan Burke,EDGE,Texas,277,Free Agent,,,4.3,34.4,61.3,out_of_league,3.2,1.7,95.1,reach,beast,False,False
+Chip Trayanum,RB,Toledo,278,7th round-​,,,12.1,33.9,54.0,out_of_league,10.9,11.5,77.6,reach,beast,False,False
+Enrique Cruz,OT,Kansas,279,6th round,,,32.4,36.7,30.9,practice_only,57.1,3.6,39.3,slide,beast,False,False
+Dillon Bell,WR,Georgia,280,Free Agent,,,2.9,85.6,11.4,practice_only,57.9,0.7,41.4,slide,beast,False,False
+Ceyair Wright,CB,Nebraska,281,7th round-​,,,19.6,60.1,20.3,practice_only,8.4,6.7,84.9,reach,beast,False,False
+Zavion Thomas,WR,LSU,282,7th round,,,3.6,76.6,19.8,practice_only,58.5,2.0,39.4,slide,beast,False,False
+Latrell McCutchin,CB,Houston,283,4th-5th round,,,64.7,25.7,9.6,real_contract,44.6,21.4,34.0,slide,beast,False,False
+Aaron Anderson,WR,LSU,284,Free Agent,5.70 (Backup/Draftable — 6th-7th Round),Demario Douglas,2.3,78.1,19.6,practice_only,56.3,0.9,42.7,slide,beast,True,False
+James Thompson,DL,Illinois,286,7th round-​,,,6.8,38.3,54.9,out_of_league,7.7,6.5,85.9,reach,beast,False,False
+Garrett DiGiorgio,OT,UCLA,290,7th round,6.5 (Role Player/Part-Time Contributor — 4th Round),Oday Aboushi,12.1,54.1,33.8,practice_only,29.5,14.4,56.1,reach,beast,True,False
+Evan Beerntsen,IOL,Northwestern,291,5th-6th round,,,7.2,68.3,24.5,practice_only,39.1,19.8,41.1,reach,beast,False,False
+Jalon Daniels,QB,Kansas,292,Free Agent,,,15.6,48.4,36.0,practice_only,21.4,4.3,74.3,reach,beast,False,False
+Behren Morton,QB,Texas Tech,294,Free Agent,,,22.1,60.6,17.3,practice_only,21.4,3.8,74.8,reach,beast,False,False
+Patrick Payton,EDGE,LSU,295,Free Agent,,,22.9,30.9,46.2,out_of_league,14.7,4.6,80.7,reach,beast,False,False
+Marcus Allen,CB,North Carolina,296,7th round-​,,,28.8,28.7,42.5,out_of_league,51.6,1.3,47.1,slide,beast,False,False
+Rahsul Faison,RB,South Carolina,297,7th round-​,,,10.3,63.4,26.2,practice_only,18.0,10.2,71.8,reach,beast,False,False
+RJ Maryland,TE,SMU,298,7th round-​,,,7.4,38.3,54.3,out_of_league,38.9,6.2,55.0,reach,beast,False,False
+CJ Donaldson,RB,Ohio State,299,Free Agent,,,5.3,44.8,49.9,out_of_league,10.7,5.8,83.5,reach,beast,False,False
+Lewis Bond,WR,Boston College,300,7th round-​,6.55 (Role Player/Part-Time Contributor — 4th Round),K.J. Osborn,30.4,46.1,23.5,practice_only,23.5,9.2,67.4,reach,beast,True,False
+Carsen Ryan,TE,BYU,302,5th-6th round,,,29.1,68.4,2.5,practice_only,23.1,30.8,46.1,reach,beast,False,False
+Haynes King,QB,Georgia Tech,303,6th-7th round,,,37.4,41.9,20.6,practice_only,14.5,36.3,49.2,reach,beast,False,False
+Caullin Lacy,WR,Louisville,304,Free Agent,,,7.9,81.2,10.9,practice_only,8.2,2.0,89.8,reach,beast,False,False
+Bobby Jamison-Travis,DL,Auburn,305,Free Agent,,,0.5,45.7,53.9,out_of_league,8.2,1.2,90.6,reach,beast,False,False
+Emmanuel Henderson,WR,Kansas,306,7th round-​,,,13.2,36.4,50.4,out_of_league,55.4,2.6,42.0,slide,beast,False,False
+Ahmaad Moses,S,SMU,307,7th round-Free,,,27.2,37.2,35.6,practice_only,35.5,2.6,61.8,reach,beast,False,False
+Karson Sharar,LB,Iowa,308,7th round,,,12.8,62.2,25.0,practice_only,54.0,1.2,44.8,slide,beast,False,False
+Keyshawn James-Newby,EDGE,New Mexico,309,Free Agent,,,13.2,54.0,32.8,practice_only,14.3,5.9,79.8,reach,beast,False,False
+Shadrach Banks,LB,UTSA,310,Free Agent,,,7.8,69.1,23.0,practice_only,3.4,3.1,93.5,reach,beast,False,False
+Joshua Braun,IOL,Kentucky,311,7th round-​,,,5.6,44.7,49.6,out_of_league,15.3,14.8,69.9,reach,beast,False,False
+Xavier Nwankpa,S,Iowa,312,7th round-Free,6.8 (Role Player/Part-Time Contributor - Fourth Round),Bryan Cook,23.8,43.3,32.9,practice_only,23.2,10.5,66.3,reach,beast,True,False
+Nyjalik Kelly,EDGE,UCF,314,7th round-​,,,17.1,46.9,36.0,practice_only,25.1,7.3,67.6,reach,beast,False,False
+Dan Villari,TE,Syracuse,315,Free Agent,,,6.1,63.7,30.2,practice_only,6.6,3.7,89.7,reach,beast,False,False
+Marvin Jones,EDGE,Oklahoma,316,Free Agent,,,5.1,41.5,53.4,out_of_league,13.4,13.1,73.5,reach,beast,False,False
+DJ Rogers,TE,TCU,317,6th-7th round,,,31.8,46.8,21.4,practice_only,32.8,15.0,52.2,reach,beast,False,False
+Bryan Thomas,EDGE,South Carolina,318,Free Agent,,,9.0,72.8,18.2,practice_only,12.6,3.1,84.3,reach,beast,False,False
+Jackson Kuwatch,EDGE,Miami (OH),319,7th round,,,7.4,43.5,49.1,out_of_league,10.8,5.7,83.5,reach,beast,False,False
+Jordan Hudson,WR,SMU,320,6th-7th round,,,10.3,37.3,52.3,out_of_league,57.9,1.5,40.6,slide,beast,False,False
+Jaylon Guilbeau,CB,Texas,322,7th round-Free,,,1.7,74.5,23.8,practice_only,13.7,6.9,79.3,reach,beast,False,False
+Anterio Thompson,DL,Washington,323,6th-7th round,,,6.2,47.4,46.3,practice_only,8.0,8.9,83.2,reach,beast,False,False
+Joey Aguilar,QB,Tennessee,324,7th round-​,,,12.2,49.8,38.1,practice_only,22.1,10.7,67.2,reach,beast,False,False
+Alan Herron,IOL,Maryland,325,7th round-​,,,6.4,15.2,78.3,out_of_league,62.4,1.6,36.0,slide,beast,False,False
+Josh Gesky,IOL,Illinois,326,7th round-​,,,8.5,38.5,52.9,out_of_league,14.8,3.3,82.0,reach,beast,False,False
+Jaren Kanak,TE,Oklahoma,327,6th-7th round,,,3.0,71.5,25.5,practice_only,39.6,9.8,50.6,reach,beast,False,False
+James Brockermeyer,IOL,Miami (FL),328,7th round-​,,,19.4,58.4,22.1,practice_only,30.0,12.4,57.5,reach,beast,False,False
+Jaden Dugger,LB,Louisiana-Lafayette,329,7th round,,,26.1,48.6,25.3,practice_only,9.3,3.7,87.0,reach,beast,False,False
+Riley Mahlman,OT,Wisconsin,330,Free Agent,,,5.6,41.0,53.4,out_of_league,6.9,4.5,88.6,reach,beast,False,False
+Robert Henry,RB,UTSA,331,Free Agent,,,1.7,52.2,46.2,practice_only,55.3,0.6,44.1,slide,beast,False,False
+Lake McRee,TE,USC,332,7th round,,,4.4,55.9,39.7,practice_only,30.0,11.8,58.3,reach,beast,False,False
+Diego Pavia,QB,Vanderbilt,333,7th round-​,,,18.2,60.6,21.2,practice_only,36.9,10.1,53.0,reach,beast,False,False
+Athan Kaliakmanis,QB,Rutgers,334,7th round-​,,,5.5,56.3,38.2,practice_only,16.1,7.6,76.2,reach,beast,False,False
+Vinny Anthony,WR,Wisconsin,335,7th round-​,,,3.1,57.5,39.4,practice_only,69.3,1.2,29.5,slide,beast,False,False
+Micah Pettus,OT,Florida State,336,Free Agent,,,4.2,57.8,38.0,practice_only,3.2,2.4,94.3,reach,beast,False,False
+Bauer Sharp,TE,LSU,337,7th round,,,1.6,57.3,41.2,practice_only,15.2,5.1,79.7,reach,beast,False,False
+Wade Woodaz,LB,Clemson,338,6th round,,,28.1,34.8,37.1,out_of_league,19.7,12.8,67.6,reach,beast,False,False
+Dean Connors,RB,Houston,340,Free Agent,,,8.4,37.8,53.8,out_of_league,8.5,4.3,87.3,reach,beast,False,False
+Khalil Dinkins,TE,Penn State,341,6th-7th round,,,3.5,79.8,16.7,practice_only,13.2,30.8,56.0,reach,beast,False,False
+Lance Mason,TE,Wisconsin,342,7th round-​,,,10.0,50.4,39.6,practice_only,6.3,3.5,90.2,reach,beast,False,False
+Ethan Onianwa,OT,Ohio State,343,Free Agent,,,6.5,49.0,44.6,practice_only,5.7,2.8,91.5,reach,beast,False,False
+Jalen Stroman,S,Notre Dame,345,Free Agent,,,12.3,65.5,22.3,practice_only,11.9,3.1,85.0,reach,beast,False,False
+Aidan Hubbard,EDGE,Northwestern,351,6th-7th round,,,8.9,62.6,28.5,practice_only,53.0,10.5,36.5,slide,beast,False,False
+Miles Scott,S,Illinois,352,Free Agent,,,5.4,48.5,46.1,practice_only,6.5,2.3,91.2,reach,beast,False,False
+Mark Gronowski,QB,Iowa,353,7th round-​,,,16.4,72.5,11.1,practice_only,25.6,10.9,63.6,reach,beast,False,False
+Trebor Pena,WR,Penn State,356,Free Agent,,,6.8,69.3,23.9,practice_only,13.2,4.8,82.0,reach,beast,False,False
+Wesley Bissainthe,LB,Miami (FL),358,Free Agent,,,7.8,72.9,19.3,practice_only,13.6,1.3,85.1,reach,beast,False,False
+Tristan Leigh,OT,Clemson,363,Free Agent,,,10.4,44.9,44.7,practice_only,6.0,5.4,88.5,reach,beast,False,False
+Skyler Thomas,S,Oregon State,364,7th round,,,35.8,39.0,25.3,practice_only,19.8,7.6,72.6,reach,beast,False,False
+Will Pauling,WR,Notre Dame,367,Free Agent,,,6.0,67.4,26.5,practice_only,10.3,4.4,85.3,reach,beast,False,False
+Delby Lemieux,IOL,Dartmouth,368,Free Agent,5.3 (UDFA with Roster Potential — UDFA),Nick Zakelj,8.4,40.7,50.9,out_of_league,4.0,1.8,94.2,reach,beast,True,False
+Miles Kitselman,TE,Tennessee,371,7th round-​,,,7.7,57.0,35.3,practice_only,8.9,4.5,86.6,reach,beast,False,False
+Donaven Mcculley,WR,Michigan,372,Free Agent,,,18.2,64.9,17.0,practice_only,36.8,0.7,62.4,reach,beast,False,False
+Tyre West,EDGE,Tennessee,373,7th round,,,24.2,52.2,23.6,practice_only,9.7,4.2,86.1,reach,beast,False,False
+Romello Brinson,WR,SMU,374,Free Agent,,,8.8,54.8,36.4,practice_only,9.8,2.8,87.3,reach,beast,False,False
+Aaron Hall,DL,Duke,376,Free Agent,,,9.5,67.7,22.8,practice_only,7.3,2.8,90.0,reach,beast,False,False
+Ahmari Harvey,CB,Georgia Tech,377,7th round-​,,,1.7,65.5,32.8,practice_only,46.2,2.3,51.5,reach,beast,False,False
+Chris Hilton,WR,LSU,379,Free Agent,,,16.0,48.7,35.3,practice_only,5.6,2.2,92.2,reach,beast,False,False
+Austin Brown,S,Wisconsin,380,7th round-Free,,,13.2,43.0,43.8,out_of_league,13.7,8.0,78.3,reach,beast,False,False
+Declan Williams,LB,Incarnate Word,384,7th round,,,12.2,47.1,40.7,practice_only,7.0,9.6,83.4,reach,beast,False,False
+Brent Austin,CB,California,388,Free Agent,,,24.3,63.5,12.2,practice_only,21.3,7.8,71.0,reach,beast,False,False
+Zach Durfee,EDGE,Washington,392,7th round-​,,,6.8,41.9,51.3,out_of_league,6.8,5.1,88.1,reach,beast,False,False
+Namdi Obiazor,LB,TCU,398,7th round-​,,,5.2,61.3,33.5,practice_only,58.2,0.5,41.3,slide,beast,False,False
+Dillon Wade,IOL,Auburn,399,7th round-​,,,11.9,62.4,25.7,practice_only,23.4,6.8,69.8,reach,beast,False,False
+Kapena Gushiken,S,Mississippi,400,Free Agent,,,5.1,59.3,35.6,practice_only,5.8,4.0,90.2,reach,beast,False,False
+Cash Jones,RB,Georgia,401,Free Agent,,,13.2,50.8,35.9,practice_only,16.3,3.3,80.4,reach,beast,False,False
+Seydou Traore,TE,Mississippi State,409,7th round-​,,,7.9,50.3,41.8,practice_only,12.5,5.7,81.9,reach,beast,False,False
+Chris Adams,IOL,Memphis,413,Free Agent,,,9.1,41.3,49.5,out_of_league,39.2,0.6,60.2,reach,beast,False,False
+Jackie Marshall,DL,Baylor,416,7th round,,,16.6,73.2,10.3,practice_only,13.2,14.9,71.9,reach,beast,False,False
+Cian Slone,EDGE,NC State,417,7th round-​,,,41.2,41.3,17.6,practice_only,37.0,6.6,56.5,reach,beast,False,False
+Tyreek Chappell,CB,Texas A&M,433,Free Agent,,,11.9,47.0,41.1,practice_only,3.9,2.2,93.9,reach,beast,False,False
+Gary Smith,DL,UCLA,439,7th round,,,2.8,26.0,71.3,out_of_league,17.6,3.6,78.8,reach,beast,False,False
+David Blay,DL,Miami (FL),444,Free Agent,,,5.1,74.5,20.4,practice_only,5.8,3.7,90.4,reach,beast,False,False
+James Neal,IOL,Iowa State,446,Free Agent,,,4.3,53.4,42.4,practice_only,9.6,6.1,84.3,reach,beast,False,False
+Kolbey Taylor,CB,Vanderbilt,464,Free Agent,,,11.6,63.4,25.0,practice_only,8.3,3.2,88.5,reach,beast,False,False
+Jaren Kump,IOL,Utah,466,Free Agent,,,6.3,60.4,33.2,practice_only,19.8,6.9,73.3,reach,beast,False,False
+Jalen Walthall,WR,Incarnate Word,469,7th round-​,,,20.1,53.6,26.3,practice_only,58.6,2.2,39.2,slide,beast,False,False
+Maverick McIvor,QB,Western Kentucky,474,Free Agent,,,10.3,68.5,21.2,practice_only,17.2,6.5,76.3,reach,beast,False,False
+Jeadyn Lukus,CB,Clemson,479,Free Agent,,,23.7,45.3,31.0,practice_only,9.9,1.5,88.5,reach,beast,False,False
+West Weeks,LB,LSU,482,Free Agent,,,9.1,64.8,26.2,practice_only,3.3,1.5,95.3,reach,beast,False,False
+Jalen McMurray,CB,Tennessee,485,Free Agent,,,9.5,58.9,31.6,practice_only,5.6,3.3,91.2,reach,beast,False,False
+Dasan McCullough,EDGE,Nebraska,528,Free Agent,,,12.5,58.7,28.9,practice_only,4.7,2.3,93.0,reach,beast,False,False
+Tywone Malone,DL,Ohio State,604,Free Agent,,,5.3,53.1,41.6,practice_only,4.5,4.7,90.8,reach,beast,False,False
+Khordae Sydnor,EDGE,Vanderbilt,643,Free Agent,,,8.1,46.9,45.0,practice_only,7.1,7.6,85.3,reach,beast,False,False
+Barika Kpeenu,RB,North Dakota State,645,Free Agent,,,6.5,71.2,22.4,practice_only,7.9,9.8,82.3,reach,beast,False,False
+Jordan White,IOL,Vanderbilt,686,Free Agent,,,36.5,43.5,19.9,practice_only,15.9,5.6,78.5,reach,beast,False,False
+Nick Dawkins,IOL,Penn State,692,Free Agent,,,3.2,62.6,34.1,practice_only,5.3,4.9,89.8,reach,beast,False,False
