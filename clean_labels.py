@@ -75,14 +75,7 @@ def encode_draft_tier(dv):
 
 df["draft_tier"] = df["draft_value"].map(encode_draft_tier)
 
-# Label 4: sc_binary — binary version of sc_tier for improved signal at small N
-df["sc_binary"] = df["sc_tier"].map({
-    "real_contract": "made_it",
-    "practice_only": "didnt",
-    "out_of_league": "didnt",
-})  # too_early → NaN automatically
-
-# Label 5: sc_contract_tier — 5-class career outcome using NFL front-office lingo
+# Label 4: sc_contract_tier — 4-class career outcome using NFL front-office lingo
 # APY thresholds computed per position group (p33/p67 of real_contract players)
 # so "cornerstone" means top-third earner relative to position peers.
 # Positions with <25 real_contract players fall back to global thresholds.
@@ -126,12 +119,12 @@ def encode_contract_tier(row):
     if row["sc_tier"] in ("too_early", None) or pd.isna(row["sc_tier"]):
         return np.nan
     if row["sc_tier"] == "out_of_league":
-        return "cut"
+        return "out_of_league"
     if row["sc_tier"] == "practice_only":
-        return "camp_body"
+        return "roster_bubble"
     apy = row["sc_APY"]
     if pd.isna(apy):
-        return "cut"
+        return "out_of_league"
     lo, hi = pos_thresholds.get(row["_pos_group"], (global_p33, global_p67))
     if apy <= hi:
         return "53_man"
@@ -165,10 +158,6 @@ print(df["sc_rank"].describe())
 print()
 print("=== draft_tier ===")
 print(df["draft_tier"].value_counts())
-
-print()
-print("=== sc_binary ===")
-print(df["sc_binary"].value_counts())
 
 print()
 print("=== sc_contract_tier (4-class) ===")

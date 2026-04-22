@@ -36,7 +36,7 @@ PDF_FILES = [
 
 
 BASE_DIR = Path("Dane_Brugler_The_Beast")
-OUTPUT_CSV = Path("beast_prospects.csv")
+OUTPUT_CSV = Path(__file__).parent.parent / "data" / "raw" / "beast_prospects.csv"
 
 POSITIONS = [
     "QUARTERBACKS", "RUNNING BACKS", "FULLBACKS", "FULLBACKS/H-BACKS",

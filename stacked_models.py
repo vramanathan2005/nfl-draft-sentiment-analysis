@@ -12,7 +12,7 @@ Features:
   - round one-hot (1-7) + imputed flag
 
 Tasks:
-  sc_tier     — 4-class career outcome (cut/camp_body/53_man/cornerstone)
+  sc_tier     — 4-class career outcome (out_of_league/roster_bubble/53_man/cornerstone)
                 2017-2021 drafts, Beast OR PFF text, ~1,373 rows
                 train: 2017-2019  |  test: 2020-2021
 
@@ -37,7 +37,7 @@ from sentence_transformers import SentenceTransformer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.linear_model import LogisticRegression, Ridge
-from sklearn.dummy import DummyClassifier, DummyRegressor
+from sklearn.dummy import DummyClassifier
 from sklearn.model_selection import StratifiedKFold, KFold
 from sklearn.metrics import f1_score, classification_report
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder

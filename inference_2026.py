@@ -3,7 +3,7 @@ Run inference on 2026 draft prospects using saved models.
 
 Outputs ranked tables (and inference_2026.csv):
   1. sc_tier: P(cornerstone) — projected NFL contract tier from scouting language
-              classes: cut / camp_body / 53_man / cornerstone
+              classes: out_of_league / roster_bubble / 53_man / cornerstone
   2. draft_value: P(slide/consensus/reach) — probability player is drafted above/below consensus
   3. apy_pct: predicted APY percentile for players who get a real contract
               1.0 = highest-paid player in NFL on signing date, 0.0 = lowest
@@ -147,7 +147,7 @@ X_dv = np.hstack([X_tfidf_dv, X_emb, X_meas, np.zeros((len(p26), 1)), X_extra_dv
 
 print("Predicting...")
 le_sc      = sc_bundle["le"]
-sc_classes = list(le_sc.classes_)   # ['53_man', 'camp_body', 'cornerstone', 'cut']
+sc_classes = list(le_sc.classes_)   # ['53_man', 'cornerstone', 'out_of_league', 'roster_bubble']
 if sc_bundle.get("ensemble") and sc_bundle.get("clf2") is not None:
     sc_proba = (sc_bundle["clf"].predict_proba(X_sc) + 2 * sc_bundle["clf2"].predict_proba(X_sc)) / 3
 else:
@@ -186,9 +186,9 @@ for col in MEAS_COLS + TEXT_COLS:
         results[col] = p26[col]
 
 idx_53man       = sc_classes.index("53_man")
-idx_camp_body   = sc_classes.index("camp_body")
-idx_cornerstone = sc_classes.index("cornerstone")
-idx_cut         = sc_classes.index("cut")
+idx_roster_bubble  = sc_classes.index("roster_bubble")
+idx_cornerstone    = sc_classes.index("cornerstone")
+idx_out_of_league  = sc_classes.index("out_of_league")
 
 idx_slide     = dv_classes.index("slide")
 idx_consensus = dv_classes.index("consensus")
@@ -196,8 +196,8 @@ idx_reach     = dv_classes.index("reach")
 
 results["p_cornerstone"]       = (sc_proba[:, idx_cornerstone] * 100).round(1)
 results["p_53_man"]            = (sc_proba[:, idx_53man]       * 100).round(1)
-results["p_camp_body"]         = (sc_proba[:, idx_camp_body]   * 100).round(1)
-results["p_cut"]               = (sc_proba[:, idx_cut]         * 100).round(1)
+results["p_roster_bubble"]     = (sc_proba[:, idx_roster_bubble]  * 100).round(1)
+results["p_out_of_league"]     = (sc_proba[:, idx_out_of_league]  * 100).round(1)
 results["sc_prediction"]       = sc_pred
 results["p_slide"]             = (dv_proba[:, idx_slide]       * 100).round(1)
 results["p_consensus"]         = (dv_proba[:, idx_consensus]   * 100).round(1)
@@ -234,7 +234,7 @@ def show(title, ranked, cols):
 top_cornerstone = results.nlargest(20, "p_cornerstone")
 show("TOP 20 — Highest P(cornerstone)  [elite second contract projection]",
      top_cornerstone,
-     ["Player Name","Position","consensus","p_cornerstone","p_53_man","p_camp_body","p_cut","text_source"])
+     ["Player Name","Position","consensus","p_cornerstone","p_53_man","p_roster_bubble","p_out_of_league","text_source"])
 
 # Top 20 by P(slide)
 top_slide = results.nlargest(20, "p_slide")
