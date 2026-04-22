@@ -82,6 +82,64 @@ df["sc_binary"] = df["sc_tier"].map({
     "out_of_league": "didnt",
 })  # too_early → NaN automatically
 
+# Label 5: sc_contract_tier — 5-class career outcome using NFL front-office lingo
+# APY thresholds computed per position group (p33/p67 of real_contract players)
+# so "cornerstone" means top-third earner relative to position peers.
+# Positions with <25 real_contract players fall back to global thresholds.
+
+POS_GROUPS = {
+    "QB":   ["QB"],
+    "RB":   ["RB", "FB"],
+    "WR":   ["WR"],
+    "TE":   ["TE"],
+    "OL":   ["OT", "IOL", "C", "G", "T"],
+    "EDGE": ["EDGE", "OLB", "DE"],
+    "DL":   ["DL", "DT", "NT"],
+    "LB":   ["LB", "ILB", "MLB"],
+    "CB":   ["CB"],
+    "S":    ["S", "FS", "SS"],
+    "SPEC": ["K", "P", "LS"],
+}
+POS_TO_GROUP = {p: g for g, ps in POS_GROUPS.items() for p in ps}
+MIN_GROUP_SIZE = 25  # fall back to global if fewer real_contract rows
+
+rc = df[df["sc_tier"] == "real_contract"].copy()
+rc["_pos_group"] = rc["Position"].str.upper().map(POS_TO_GROUP).fillna("OTHER")
+
+global_p33 = rc["sc_APY"].quantile(0.33)
+global_p67 = rc["sc_APY"].quantile(0.67)
+
+pos_thresholds = {}
+for grp, sub in rc.groupby("_pos_group"):
+    apy = sub["sc_APY"].dropna()
+    if len(apy) >= MIN_GROUP_SIZE:
+        pos_thresholds[grp] = (apy.quantile(0.33), apy.quantile(0.67))
+
+print("Position-specific APY thresholds (roster_filler | starter | cornerstone):")
+for grp, (lo, hi) in sorted(pos_thresholds.items()):
+    print(f"  {grp:<6}  <${lo/1e6:.2f}M  |  ${lo/1e6:.2f}M-${hi/1e6:.2f}M  |  >${hi/1e6:.2f}M")
+print(f"  (global fallback: <${global_p33/1e6:.2f}M | >${global_p67/1e6:.2f}M)")
+
+df["_pos_group"] = df["Position"].str.upper().map(POS_TO_GROUP).fillna("OTHER")
+
+def encode_contract_tier(row):
+    if row["sc_tier"] in ("too_early", None) or pd.isna(row["sc_tier"]):
+        return np.nan
+    if row["sc_tier"] == "out_of_league":
+        return "cut"
+    if row["sc_tier"] == "practice_only":
+        return "camp_body"
+    apy = row["sc_APY"]
+    if pd.isna(apy):
+        return "cut"
+    lo, hi = pos_thresholds.get(row["_pos_group"], (global_p33, global_p67))
+    if apy <= hi:
+        return "53_man"
+    return "cornerstone"
+
+df["sc_contract_tier"] = df.apply(encode_contract_tier, axis=1)
+df.drop(columns=["_pos_group"], inplace=True)
+
 # ── Summary ───────────────────────────────────────────────────────────────────
 
 print("=== draft_value ===")
@@ -111,6 +169,10 @@ print(df["draft_tier"].value_counts())
 print()
 print("=== sc_binary ===")
 print(df["sc_binary"].value_counts())
+
+print()
+print("=== sc_contract_tier (4-class) ===")
+print(df["sc_contract_tier"].value_counts())
 
 df.to_csv(BASE / "data/processed/all_prospects.csv", index=False)
 print("\nWrote → all_prospects.csv")

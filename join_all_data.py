@@ -120,6 +120,13 @@ def load_pff() -> pd.DataFrame:
 
     # 2025: no player name column — skipped
 
+    df = pd.read_csv(RAW / "2026_data_pff.csv")
+    for _, r in df.iterrows():
+        add(2026, r["player"],
+            overview=r.get("scouting_report"), pros=r.get("strengths"),
+            cons=r.get("weaknesses"), bottom_line=r.get("bottom_line"),
+            extra=r.get("comp"))
+
     return pd.DataFrame(rows)
 
 
