@@ -61,6 +61,14 @@ def word_contribs(tfidf_bundle, coef_vec, tfidf_row):
                   key=lambda x: -abs(x[1]))
 
 
+def top_words_str(wc, positive=True, n=8):
+    """Top N words by contribution for given sign. Returns pipe-separated 'word:score'."""
+    filtered = [(w, c) for w, c in wc if (c > 0) == positive and abs(c) >= 0.001][:n]
+    if not filtered:
+        filtered = [(w, c) for w, c in wc if (c > 0) == positive][:n]
+    return "|".join(f"{w}:{c:.4f}" for w, c in filtered)
+
+
 def fmt_sentences(sent_list):
     """Convert find_source_sentences output to CSV-friendly string."""
     parts = []
@@ -251,6 +259,12 @@ for i in range(len(p26)):
         "apy_feat_beast_rank": round(apy_feat["beast_rank"], 4),
         "apy_top_measurable":  apy_feat["top_measurable"],
         "apy_top_measurable_contrib": round(apy_feat["top_measurable_contrib"], 4),
+
+        # word contributions (top words by sign)
+        "sc_pos_words":    top_words_str(sc_wc, positive=True,  n=10),
+        "sc_neg_words":    top_words_str(sc_wc, positive=False, n=6),
+        "draft_pos_words": top_words_str(dv_wc, positive=True,  n=10),
+        "draft_neg_words": top_words_str(dv_wc, positive=False, n=6),
     })
 
 out = pd.DataFrame(rows)

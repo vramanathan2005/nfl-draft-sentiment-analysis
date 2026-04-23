@@ -32,12 +32,15 @@ POS_ORDER    = sorted(POS_GROUPS.keys()) + ["OTHER"]
 # ── Text assembly ─────────────────────────────────────────────────────────────
 
 def unified_text(df: pd.DataFrame) -> pd.Series:
-    """Combine Beast/PFF/BR columns into one text per row (DataFrame version)."""
+    """Combine Beast/PFF/BR columns into one text per row — all available sources concatenated."""
     bt  = df[BEAST_COLS].fillna("").apply(lambda r: " ".join(r), axis=1).str.strip()
     pt  = df[PFF_COLS].fillna("").apply(lambda r: " ".join(r), axis=1).str.strip()
     brt = df[BR_COLS].fillna("").apply(lambda r: " ".join(r), axis=1).str.strip()
-    base = bt.where(bt.str.len() > 0, pt)
-    return (base + " " + brt).str.strip().where(brt.str.len() > 0, base)
+    parts = bt.where(bt.str.len() > 0, "")
+    parts = (parts + " " + pt).str.strip()
+    parts = (parts + " " + brt).str.strip()
+    # Fallback: if still empty somehow, shouldn't happen but guard anyway
+    return parts.where(parts.str.len() > 0, bt.where(bt.str.len() > 0, pt))
 
 
 def unified_text_row(row) -> str:
@@ -45,8 +48,7 @@ def unified_text_row(row) -> str:
     bt  = " ".join(str(row.get(c, "") or "") for c in BEAST_COLS).strip()
     pt  = " ".join(str(row.get(c, "") or "") for c in PFF_COLS).strip()
     brt = " ".join(str(row.get(c, "") or "") for c in BR_COLS).strip()
-    base = bt if bt else pt
-    return (base + " " + brt).strip() if brt else base
+    return " ".join(part for part in [bt, pt, brt] if part).strip()
 
 
 def text_source_flag(df: pd.DataFrame) -> np.ndarray:
