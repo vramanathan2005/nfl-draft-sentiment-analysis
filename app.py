@@ -66,11 +66,11 @@ st.markdown("""
     align-items: center;
 }
 .stTabs [data-baseweb="tab-list"]::before {
-    content: "draftIntel";
+    content: "draftIntel.";
     display: inline-block;
     margin-right: 26px;
     color: transparent;
-    background: linear-gradient(90deg, #f8fafc 0 52%, #D50A0A 52% 100%);
+    background: linear-gradient(90deg, #f8fafc 0 50.5%, #D50A0A 50.5% 100%);
     -webkit-background-clip: text;
     background-clip: text;
     font-size: 42px;
