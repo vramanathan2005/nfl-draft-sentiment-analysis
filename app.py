@@ -69,7 +69,10 @@ st.markdown("""
     content: "draftIntel";
     display: inline-block;
     margin-right: 26px;
-    color: #D50A0A;
+    color: transparent;
+    background: linear-gradient(90deg, #f8fafc 0 52%, #D50A0A 52% 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
     font-size: 42px;
     line-height: 1;
     font-weight: 900;
