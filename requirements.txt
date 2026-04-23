@@ -1,0 +1,10 @@
+joblib
+numpy
+pandas
+plotly
+PyMuPDF
+scikit-learn
+scipy
+sentence-transformers
+streamlit
+xgboost

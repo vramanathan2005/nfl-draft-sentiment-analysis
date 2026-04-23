@@ -1399,38 +1399,42 @@ with tab4:
             has_sim_hs   = pd.notna(sim_hs) and str(sim_hs).strip()
             has_sim_logo = pd.notna(sim_logo) and str(sim_logo).strip()
 
-            # Build headshot / logo visual
+            # Headshot square (left)
             if has_sim_hs:
-                logo_chip = (f'<div style="background:#fff;border-radius:8px;padding:6px;'
-                             f'display:inline-flex;align-items:center;justify-content:center;">'
-                             f'<img src="{str(sim_logo).strip()}" style="height:36px;width:36px;'
-                             f'object-fit:contain;"/></div>'
-                             if has_sim_logo else "")
-                visual = (f'<div style="text-align:center;margin-bottom:10px;">'
-                          f'<img src="{str(sim_hs).strip()}" style="width:100%;max-height:130px;'
-                          f'object-fit:contain;border-radius:8px;border:1px solid #1c2840;'
-                          f'background:#0a1020;"/>'
-                          f'<div style="display:flex;align-items:center;justify-content:center;'
-                          f'margin-top:8px;">{logo_chip}</div></div>')
-            elif has_sim_logo:
-                visual = (f'<div style="background:#fff;border-radius:8px;padding:12px;'
-                          f'text-align:center;margin-bottom:10px;display:flex;'
-                          f'align-items:center;justify-content:center;min-height:70px;">'
-                          f'<img src="{str(sim_logo).strip()}" style="height:52px;object-fit:contain;"/>'
-                          f'</div>')
+                hs_html = (f'<div style="width:82px;height:82px;flex-shrink:0;border-radius:8px;'
+                           f'overflow:hidden;border:1px solid #1c2840;background:#0a1020;">'
+                           f'<img src="{str(sim_hs).strip()}" style="width:100%;height:100%;'
+                           f'object-fit:contain;display:block;"/></div>')
             else:
                 ini = initials(name)
-                visual = (f'<div style="background:#132036;border-radius:8px;padding:16px;'
-                          f'text-align:center;margin-bottom:10px;font-size:22px;font-weight:800;'
-                          f'color:#f1f5f9;">{ini}</div>')
+                hs_html = (f'<div style="width:82px;height:82px;flex-shrink:0;border-radius:8px;'
+                           f'background:#132036;display:flex;align-items:center;justify-content:center;'
+                           f'font-size:22px;font-weight:800;color:#f1f5f9;">{ini}</div>')
+
+            # Logo top-right
+            if has_sim_logo:
+                logo_html = (f'<div style="background:#fff;border-radius:8px;padding:6px;'
+                             f'width:48px;height:48px;display:flex;align-items:center;'
+                             f'justify-content:center;flex-shrink:0;">'
+                             f'<img src="{str(sim_logo).strip()}" style="max-width:36px;max-height:36px;'
+                             f'object-fit:contain;"/></div>')
+            else:
+                logo_html = ""
 
             cards_html += f"""
             <div class="sim-card">
               <div class="sim-kicker">This class</div>
-              {visual}
-              <div class="sim-name">{name}</div>
-              <div class="sim-meta">{sim_pos} · #{sim_cons}</div>
-              <div class="sim-meta" style="color:{sim_color};font-weight:700;">{DRAFT_LABELS.get(sim_tier, sim_tier.title())}</div>
+              <div style="display:flex;gap:12px;align-items:flex-start;margin:10px 0 10px;">
+                {hs_html}
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;position:relative;">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;">
+                    <div class="sim-name" style="margin-bottom:4px;">{name}</div>
+                    {logo_html}
+                  </div>
+                  <div class="sim-meta">{sim_pos} · #{sim_cons}</div>
+                  <div class="sim-meta" style="color:{sim_color};font-weight:700;">{DRAFT_LABELS.get(sim_tier, sim_tier.title())}</div>
+                </div>
+              </div>
               <div class="sim-score">{score:.2f}</div>
               <div class="sim-kicker" style="margin-top:4px;">Similarity score</div>
             </div>"""
