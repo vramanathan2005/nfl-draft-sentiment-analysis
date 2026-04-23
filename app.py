@@ -56,27 +56,25 @@ st.markdown("""
 }
 .stApp { background-color: #080d18; }
 
-/* ── Nav ── */
-.top-nav {
-    background: #0d1626;
-    border-bottom: 1px solid #1c2840;
-    padding: 0 40px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    gap: 32px;
-}
-.nav-wordmark { font-size: 15px; font-weight: 800; color: #ffffff; letter-spacing: 0.5px; }
-.nav-wordmark span { color: #D50A0A; }
-.nav-divider { width: 1px; height: 20px; background: #1c2840; }
-.nav-sub { font-size: 12px; color: #4a6179; font-weight: 400; }
-
 /* ── Tabs ── */
 .stTabs [data-baseweb="tab-list"] {
     background: #0a1020;
     border-bottom: 1px solid #1c2840;
-    padding: 0 32px;
+    padding: 0 28px;
     gap: 0;
+    display: flex;
+    align-items: center;
+}
+.stTabs [data-baseweb="tab-list"]::before {
+    content: "draftIntel";
+    display: inline-block;
+    margin-right: 26px;
+    color: #D50A0A;
+    font-size: 42px;
+    line-height: 1;
+    font-weight: 900;
+    letter-spacing: -1.6px;
+    white-space: nowrap;
 }
 .stTabs [data-baseweb="tab"] {
     color: #4a6179;
@@ -724,17 +722,6 @@ def radar_chart(row_data):
                         font=dict(color="#f1f5f9", size=12)),
     )
     return fig
-
-
-# ── Nav bar ────────────────────────────────────────────────────────────────────
-
-st.markdown(f"""
-<div class="top-nav">
-  <div class="nav-wordmark">DRAFT<span>INTEL</span> &nbsp;2026</div>
-  <div class="nav-divider"></div>
-  <div class="nav-sub">NLP + Machine Learning &nbsp;&middot;&nbsp; {len(df)} Prospects &nbsp;&middot;&nbsp; Beast / PFF / Bleacher Report</div>
-</div>
-""", unsafe_allow_html=True)
 
 
 # ── Tabs ───────────────────────────────────────────────────────────────────────
