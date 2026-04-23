@@ -288,7 +288,55 @@ div[data-testid="stTextInput"] label p {
 /* ── Radio (position selector) ── */
 div[data-testid="stRadio"] > div {
     flex-wrap: wrap !important;
-    gap: 4px 20px !important;
+    gap: 10px 12px !important;
+}
+div[data-testid="stRadio"] label {
+    background: linear-gradient(180deg, rgba(14,21,32,0.96), rgba(8,13,24,0.96));
+    border: 1px solid rgba(71, 85, 105, 0.85);
+    border-radius: 999px;
+    padding: 10px 16px !important;
+    min-height: 0 !important;
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.02),
+        0 0 0 1px rgba(34,197,94,0.00),
+        0 0 18px rgba(34,197,94,0.00);
+    transition: all 0.18s ease;
+}
+div[data-testid="stRadio"] label:hover {
+    border-color: rgba(74, 222, 128, 0.65);
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.03),
+        0 0 0 1px rgba(34,197,94,0.18),
+        0 0 16px rgba(34,197,94,0.12);
+}
+div[data-testid="stRadio"] label p {
+    color: #dbe7f5 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.7px !important;
+    text-transform: uppercase;
+}
+div[data-testid="stRadio"] label[data-baseweb="radio"] input:checked + div {
+    background: transparent !important;
+}
+div[data-testid="stRadio"] label:has(input:checked) {
+    border-color: #4ade80 !important;
+    background:
+        linear-gradient(180deg, rgba(16, 34, 24, 0.98), rgba(8, 18, 13, 0.98));
+    box-shadow:
+        inset 0 0 0 1px rgba(134,239,172,0.10),
+        0 0 0 1px rgba(74,222,128,0.35),
+        0 0 20px rgba(34,197,94,0.22);
+}
+div[data-testid="stRadio"] label:has(input:checked) p {
+    color: #dcfce7 !important;
+    text-shadow: 0 0 8px rgba(74,222,128,0.18);
+}
+div[data-testid="stRadio"] label [data-testid="stMarkdownContainer"] {
+    margin-top: 0 !important;
+}
+div[data-testid="stRadio"] input[type="radio"] {
+    display: none !important;
 }
 
 /* ── Form controls ── */
@@ -1121,13 +1169,27 @@ with tab4:
 
     # ── Two-step search: position → player ──
     POS_ORDER_DISPLAY = ["QB","RB","WR","TE","OT","IOL","DL","EDGE","LB","CB","S"]
+    POS_FULL_NAMES = {
+        "QB": "Quarterback",
+        "RB": "Running Back",
+        "WR": "Wide Receiver",
+        "TE": "Tight End",
+        "OT": "Offensive Tackle",
+        "IOL": "Interior OL",
+        "DL": "Defensive Line",
+        "EDGE": "Edge Rusher",
+        "LB": "Linebacker",
+        "CB": "Cornerback",
+        "S": "Safety",
+    }
     all_pos   = df["position"].dropna().unique()
     positions = [p for p in POS_ORDER_DISPLAY if p in all_pos] + \
                 [p for p in sorted(all_pos) if p not in POS_ORDER_DISPLAY]
     st.markdown('<div class="sec-lbl" style="margin-top:0">Filter by position</div>',
                 unsafe_allow_html=True)
     sel_pos_card = st.radio("", positions, index=0, key="pos_pills",
-                            label_visibility="collapsed", horizontal=True)
+                            label_visibility="collapsed", horizontal=True,
+                            format_func=lambda p: POS_FULL_NAMES.get(p, p))
 
     pos_df = df[df["position"] == sel_pos_card].sort_values("consensus")
     st.markdown('<div class="sec-lbl">Select player</div>', unsafe_allow_html=True)
@@ -1444,21 +1506,6 @@ with tab4:
         st.markdown('<div class="sent-empty">Similarity data not available.</div>',
                     unsafe_allow_html=True)
 
-    # ── Word contribution chips (pure HTML — render as single block) ──
-    dv_pos_chips = render_word_chips(row.get("draft_pos_words", ""), positive=True)
-    dv_neg_chips = render_word_chips(row.get("draft_neg_words", ""), positive=False)
-    st.markdown('<div class="sec-lbl">Draft Model Word Signals</div>', unsafe_allow_html=True)
-    if dv_pos_chips or dv_neg_chips:
-        _wc_inner = ""
-        if dv_pos_chips:
-            _wc_inner += '<div class="chart-lbl" style="margin-bottom:6px;">Supports prediction</div>' + dv_pos_chips
-        if dv_neg_chips:
-            _wc_inner += '<div class="chart-lbl" style="margin:12px 0 6px;">Pushes against prediction</div>' + dv_neg_chips
-        st.markdown(f'<div class="section-card">{_wc_inner}</div>', unsafe_allow_html=True)
-    else:
-        st.markdown('<div class="section-card"><div class="sent-empty">No significant word signals found.</div></div>',
-                    unsafe_allow_html=True)
-
     # ── Cross-source phrases (has native widget — use st.container) ──
     st.markdown('<div class="sec-lbl">Cross-Source Scouting Terms</div>', unsafe_allow_html=True)
     with st.container(border=False):
@@ -1494,11 +1541,19 @@ with tab4:
     # ── Scouting sentences (pure HTML — render as single block) ──
     dv_pos = parse_sentences(row.get("draft_key_sentences", ""))
     dv_neg = parse_sentences(row.get("draft_concerns", ""))
+    dv_pos_chips = render_word_chips(row.get("draft_pos_words", ""), positive=True)
+    dv_neg_chips = render_word_chips(row.get("draft_neg_words", ""), positive=False)
     dv_summary = render_inline_summary(row.get("draft_pos_words", ""), row.get("draft_neg_words", ""))
     st.markdown('<div class="sec-lbl">Key Scouting Language</div>', unsafe_allow_html=True)
     _sl_inner = ""
     if dv_summary:
         _sl_inner += f'<div style="margin-bottom:12px;line-height:1.8;font-size:13px;">{dv_summary}</div>'
+    if dv_pos_chips:
+        _sl_inner += '<div class="chart-lbl" style="margin:0 0 6px;">Supports prediction</div>' + dv_pos_chips
+    if dv_neg_chips:
+        _sl_inner += '<div class="chart-lbl" style="margin:12px 0 6px;">Pushes against prediction</div>' + dv_neg_chips
+    if dv_pos_chips or dv_neg_chips:
+        _sl_inner += '<div style="height:12px"></div>'
     _sl_inner += render_sentences(dv_pos, is_neg=False) if dv_pos else '<div class="sent-empty">No high-signal positive sentences found.</div>'
     if dv_neg:
         _sl_inner += '<div class="sec-lbl" style="margin-top:20px">Concerns</div>' + render_sentences(dv_neg, is_neg=True)
