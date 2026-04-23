@@ -70,7 +70,7 @@ st.markdown("""
     display: inline-block;
     margin-right: 26px;
     color: transparent;
-    background: linear-gradient(90deg, #f8fafc 0 50.5%, #D50A0A 50.5% 100%);
+    background: linear-gradient(90deg, #f8fafc 0 49%, #D50A0A 49% 100%);
     -webkit-background-clip: text;
     background-clip: text;
     font-size: 42px;
