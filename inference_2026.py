@@ -10,90 +10,22 @@ Outputs ranked tables (and inference_2026.csv):
               expected_apy_pct = P(real_contract) × pred_apy_pct
 """
 
-import re
 import warnings
 import numpy as np
 import pandas as pd
 import joblib
 from pathlib import Path
 from sentence_transformers import SentenceTransformer
-from sklearn.preprocessing import OneHotEncoder
+
+from features import (
+    Z_COLS, unified_text, text_source_flag, has_br_flag,
+    consensus_feature, beast_rank_feature, text_length_feature,
+    round_feature, position_feature,
+)
 
 warnings.filterwarnings("ignore")
 
 BASE = Path("/Users/varunramanathan/Downloads/sentiment-analysis")
-
-def beast_text(df):
-    cols = ["beast_summary", "beast_strengths", "beast_weaknesses"]
-    return df[cols].fillna("").apply(lambda r: " ".join(r), axis=1).str.strip()
-
-def pff_text(df):
-    cols = ["pff_overview", "pff_pros", "pff_cons", "pff_bottom_line", "pff_extra"]
-    return df[cols].fillna("").apply(lambda r: " ".join(r), axis=1).str.strip()
-
-def br_text(df):
-    cols = ["br_positives", "br_negatives"]
-    return df[cols].fillna("").apply(lambda r: " ".join(r), axis=1).str.strip()
-
-def unified_text(df):
-    bt  = beast_text(df)
-    pt  = pff_text(df)
-    brt = br_text(df)
-    base = bt.where(bt.str.len() > 0, pt)
-    return (base + " " + brt).str.strip().where(brt.str.len() > 0, base)
-
-def text_source_flag(df):
-    bt = beast_text(df)
-    return (bt.str.len() == 0).astype(float).values.reshape(-1, 1)
-
-def has_br_flag(df):
-    return (br_text(df).str.len() > 0).astype(float).values.reshape(-1, 1)
-
-POS_GROUPS = {
-    "QB":["QB"], "RB":["RB","FB"], "WR":["WR"], "TE":["TE"],
-    "OL":["OT","IOL","C","G","T"], "EDGE":["EDGE","OLB","DE"],
-    "DL":["DL","DT","NT"], "LB":["LB","ILB","MLB"],
-    "CB":["CB"], "S":["S","FS","SS"], "SPEC":["K","P","LS"],
-}
-POS_TO_GROUP = {p: g for g, ps in POS_GROUPS.items() for p in ps}
-POS_ORDER    = sorted(POS_GROUPS.keys()) + ["OTHER"]
-
-def position_feature(df):
-    groups = df["Position"].str.upper().map(POS_TO_GROUP).fillna("OTHER")
-    enc = OneHotEncoder(categories=[POS_ORDER], sparse_output=False, handle_unknown="ignore")
-    return enc.fit_transform(groups.values.reshape(-1, 1))
-
-def beast_rank_feature(df):
-    out = np.zeros(len(df))
-    df = df.reset_index(drop=True)
-    for _, grp in df.groupby("draft_year"):
-        vals = grp["beast_rank"].dropna()
-        if len(vals) < 2:
-            continue
-        mu, sigma = vals.mean(), vals.std()
-        if sigma < 1e-6:
-            continue
-        out[grp.index] = grp["beast_rank"].fillna(mu).map(lambda v: (v - mu) / sigma)
-    return out.reshape(-1, 1)
-
-def text_length_feature(texts: pd.Series) -> np.ndarray:
-    lengths = np.log1p(texts.str.len().values.astype(float))
-    mu, sigma = lengths.mean(), lengths.std()
-    if sigma < 1e-6:
-        return np.zeros((len(texts), 1))
-    return ((lengths - mu) / sigma).reshape(-1, 1)
-
-def round_feature(df: pd.DataFrame) -> np.ndarray:
-    rounds = df["round"].copy()
-    missing = rounds.isna()
-    if missing.any():
-        cons = df.loc[missing, "consensus"].fillna(250)
-        rounds.loc[missing] = (cons // 32 + 1).clip(upper=7)
-    rounds = rounds.fillna(4).astype(int).clip(1, 7)
-    enc = OneHotEncoder(categories=[list(range(1, 8))], sparse_output=False, handle_unknown="ignore")
-    ohe = enc.fit_transform(rounds.values.reshape(-1, 1))
-    imputed_flag = missing.astype(float).values.reshape(-1, 1)
-    return np.hstack([ohe, imputed_flag])
 
 
 # ── load data ─────────────────────────────────────────────────────────────────
@@ -126,10 +58,7 @@ X_emb   = st.encode(texts.tolist(), batch_size=64,
                     show_progress_bar=False, normalize_embeddings=True)
 X_meas  = p26[sc_bundle["z_cols"]].fillna(0.0).values
 
-# consensus z-score within the 2026 class
-cons_vals = p26["consensus"].fillna(p26["consensus"].mean())
-cons_mu, cons_sigma = cons_vals.mean(), cons_vals.std()
-X_cons     = ((cons_vals - cons_mu) / (cons_sigma + 1e-8)).values.reshape(-1, 1)
+X_cons     = consensus_feature(p26)
 X_pos      = position_feature(p26)
 X_rank     = beast_rank_feature(p26)
 X_tlen     = text_length_feature(texts)

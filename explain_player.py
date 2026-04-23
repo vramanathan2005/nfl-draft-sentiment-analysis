@@ -6,14 +6,10 @@ Usage:
     python explain_player.py "Jeremiyah Love" --model apy
     python explain_player.py "Spencer Fano" --model all
 
-For linear models (LogReg / Ridge) contributions are exact:
-    word_contribution(w, class) = (LR.coef_[class] @ SVD.components_)[:vocab] × tfidf(w, player)
-    feature_contribution(k, class) = LR.coef_[class, k] × x[k]
-
-Sections shown per player:
-  1. Prediction summary
-  2. Top words pushing toward / away from the predicted class
-  3. Structural feature contributions (consensus, round, position, measurables, etc.)
+Output per player:
+  1. Prediction probabilities
+  2. Scouting sentences most responsible for the prediction
+  3. Structural drivers: consensus rank, round, beast rank, measurables vs position peers
 """
 
 import sys
@@ -26,270 +22,247 @@ from pathlib import Path
 from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import OneHotEncoder
 
+from features import (
+    BEAST_COLS, BR_COLS, Z_COLS,
+    POS_TO_GROUP, POS_ORDER,
+    unified_text_row, deduplicate_ngrams, find_source_sentences,
+)
+
 warnings.filterwarnings("ignore")
 
 BASE = Path("/Users/varunramanathan/Downloads/sentiment-analysis")
 
-# ── feature helpers (must match stacked_models.py / inference_2026.py) ───────
+RAW_MEAS_COLS  = ["ht_in","wt_lbs","arm_in","hand_in","wing_in",
+                   "dash40","vj_in","bj_in","shuttle","cone3","bench"]
+MEAS_LABELS    = ["height","weight","arm","hand","wingspan",
+                  "40yd","vert jump","broad jump","shuttle","3-cone","bench"]
 
-BEAST_COLS = ["beast_summary", "beast_strengths", "beast_weaknesses"]
-PFF_COLS   = ["pff_overview", "pff_pros", "pff_cons", "pff_bottom_line", "pff_extra"]
-BR_COLS    = ["br_positives", "br_negatives"]
 
-POS_GROUPS = {
-    "QB":["QB"], "RB":["RB","FB"], "WR":["WR"], "TE":["TE"],
-    "OL":["OT","IOL","C","G","T"], "EDGE":["EDGE","OLB","DE"],
-    "DL":["DL","DT","NT"], "LB":["LB","ILB","MLB"],
-    "CB":["CB"], "S":["S","FS","SS"], "SPEC":["K","P","LS"],
-}
-POS_TO_GROUP = {p: g for g, ps in POS_GROUPS.items() for p in ps}
-POS_ORDER    = sorted(POS_GROUPS.keys()) + ["OTHER"]
-Z_COLS       = ["z_ht_in","z_wt_lbs","z_arm_in","z_hand_in","z_wing_in",
-                "z_dash40","z_vj_in","z_bj_in","z_shuttle","z_cone3","z_bench"]
-MEAS_LABELS  = ["height","weight","arm","hand","wingspan",
-                "40yd","vert jump","broad jump","shuttle","3-cone","bench"]
-
-def unified_text(row):
-    bt  = " ".join(str(row.get(c, "") or "") for c in BEAST_COLS).strip()
-    pt  = " ".join(str(row.get(c, "") or "") for c in PFF_COLS).strip()
-    brt = " ".join(str(row.get(c, "") or "") for c in BR_COLS).strip()
-    base = bt if bt else pt
-    return (base + " " + brt).strip() if brt else base
+# ── feature building ──────────────────────────────────────────────────────────
 
 def build_features(row, df_all, bundle):
-    """Build the full feature vector for a single player row (as a dict/Series)."""
-    text = unified_text(row)
+    text = unified_text_row(row)
 
-    # TF-IDF + SVD
     tfidf_vec = bundle["tfidf"].transform([text])
-    svd_vec   = bundle["svd"].transform(tfidf_vec)           # (1, 150)
+    svd_vec   = bundle["svd"].transform(tfidf_vec)
+    emb       = SentenceTransformer(bundle["st_model"]).encode(
+                    [text], normalize_embeddings=True)
 
-    # Sentence embedding
-    st_model = SentenceTransformer(bundle["st_model"])
-    emb      = st_model.encode([text], normalize_embeddings=True)  # (1, 768)
-
-    # Measurables (0-impute NaN, matching stacked_models behavior)
     meas = np.array([0.0 if pd.isna(row.get(c)) else float(row.get(c))
                      for c in Z_COLS]).reshape(1, -1)
 
-    # Source flag (0=beast, 1=pff)
-    bt = " ".join(str(row.get(c, "") or "") for c in BEAST_COLS).strip()
-    src = np.array([[0.0 if bt else 1.0]])
-
-    # Consensus z-score within year
-    year = int(row["draft_year"])
-    yr_rows = df_all[df_all["draft_year"] == year]["consensus"].dropna()
-    cons_mu, cons_sigma = yr_rows.mean(), yr_rows.std() if len(yr_rows) > 1 else 1.0
-    cons_val = float(row.get("consensus") or cons_mu)
-    cons_z   = np.array([[(cons_val - cons_mu) / (cons_sigma + 1e-8)]])
-
-    # BR flag
-    brt = " ".join(str(row.get(c, "") or "") for c in BR_COLS).strip()
+    bt      = " ".join(str(row.get(c, "") or "") for c in BEAST_COLS).strip()
+    brt     = " ".join(str(row.get(c, "") or "") for c in BR_COLS).strip()
+    src     = np.array([[0.0 if bt else 1.0]])
     br_flag = np.array([[1.0 if brt else 0.0]])
 
-    # Position one-hot
+    year    = int(row["draft_year"])
+    yr_cons = df_all[df_all["draft_year"] == year]["consensus"].dropna()
+    cons_mu = yr_cons.mean() if len(yr_cons) else 250.0
+    cons_sg = yr_cons.std()  if len(yr_cons) > 1 else 1.0
+    cons_val = float(row.get("consensus") or cons_mu)
+    cons_z   = np.array([[(cons_val - cons_mu) / (cons_sg + 1e-8)]])
+
     pos_grp = POS_TO_GROUP.get(str(row.get("Position", "")).upper(), "OTHER")
     enc_pos = OneHotEncoder(categories=[POS_ORDER], sparse_output=False, handle_unknown="ignore")
-    pos_ohe = enc_pos.fit_transform([[pos_grp]])  # (1, 12)
+    pos_ohe = enc_pos.fit_transform([[pos_grp]])
 
-    # Beast rank z-score within year
     yr_rank = df_all[df_all["draft_year"] == year]["beast_rank"].dropna()
     if len(yr_rank) > 1:
-        rk_mu, rk_sigma = yr_rank.mean(), yr_rank.std()
+        rk_mu, rk_sg = yr_rank.mean(), yr_rank.std()
         rk_val = float(row.get("beast_rank") or rk_mu)
-        rk_z   = np.array([[(rk_val - rk_mu) / (rk_sigma + 1e-8)]])
+        rk_z   = np.array([[(rk_val - rk_mu) / (rk_sg + 1e-8)]])
     else:
         rk_z = np.array([[0.0]])
 
-    # Text length
-    tlen = np.array([[(np.log1p(len(text)) - 7.0) / 1.0]])  # rough standardization
+    tlen = np.array([[(np.log1p(len(text)) - 7.0) / 1.0]])
 
-    # Round one-hot + imputed flag
     raw_round = row.get("round")
-    imputed   = 1.0 if (pd.isna(raw_round) or raw_round is None) else 0.0
+    imputed   = pd.isna(raw_round) or raw_round is None
     if imputed:
-        cons_for_round = float(row.get("consensus") or 250)
-        rnd_val = int(min(int(cons_for_round // 32) + 1, 7))
+        rnd_val = int(min(int(float(row.get("consensus") or 250) // 32) + 1, 7))
     else:
         rnd_val = int(min(int(raw_round), 7))
-    enc_rnd  = OneHotEncoder(categories=[list(range(1, 8))], sparse_output=False, handle_unknown="ignore")
-    rnd_ohe  = enc_rnd.fit_transform([[rnd_val]])  # (1, 7)
-    rnd_flag = np.array([[imputed]])
+    enc_rnd = OneHotEncoder(categories=[list(range(1, 8))], sparse_output=False, handle_unknown="ignore")
+    rnd_ohe = enc_rnd.fit_transform([[rnd_val]])
+    rnd_flag = np.array([[1.0 if imputed else 0.0]])
 
     X_extra = np.hstack([cons_z, br_flag, pos_ohe, rk_z, tlen, rnd_ohe, rnd_flag])
     X       = np.hstack([svd_vec, emb, meas, src, X_extra])
 
     meta = {
-        "text": text, "tfidf_vec": tfidf_vec, "svd_vec": svd_vec,
-        "cons_z": float(cons_z[0, 0]), "br_flag": float(br_flag[0, 0]),
-        "pos_grp": pos_grp, "rk_z": float(rk_z[0, 0]),
-        "tlen": float(np.log1p(len(text))),
-        "round": rnd_val, "round_imputed": bool(imputed),
-        "src": "pff" if src[0, 0] else "beast",
+        "text":           text,
+        "tfidf_vec":      tfidf_vec,
+        "pos_grp":        pos_grp,
+        "src":            "pff" if src[0, 0] else "beast",
+        "round":          rnd_val,
+        "round_imputed":  bool(imputed),
+        "consensus_val":  None if pd.isna(row.get("consensus")) else int(row["consensus"]),
+        "beast_rank_val": None if pd.isna(row.get("beast_rank")) else int(row["beast_rank"]),
+        # z-scores for each measurable (for display)
+        "meas_z": {MEAS_LABELS[i]: float(meas[0, i]) for i in range(11)},
     }
     return X, meta
 
 
+# ── contribution math ─────────────────────────────────────────────────────────
+
 def word_contributions(meta, bundle, coef_vec):
-    """
-    Back-project from SVD → vocab space.
-    contribution(word) = (coef_vec[:150] @ SVD.components_)[vocab_idx] × tfidf_weight
-    Returns sorted list of (word, contribution) for words present in the player's text.
-    """
-    # Effective word weights for this coefficient vector
-    word_weights = coef_vec[:150] @ bundle["svd"].components_  # shape (vocab_size,)
-
-    # Player's raw TF-IDF weights (sparse row → dict of nonzero terms)
-    tfidf_row  = meta["tfidf_vec"]
-    vocab      = {v: k for k, v in bundle["tfidf"].vocabulary_.items()}
-    cx         = tfidf_row.tocoo()
-    contribs   = [(vocab[j], word_weights[j] * v) for j, v in zip(cx.col, cx.data)]
-    return sorted(contribs, key=lambda x: -abs(x[1]))
+    word_weights = coef_vec[:150] @ bundle["svd"].components_
+    vocab        = {v: k for k, v in bundle["tfidf"].vocabulary_.items()}
+    cx           = meta["tfidf_vec"].tocoo()
+    contribs     = sorted(
+        [(vocab[j], word_weights[j] * v) for j, v in zip(cx.col, cx.data)],
+        key=lambda x: -abs(x[1])
+    )
+    return deduplicate_ngrams(contribs)
 
 
-def feature_contributions(X, bundle_coef, meta):
-    """
-    Split the feature vector into named groups and sum contributions.
-    Returns dict: group_name → scalar contribution.
-    """
-    x = X[0]
-    c = bundle_coef
-
-    groups = {}
-    groups["text (TF-IDF+SVD)"]  = float(c[:150] @ x[:150])
-    groups["text (embedding)"]   = float(c[150:918] @ x[150:918])
-    groups["measurables"]        = {MEAS_LABELS[i]: float(c[918+i] * x[918+i])
-                                    for i in range(11)}
-    groups["source_flag"]        = float(c[929] * x[929])
-    # extra block starts at 930
-    groups["consensus"]          = float(c[930] * x[930])
-    groups["BR_flag"]            = float(c[931] * x[931])
-    pos_contrib = float(c[932:944] @ x[932:944])
-    groups["position"]           = pos_contrib
-    groups["beast_rank"]         = float(c[944] * x[944])
-    groups["text_length"]        = float(c[945] * x[945])
-    groups["round"]              = float(c[946:954] @ x[946:954])
-    return groups
+def feature_contributions(X, coef_vec):
+    x, c = X[0], coef_vec
+    return {
+        "consensus":  float(c[930] * x[930]),
+        "round":      float(c[946:954] @ x[946:954]),
+        "beast_rank": float(c[944] * x[944]),
+        "position":   float(c[932:944] @ x[932:944]),
+        "measurables": {MEAS_LABELS[i]: float(c[918+i] * x[918+i]) for i in range(11)},
+    }
 
 
-def fmt_pct(v, decimals=1):
-    return f"{v*100:.{decimals}f}%"
+# ── display helpers ───────────────────────────────────────────────────────────
 
-def bar(v, width=20):
-    filled = int(abs(v) / 0.05 * width) if abs(v) < 0.05 * width else width
-    filled = min(filled, width)
-    sign   = "+" if v >= 0 else "-"
-    return f"[{sign * filled}{' ' * (width - filled)}]"
+def _arrow(v):
+    if   v >  0.3: return "↑↑"
+    elif v >  0.05: return "↑"
+    elif v > -0.05: return ""
+    elif v > -0.3:  return "↓"
+    else:           return "↓↓"
 
 
-# ── main ──────────────────────────────────────────────────────────────────────
+def _fmt_meas(label, raw_val):
+    if pd.isna(raw_val): return None
+    v = float(raw_val)
+    if label == "height":
+        ft, inch = int(v // 12), v % 12
+        return f"{ft}'{inch:.1f}\""
+    if label == "weight":    return f"{v:.0f} lbs"
+    if label in ("40yd","shuttle","3-cone"): return f"{v:.2f}s"
+    if label == "bench":     return f"{v:.0f} reps"
+    return f"{v:.1f}\""
+
+
+def show_structural_drivers(X, coef_vec, meta, row, label, show_arrows=True):
+    feat = feature_contributions(X, coef_vec)
+
+    print(f"\n  Structural drivers → {label}:")
+    if meta["consensus_val"] is not None:
+        arr = f"  {_arrow(feat['consensus'])}" if show_arrows else ""
+        print(f"    {'consensus rank':<18} #{meta['consensus_val']:<6}{arr}")
+    rnd_str = f"round {meta['round']}{'*' if meta['round_imputed'] else ''}"
+    arr = f"  {_arrow(feat['round'])}" if show_arrows else ""
+    print(f"    {'draft round':<18} {rnd_str:<8}{arr}"
+          + ("  (* projected from consensus)" if meta['round_imputed'] else ""))
+    if meta["beast_rank_val"] is not None:
+        arr = f"  {_arrow(feat['beast_rank'])}" if show_arrows else ""
+        print(f"    {'beast rank':<18} #{meta['beast_rank_val']:<6}{arr}")
+    arr = f"  {_arrow(feat['position'])}" if show_arrows else ""
+    print(f"    {'position group':<18} {meta['pos_grp']:<8}{arr}")
+
+    # measurables: show value + z-score only — arrows omitted because model weight
+    # direction can be counterintuitive (e.g. longer arms ↓ for LBs) and misleads readers
+    meas_c = feat["measurables"]
+    notable = {k: v for k, v in meas_c.items() if abs(v) > 0.02}
+    if notable:
+        print(f"\n  Measurables vs {meta['pos_grp']} peers:")
+        raw_map = dict(zip(MEAS_LABELS, RAW_MEAS_COLS))
+        for k in sorted(notable, key=lambda x: -abs(notable[x])):
+            z    = meta["meas_z"][k]
+            rval = _fmt_meas(k, row.get(raw_map[k]))
+            if rval is None:
+                continue
+            above = "above avg" if z >= 0 else "below avg"
+            print(f"    {k:<15} {rval:<12} {z:+.1f}σ {above}")
+
+
+# ── model explain functions ───────────────────────────────────────────────────
 
 def explain_sc(player_row, df_all, bundle, verbose=True):
     X, meta = build_features(player_row, df_all, bundle)
     clf     = bundle["clf"]
     le      = bundle["le"]
 
-    if bundle.get("ensemble") and bundle.get("clf2") is not None:
-        proba = (clf.predict_proba(X) + 2 * bundle["clf2"].predict_proba(X)) / 3
-    else:
-        proba = clf.predict_proba(X)
+    proba = (clf.predict_proba(X) + 2 * bundle["clf2"].predict_proba(X)) / 3 \
+            if bundle.get("ensemble") and bundle.get("clf2") is not None \
+            else clf.predict_proba(X)
 
-    classes   = list(le.classes_)
-    pred_idx  = proba[0].argmax()
-    pred_cls  = classes[pred_idx]
-    coef_pred = clf.coef_[pred_idx]   # weights for predicted class
+    classes  = list(le.classes_)
+    pred_idx = proba[0].argmax()
+    pred_cls = classes[pred_idx]
+    coef     = clf.coef_[pred_idx]
 
     if not verbose:
         return pred_cls, proba[0], meta
 
     print(f"\n{'─'*65}")
-    print(f"  sc_tier prediction")
+    print(f"  Contract tier prediction")
     print(f"{'─'*65}")
-    print(f"  Prediction : {pred_cls}  ({fmt_pct(proba[0, pred_idx])})")
+    print(f"  Prediction : {pred_cls}  ({proba[0, pred_idx]*100:.1f}%)")
     for i, cls in enumerate(classes):
-        bar_str = "█" * int(proba[0, i] * 40)
-        print(f"  {cls:<12} {fmt_pct(proba[0,i]):>6}  {bar_str}")
+        print(f"  {cls:<14} {proba[0,i]*100:>5.1f}%  {'█' * int(proba[0,i] * 40)}")
 
-    # Word contributions toward predicted class
-    contribs = word_contributions(meta, bundle, coef_pred)
-    print(f"\n  Top words → {pred_cls}:")
-    pos_words = [(w, c) for w, c in contribs if c > 0][:12]
-    neg_words = [(w, c) for w, c in contribs if c < 0][:8]
-    for w, c in pos_words:
-        print(f"    {'+' if c>0 else ''}{c:+.4f}  {w}")
-    if neg_words:
-        print(f"\n  Words pulling AWAY from {pred_cls}:")
-        for w, c in neg_words:
-            print(f"    {c:+.4f}  {w}")
+    contribs       = word_contributions(meta, bundle, coef)
+    pos_sentences  = find_source_sentences(meta["text"], contribs, n=3, positive=True)
+    neg_sentences  = find_source_sentences(meta["text"], contribs, n=2, positive=False)
 
-    # Structural features
-    feat = feature_contributions(X, coef_pred, meta)
-    print(f"\n  Structural feature contributions → {pred_cls}:")
-    scalar_feats = {k: v for k, v in feat.items() if isinstance(v, float)}
-    for name, val in sorted(scalar_feats.items(), key=lambda x: -abs(x[1])):
-        if name.startswith("text"):
-            continue
-        print(f"    {name:<20} {val:+.4f}")
+    if pos_sentences:
+        print(f"\n  Key scouting language → {pred_cls}:")
+        for sent, phrases in pos_sentences:
+            print(f"    \"{sent}\"")
+            for ph, _ in phrases:
+                print(f"      → {ph}")
 
-    meas = feat["measurables"]
-    notable_meas = {k: v for k, v in meas.items() if abs(v) > 0.0005}
-    if notable_meas:
-        print(f"\n  Notable measurables → {pred_cls}:")
-        for k, v in sorted(notable_meas.items(), key=lambda x: -abs(x[1])):
-            print(f"    {k:<15} {v:+.4f}")
+    if neg_sentences:
+        print(f"\n  Concerns / risk factors:")
+        for sent, phrases in neg_sentences:
+            print(f"    \"{sent}\"")
+            for ph, _ in phrases:
+                print(f"      → {ph}")
 
-    print(f"\n  Text source: {meta['src']} | Position group: {meta['pos_grp']} | "
-          f"Round: {meta['round']}{'*' if meta['round_imputed'] else ''}")
+    show_structural_drivers(X, coef, meta, player_row, pred_cls)
+    print(f"\n  Text source: {meta['src']}")
 
 
 def explain_apy(player_row, df_all, bundle, verbose=True):
     X, meta = build_features(player_row, df_all, bundle)
     clf     = bundle["clf"]
 
-    if bundle.get("ensemble") and bundle.get("clf2") is not None:
-        pred = float(np.clip((clf.predict(X) + 2 * bundle["clf2"].predict(X)) / 3, 0, 1)[0])
-    else:
-        pred = float(np.clip(clf.predict(X), 0, 1)[0])
+    pred = float(np.clip(
+        (clf.predict(X) + 2 * bundle["clf2"].predict(X)) / 3
+        if bundle.get("ensemble") and bundle.get("clf2") is not None
+        else clf.predict(X), 0, 1)[0])
 
     resid = bundle.get("resid_std", 0.10)
-    coef  = clf.coef_   # shape (n_features,) for Ridge
 
     if not verbose:
         return pred, meta
 
     print(f"\n{'─'*65}")
-    print(f"  apy_pct prediction")
+    print(f"  APY percentile prediction")
     print(f"{'─'*65}")
-    print(f"  Predicted APY percentile: {pred:.3f}  [{max(0,pred-resid):.3f} – {min(1,pred+resid):.3f}]")
-    print(f"  (1.0 = highest-paid active player on signing date)")
+    print(f"  Predicted APY percentile : {pred:.3f}  [{max(0,pred-resid):.3f} – {min(1,pred+resid):.3f}]")
+    print(f"  (1.0 = highest-paid player in NFL on signing date)")
 
-    contribs = word_contributions(meta, bundle, coef)
-    print(f"\n  Top words → higher APY percentile:")
-    pos_words = [(w, c) for w, c in contribs if c > 0][:12]
-    neg_words = [(w, c) for w, c in contribs if c < 0][:8]
-    for w, c in pos_words:
-        print(f"    {c:+.4f}  {w}")
-    if neg_words:
-        print(f"\n  Words pulling APY percentile DOWN:")
-        for w, c in neg_words:
-            print(f"    {c:+.4f}  {w}")
+    show_structural_drivers(X, clf.coef_, meta, player_row, "APY percentile", show_arrows=False)
+    print(f"\n  Text source: {meta['src']}")
 
-    feat = feature_contributions(X, coef, meta)
-    print(f"\n  Structural feature contributions → APY percentile:")
-    scalar_feats = {k: v for k, v in feat.items() if isinstance(v, float)}
-    for name, val in sorted(scalar_feats.items(), key=lambda x: -abs(x[1])):
-        if name.startswith("text"):
-            continue
-        print(f"    {name:<20} {val:+.4f}")
 
+# ── entry point ───────────────────────────────────────────────────────────────
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("player", help="Player name (partial match ok)")
-    parser.add_argument("--model", default="all", choices=["sc", "apy", "all"],
-                        help="Which model to explain (default: all)")
-    parser.add_argument("--year", type=int, default=2026,
-                        help="Draft year to filter on (default: 2026)")
+    parser.add_argument("--model", default="all", choices=["sc", "apy", "all"])
+    parser.add_argument("--year", type=int, default=2026)
     args = parser.parse_args()
 
     df   = pd.read_csv(BASE / "data/processed/all_prospects.csv")
@@ -298,24 +271,22 @@ def main():
     hits = df[mask]
 
     if len(hits) == 0:
-        # Broaden search across all years
-        mask2 = df["Player Name"].str.lower().str.contains(args.player.lower())
-        hits  = df[mask2]
+        hits = df[df["Player Name"].str.lower().str.contains(args.player.lower())]
         if len(hits) == 0:
             print(f"No player matching '{args.player}' found.")
             sys.exit(1)
 
     if len(hits) > 1:
-        print(f"Multiple matches — using first:")
+        print("Multiple matches — using first:")
         for _, r in hits.iterrows():
             print(f"  {r['Player Name']}  ({r['Position']}, {int(r['draft_year'])})")
         print()
 
     row = hits.iloc[0]
     print(f"\n{'═'*65}")
-    print(f"  Player : {row['Player Name']}")
-    print(f"  Pos    : {row['Position']}   Draft year: {int(row['draft_year'])}")
-    print(f"  Cons.  : {row.get('consensus', 'N/A')}   College: {row.get('College', 'N/A')}")
+    print(f"  {row['Player Name']}  |  {row['Position']}  |  {row.get('College','?')}")
+    print(f"  Consensus: #{int(row['consensus']) if pd.notna(row.get('consensus')) else '?'}"
+          f"   Draft year: {int(row['draft_year'])}")
     print(f"{'═'*65}")
 
     sc_bundle  = joblib.load(BASE / "models/model_sc_tier.pkl")
@@ -323,7 +294,6 @@ def main():
 
     if args.model in ("sc", "all"):
         explain_sc(row, df, sc_bundle)
-
     if args.model in ("apy", "all"):
         explain_apy(row, df, apy_bundle)
 

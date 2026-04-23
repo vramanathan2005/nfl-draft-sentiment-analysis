@@ -27,7 +27,6 @@ Tasks:
                 train: 2017-2019  |  test: 2020-2021
 """
 
-import re
 import warnings
 import numpy as np
 import pandas as pd
@@ -40,125 +39,23 @@ from sklearn.linear_model import LogisticRegression, Ridge
 from sklearn.dummy import DummyClassifier
 from sklearn.model_selection import StratifiedKFold, KFold
 from sklearn.metrics import f1_score, classification_report
-from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.preprocessing import LabelEncoder
 from scipy.stats import spearmanr
 from xgboost import XGBClassifier, XGBRegressor
 
+from features import (
+    BEAST_COLS, PFF_COLS, BR_COLS, Z_COLS,
+    unified_text, text_source_flag, has_br_flag, get_meas,
+    consensus_feature, beast_rank_feature, text_length_feature,
+    round_feature, position_feature,
+)
+
 warnings.filterwarnings("ignore")
 
-BASE        = Path("/Users/varunramanathan/Downloads/sentiment-analysis")
-MODEL_NAME  = "all-mpnet-base-v2"
-BEAST_COLS  = ["beast_summary", "beast_strengths", "beast_weaknesses"]
-PFF_COLS    = ["pff_overview", "pff_pros", "pff_cons", "pff_bottom_line", "pff_extra"]
-BR_COLS     = ["br_positives", "br_negatives"]
-Z_COLS      = ["z_ht_in","z_wt_lbs","z_arm_in","z_hand_in","z_wing_in",
-               "z_dash40","z_vj_in","z_bj_in","z_shuttle","z_cone3","z_bench"]
-TFIDF_PARAMS = dict(ngram_range=(1, 2), max_features=15_000,
-                    sublinear_tf=True, min_df=2)
-SVD_DIM = 150
-
-
-def parse_beast_grade(val):
-    if pd.isna(val): return 0.0
-    s = str(val).lower()
-    if any(x in s for x in ["undrafted", "priority free", "udfa", "free agent"]): return 8.0
-    m = re.search(r"(\d+)(?:st|nd|rd|th)", s)
-    return float(m.group(1)) if m else 0.0
-
-def beast_grade_feature(df):
-    return df["beast_grade"].map(parse_beast_grade).values.reshape(-1, 1)
-
-def beast_text(df):
-    return df[BEAST_COLS].fillna("").apply(lambda r: " ".join(r), axis=1).str.strip()
-
-def pff_text(df):
-    return df[PFF_COLS].fillna("").apply(lambda r: " ".join(r), axis=1).str.strip()
-
-def br_text(df):
-    return df[BR_COLS].fillna("").apply(lambda r: " ".join(r), axis=1).str.strip()
-
-def unified_text(df):
-    bt  = beast_text(df)
-    pt  = pff_text(df)
-    brt = br_text(df)
-    base = bt.where(bt.str.len() > 0, pt)
-    return (base + " " + brt).str.strip().where(brt.str.len() > 0, base)
-
-def text_source_flag(df):
-    bt = beast_text(df)
-    return (bt.str.len() == 0).astype(float).values.reshape(-1, 1)
-
-def has_br_flag(df):
-    return (br_text(df).str.len() > 0).astype(float).values.reshape(-1, 1)
-
-def get_meas(df):
-    return df[Z_COLS].fillna(0.0).values
-
-def beast_rank_feature(df):
-    """Per-year z-score of beast_rank, 0-imputed for missing."""
-    out = np.zeros(len(df))
-    df = df.reset_index(drop=True)
-    for _, grp in df.groupby("draft_year"):
-        vals = grp["beast_rank"].dropna()
-        if len(vals) < 2:
-            continue
-        mu, sigma = vals.mean(), vals.std()
-        if sigma < 1e-6:
-            continue
-        out[grp.index] = grp["beast_rank"].fillna(mu).map(lambda v: (v - mu) / sigma)
-    return out.reshape(-1, 1)
-
-def text_length_feature(texts: pd.Series) -> np.ndarray:
-    """Log text length, standardized to zero mean / unit variance."""
-    lengths = np.log1p(texts.str.len().values.astype(float))
-    mu, sigma = lengths.mean(), lengths.std()
-    if sigma < 1e-6:
-        return np.zeros((len(texts), 1))
-    return ((lengths - mu) / sigma).reshape(-1, 1)
-
-def round_feature(df: pd.DataFrame) -> np.ndarray:
-    """
-    Draft round (1-7) one-hot encoded, plus an 'imputed' flag.
-    Training rows use actual round; rows with no round (2026 prospects)
-    fall back to consensus // 32 + 1, capped at 7.
-    """
-    rounds = df["round"].copy()
-    missing = rounds.isna()
-    if missing.any():
-        cons = df.loc[missing, "consensus"].fillna(250)
-        rounds.loc[missing] = (cons // 32 + 1).clip(upper=7)
-    rounds = rounds.fillna(4).astype(int).clip(1, 7)
-    enc = OneHotEncoder(categories=[list(range(1, 8))], sparse_output=False, handle_unknown="ignore")
-    ohe = enc.fit_transform(rounds.values.reshape(-1, 1))
-    imputed_flag = missing.astype(float).values.reshape(-1, 1)
-    return np.hstack([ohe, imputed_flag])
-
-POS_GROUPS = {
-    "QB":["QB"], "RB":["RB","FB"], "WR":["WR"], "TE":["TE"],
-    "OL":["OT","IOL","C","G","T"], "EDGE":["EDGE","OLB","DE"],
-    "DL":["DL","DT","NT"], "LB":["LB","ILB","MLB"],
-    "CB":["CB"], "S":["S","FS","SS"], "SPEC":["K","P","LS"],
-}
-POS_TO_GROUP = {p: g for g, ps in POS_GROUPS.items() for p in ps}
-POS_ORDER    = sorted(POS_GROUPS.keys()) + ["OTHER"]
-
-def position_feature(df):
-    groups = df["Position"].str.upper().map(POS_TO_GROUP).fillna("OTHER")
-    enc = OneHotEncoder(categories=[POS_ORDER], sparse_output=False, handle_unknown="ignore")
-    return enc.fit_transform(groups.values.reshape(-1, 1))
-
-def consensus_feature(df):
-    """Per-year z-score of consensus rank, 0-imputed for missing."""
-    out = np.zeros(len(df))
-    for _, grp in df.groupby("draft_year"):
-        vals = grp["consensus"].dropna()
-        if len(vals) < 2:
-            continue
-        mu, sigma = vals.mean(), vals.std()
-        if sigma < 1e-6:
-            continue
-        out[grp.index] = grp["consensus"].fillna(mu).map(lambda v: (v - mu) / sigma)
-    return out.reshape(-1, 1)
+BASE         = Path("/Users/varunramanathan/Downloads/sentiment-analysis")
+MODEL_NAME   = "all-mpnet-base-v2"
+TFIDF_PARAMS = dict(ngram_range=(1, 2), max_features=15_000, sublinear_tf=True, min_df=2)
+SVD_DIM      = 150
 
 def section(title):
     print(f"\n{'='*60}\n  {title}\n{'='*60}")

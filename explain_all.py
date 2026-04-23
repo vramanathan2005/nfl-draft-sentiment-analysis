@@ -21,109 +21,33 @@ from pathlib import Path
 from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import OneHotEncoder
 
+from features import (
+    BEAST_COLS, PFF_COLS, BR_COLS, Z_COLS,
+    POS_TO_GROUP, POS_ORDER, MEAS_LABELS,
+    unified_text, text_source_flag, has_br_flag, get_meas,
+    consensus_feature, beast_rank_feature, text_length_feature,
+    round_feature, position_feature,
+    deduplicate_ngrams, find_source_sentences,
+)
+
 warnings.filterwarnings("ignore")
 
-BASE      = Path("/Users/varunramanathan/Downloads/sentiment-analysis")
-TOP_N     = 5   # positive words per model
-BOTTOM_N  = 3   # negative words per model
-
-BEAST_COLS = ["beast_summary", "beast_strengths", "beast_weaknesses"]
-PFF_COLS   = ["pff_overview", "pff_pros", "pff_cons", "pff_bottom_line", "pff_extra"]
-BR_COLS    = ["br_positives", "br_negatives"]
-Z_COLS     = ["z_ht_in","z_wt_lbs","z_arm_in","z_hand_in","z_wing_in",
-              "z_dash40","z_vj_in","z_bj_in","z_shuttle","z_cone3","z_bench"]
-MEAS_LABELS = ["height","weight","arm","hand","wingspan",
-               "40yd","vert_jump","broad_jump","shuttle","3cone","bench"]
-
-POS_GROUPS  = {"QB":["QB"],"RB":["RB","FB"],"WR":["WR"],"TE":["TE"],
-               "OL":["OT","IOL","C","G","T"],"EDGE":["EDGE","OLB","DE"],
-               "DL":["DL","DT","NT"],"LB":["LB","ILB","MLB"],
-               "CB":["CB"],"S":["S","FS","SS"],"SPEC":["K","P","LS"]}
-POS_TO_GROUP = {p: g for g, ps in POS_GROUPS.items() for p in ps}
-POS_ORDER    = sorted(POS_GROUPS.keys()) + ["OTHER"]
-
-
-# ── text helpers ──────────────────────────────────────────────────────────────
-
-def make_texts(df):
-    bt  = df[BEAST_COLS].fillna("").apply(lambda r: " ".join(r), axis=1).str.strip()
-    pt  = df[PFF_COLS].fillna("").apply(lambda r: " ".join(r), axis=1).str.strip()
-    brt = df[BR_COLS].fillna("").apply(lambda r: " ".join(r), axis=1).str.strip()
-    base = bt.where(bt.str.len() > 0, pt)
-    return (base + " " + brt).str.strip().where(brt.str.len() > 0, base)
+BASE = Path("/Users/varunramanathan/Downloads/sentiment-analysis")
 
 
 # ── feature builders ─────────────────────────────────────────────────────────
 
 def build_sc_features(df, texts, emb, sc_bundle):
-    svd_vec   = sc_bundle["svd"].transform(sc_bundle["tfidf"].transform(texts))
-    meas      = df[Z_COLS].fillna(0.0).values
-    src       = (df[BEAST_COLS].fillna("").apply(lambda r: " ".join(r), axis=1).str.strip().str.len() == 0).astype(float).values.reshape(-1, 1)
-    brt_len   = df[BR_COLS].fillna("").apply(lambda r: " ".join(r), axis=1).str.strip().str.len()
-    br_flag   = (brt_len > 0).astype(float).values.reshape(-1, 1)
-
-    # consensus z-score per year
-    cons_z = np.zeros(len(df))
-    for yr, grp in df.groupby("draft_year"):
-        vals = grp["consensus"].dropna()
-        if len(vals) < 2: continue
-        mu, sigma = vals.mean(), vals.std()
-        cons_z[grp.index] = df.loc[grp.index, "consensus"].fillna(mu).map(lambda v: (v - mu) / (sigma + 1e-8))
-    cons_z = cons_z.reshape(-1, 1)
-
-    # position one-hot
-    pos_grp = df["Position"].str.upper().map(POS_TO_GROUP).fillna("OTHER")
-    enc_pos = OneHotEncoder(categories=[POS_ORDER], sparse_output=False, handle_unknown="ignore")
-    pos_ohe = enc_pos.fit_transform(pos_grp.values.reshape(-1, 1))
-
-    # beast_rank z-score per year
-    rank_z = np.zeros(len(df))
-    df2 = df.reset_index(drop=True)
-    for yr, grp in df2.groupby("draft_year"):
-        vals = grp["beast_rank"].dropna()
-        if len(vals) < 2: continue
-        mu, sigma = vals.mean(), vals.std()
-        rank_z[grp.index] = df2.loc[grp.index, "beast_rank"].fillna(mu).map(lambda v: (v - mu) / (sigma + 1e-8))
-    rank_z = rank_z.reshape(-1, 1)
-
-    # text length
-    log_lens = np.log1p(texts.str.len().values.astype(float))
-    tlen = ((log_lens - log_lens.mean()) / (log_lens.std() + 1e-8)).reshape(-1, 1)
-
-    # round one-hot + imputed flag
-    rounds   = df["round"].copy()
-    missing  = rounds.isna()
-    if missing.any():
-        cons = df.loc[missing, "consensus"].fillna(250)
-        rounds.loc[missing] = (cons // 32 + 1).clip(upper=7)
-    rounds = rounds.fillna(4).astype(int).clip(1, 7)
-    enc_rnd = OneHotEncoder(categories=[list(range(1, 8))], sparse_output=False, handle_unknown="ignore")
-    rnd_ohe = enc_rnd.fit_transform(rounds.values.reshape(-1, 1))
-    rnd_flag = missing.astype(float).values.reshape(-1, 1)
-
-    X_extra = np.hstack([cons_z, br_flag, pos_ohe, rank_z, tlen, rnd_ohe, rnd_flag])
-    X       = np.hstack([svd_vec, emb, meas, src, X_extra])
-    return X
+    svd_vec = sc_bundle["svd"].transform(sc_bundle["tfidf"].transform(texts))
+    X_extra = np.hstack([consensus_feature(df), has_br_flag(df), position_feature(df),
+                         beast_rank_feature(df), text_length_feature(texts), round_feature(df)])
+    return np.hstack([svd_vec, emb, get_meas(df), text_source_flag(df), X_extra])
 
 
 def build_dv_features(df, texts, emb, dv_bundle):
-    svd_vec  = dv_bundle["svd"].transform(dv_bundle["tfidf"].transform(texts))
-    meas     = df[Z_COLS].fillna(0.0).values
-    src      = np.zeros((len(df), 1))   # draft model trained on Beast only
-    brt_len  = df[BR_COLS].fillna("").apply(lambda r: " ".join(r), axis=1).str.strip().str.len()
-    br_flag  = (brt_len > 0).astype(float).values.reshape(-1, 1)
-
-    cons_z = np.zeros(len(df))
-    for yr, grp in df.groupby("draft_year"):
-        vals = grp["consensus"].dropna()
-        if len(vals) < 2: continue
-        mu, sigma = vals.mean(), vals.std()
-        cons_z[grp.index] = df.loc[grp.index, "consensus"].fillna(mu).map(lambda v: (v - mu) / (sigma + 1e-8))
-    cons_z = cons_z.reshape(-1, 1)
-
-    X_extra = np.hstack([cons_z, br_flag])
-    X       = np.hstack([svd_vec, emb, meas, src, X_extra])
-    return X
+    svd_vec = dv_bundle["svd"].transform(dv_bundle["tfidf"].transform(texts))
+    X_extra = np.hstack([consensus_feature(df), has_br_flag(df)])
+    return np.hstack([svd_vec, emb, get_meas(df), np.zeros((len(df), 1)), X_extra])
 
 
 # ── explanation helpers ───────────────────────────────────────────────────────
@@ -137,10 +61,13 @@ def word_contribs(tfidf_bundle, coef_vec, tfidf_row):
                   key=lambda x: -abs(x[1]))
 
 
-def fmt_words(contribs, n, positive=True):
-    """Format top n words as 'word(+0.0123)|word2(+0.0098)|...'"""
-    filtered = [(w, c) for w, c in contribs if (c > 0) == positive][:n]
-    return " | ".join(f"{w}({c:+.4f})" for w, c in filtered)
+def fmt_sentences(sent_list):
+    """Convert find_source_sentences output to CSV-friendly string."""
+    parts = []
+    for sent, phrases in sent_list:
+        tagged = ", ".join(ph for ph, _ in phrases)
+        parts.append(f'"{sent}" [{tagged}]' if tagged else f'"{sent}"')
+    return " || ".join(parts)
 
 
 def sc_feat_contribs(X_row, coef_vec):
@@ -197,7 +124,7 @@ dv_bundle  = joblib.load(BASE / "models/model_draft_value.pkl")
 apy_bundle = joblib.load(BASE / "models/model_apy_pct.pkl")
 
 print("Encoding texts (batch)...")
-texts = make_texts(p26)
+texts = unified_text(p26)
 st    = SentenceTransformer(sc_bundle["st_model"])
 emb   = st.encode(texts.tolist(), batch_size=64,
                    show_progress_bar=True, normalize_embeddings=True)
@@ -235,9 +162,8 @@ else:
 apy_resid = apy_bundle.get("resid_std", 0.10)
 
 # precompute tfidf rows for word contributions
-sc_tfidf_rows  = sc_bundle["tfidf"].transform(texts)
-dv_tfidf_rows  = dv_bundle["tfidf"].transform(texts)
-apy_tfidf_rows = apy_bundle["tfidf"].transform(texts)
+sc_tfidf_rows = sc_bundle["tfidf"].transform(texts)
+dv_tfidf_rows = dv_bundle["tfidf"].transform(texts)
 
 idx_cornerstone   = sc_classes.index("cornerstone")
 idx_53man         = sc_classes.index("53_man")
@@ -257,73 +183,69 @@ for i in range(len(p26)):
     sc_pred_idx  = sc_classes.index(sc_pred_cls)
     dv_pred_idx  = dv_classes.index(dv_pred_cls)
 
-    # word contributions
-    sc_wc  = word_contribs(sc_bundle,  sc_clf.coef_[sc_pred_idx],  sc_tfidf_rows[i])
-    dv_wc  = word_contribs(dv_bundle,  dv_clf.coef_[dv_pred_idx],  dv_tfidf_rows[i])
-    apy_wc = word_contribs(apy_bundle, apy_clf.coef_,               apy_tfidf_rows[i])
+    # word contributions (deduplicated n-grams)
+    sc_wc = deduplicate_ngrams(word_contribs(sc_bundle, sc_clf.coef_[sc_pred_idx], sc_tfidf_rows[i]))
+    dv_wc = deduplicate_ngrams(word_contribs(dv_bundle, dv_clf.coef_[dv_pred_idx], dv_tfidf_rows[i]))
 
     # feature contributions
     sc_feat  = sc_feat_contribs(X_sc[i],  sc_clf.coef_[sc_pred_idx])
     dv_feat  = dv_feat_contribs(X_dv[i],  dv_clf.coef_[dv_pred_idx])
     apy_feat = sc_feat_contribs(X_apy[i], apy_clf.coef_)
 
-    p_real = float(sc_proba[i, idx_cornerstone] + sc_proba[i, idx_53man])
+    p_real   = float(sc_proba[i, idx_cornerstone] + sc_proba[i, idx_53man])
+    text_str = texts.iloc[i]
+
+    sc_pos_sents = find_source_sentences(text_str, sc_wc, n=3, positive=True)
+    sc_neg_sents = find_source_sentences(text_str, sc_wc, n=2, positive=False)
+    dv_pos_sents = find_source_sentences(text_str, dv_wc, n=3, positive=True)
+    dv_neg_sents = find_source_sentences(text_str, dv_wc, n=2, positive=False)
 
     rows.append({
         # identity
-        "player_name":         row["Player Name"],
-        "position":            row["Position"],
-        "college":             row.get("College", ""),
-        "consensus":           row.get("consensus", ""),
-        "text_source":         "pff" if not str(row.get("beast_summary","") or "").strip() else "beast",
+        "player_name":   row["Player Name"],
+        "position":      row["Position"],
+        "college":       row.get("College", ""),
+        "consensus":     row.get("consensus", ""),
+        "text_source":   "pff" if not str(row.get("beast_summary","") or "").strip() else "beast",
 
         # sc_tier predictions
-        "sc_prediction":       sc_pred_cls,
-        "p_cornerstone":       round(sc_proba[i, idx_cornerstone] * 100, 1),
-        "p_53_man":            round(sc_proba[i, idx_53man]        * 100, 1),
-        "p_roster_bubble":     round(sc_proba[i, idx_roster_bubble]* 100, 1),
-        "p_out_of_league":     round(sc_proba[i, idx_out_of_league]* 100, 1),
+        "sc_prediction":   sc_pred_cls,
+        "p_cornerstone":   round(sc_proba[i, idx_cornerstone]  * 100, 1),
+        "p_53_man":        round(sc_proba[i, idx_53man]         * 100, 1),
+        "p_roster_bubble": round(sc_proba[i, idx_roster_bubble] * 100, 1),
+        "p_out_of_league": round(sc_proba[i, idx_out_of_league] * 100, 1),
+        "sc_key_sentences":     fmt_sentences(sc_pos_sents),
+        "sc_concerns":          fmt_sentences(sc_neg_sents),
 
-        # sc word explanations
-        "sc_top_words":        fmt_words(sc_wc, TOP_N, positive=True),
-        "sc_words_against":    fmt_words(sc_wc, BOTTOM_N, positive=False),
-
-        # sc feature contributions
-        "sc_feat_consensus":   round(sc_feat["consensus"],           4),
-        "sc_feat_round":       round(sc_feat["round"],               4),
-        "sc_feat_position":    round(sc_feat["position"],            4),
-        "sc_feat_beast_rank":  round(sc_feat["beast_rank"],          4),
-        "sc_feat_text_length": round(sc_feat["text_length"],         4),
-        "sc_top_measurable":   sc_feat["top_measurable"],
+        # sc structural features
+        "sc_feat_consensus":  round(sc_feat["consensus"],  4),
+        "sc_feat_round":      round(sc_feat["round"],      4),
+        "sc_feat_position":   round(sc_feat["position"],   4),
+        "sc_feat_beast_rank": round(sc_feat["beast_rank"], 4),
+        "sc_top_measurable":  sc_feat["top_measurable"],
         "sc_top_measurable_contrib": round(sc_feat["top_measurable_contrib"], 4),
 
         # draft_tier predictions
-        "draft_prediction":    dv_pred_cls,
-        "p_slide":             round(dv_proba[i, idx_slide]    * 100, 1),
-        "p_consensus":         round(dv_proba[i, idx_consensus]* 100, 1),
-        "p_reach":             round(dv_proba[i, idx_reach]    * 100, 1),
+        "draft_prediction": dv_pred_cls,
+        "p_slide":          round(dv_proba[i, idx_slide]     * 100, 1),
+        "p_consensus":      round(dv_proba[i, idx_consensus]  * 100, 1),
+        "p_reach":          round(dv_proba[i, idx_reach]      * 100, 1),
+        "draft_key_sentences":  fmt_sentences(dv_pos_sents),
+        "draft_concerns":       fmt_sentences(dv_neg_sents),
 
-        # draft word explanations
-        "draft_top_words":     fmt_words(dv_wc, TOP_N, positive=True),
-        "draft_words_against": fmt_words(dv_wc, BOTTOM_N, positive=False),
-
-        # draft feature contributions
+        # draft structural features
         "draft_feat_consensus": round(dv_feat["consensus"], 4),
         "draft_top_measurable": dv_feat["top_measurable"],
         "draft_top_measurable_contrib": round(dv_feat["top_measurable_contrib"], 4),
 
         # apy_pct predictions
-        "pred_apy_pct":        round(float(apy_preds[i]),                        3),
-        "pred_apy_pct_lo":     round(float(np.clip(apy_preds[i] - apy_resid, 0, 1)), 3),
-        "pred_apy_pct_hi":     round(float(np.clip(apy_preds[i] + apy_resid, 0, 1)), 3),
-        "p_real_contract":     round(p_real * 100, 1),
-        "expected_apy_pct":    round(p_real * float(apy_preds[i]), 3),
+        "pred_apy_pct":     round(float(apy_preds[i]),                             3),
+        "pred_apy_pct_lo":  round(float(np.clip(apy_preds[i] - apy_resid, 0, 1)),  3),
+        "pred_apy_pct_hi":  round(float(np.clip(apy_preds[i] + apy_resid, 0, 1)),  3),
+        "p_real_contract":  round(p_real * 100, 1),
+        "expected_apy_pct": round(p_real * float(apy_preds[i]), 3),
 
-        # apy word explanations
-        "apy_top_words":       fmt_words(apy_wc, TOP_N, positive=True),
-        "apy_words_against":   fmt_words(apy_wc, BOTTOM_N, positive=False),
-
-        # apy feature contributions
+        # apy structural features
         "apy_feat_consensus":  round(apy_feat["consensus"],  4),
         "apy_feat_round":      round(apy_feat["round"],      4),
         "apy_feat_beast_rank": round(apy_feat["beast_rank"], 4),
@@ -335,4 +257,4 @@ out = pd.DataFrame(rows)
 out_path = BASE / "data/processed/explain_2026.csv"
 out.to_csv(out_path, index=False)
 print(f"\nWrote {len(out)} rows → {out_path}")
-print(out[["player_name","sc_prediction","draft_prediction","pred_apy_pct","sc_top_words"]].head(10).to_string(index=False))
+print(out[["player_name","sc_prediction","draft_prediction","pred_apy_pct","sc_key_sentences"]].head(5).to_string(index=False))
