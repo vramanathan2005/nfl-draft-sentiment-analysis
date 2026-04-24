@@ -395,6 +395,13 @@ div[data-testid="stTextInput"] label p {
 }
 
 /* ── Radio (position selector) ── */
+div[data-testid="stRadio"] > label,
+div[data-testid="stRadio"] [data-testid="stWidgetLabel"] {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
 div[data-testid="stRadio"] > div {
     flex-wrap: wrap !important;
     gap: 10px 12px !important;
@@ -405,6 +412,8 @@ div[data-testid="stRadio"] label {
     border-radius: 999px;
     padding: 10px 16px !important;
     min-height: 0 !important;
+    display: flex !important;
+    align-items: center !important;
     box-shadow:
         inset 0 0 0 1px rgba(255,255,255,0.02),
         0 0 0 1px rgba(34,197,94,0.00),
@@ -424,6 +433,8 @@ div[data-testid="stRadio"] label p {
     font-weight: 700 !important;
     letter-spacing: 0.7px !important;
     text-transform: uppercase;
+    margin: 0 !important;
+    line-height: 1 !important;
 }
 div[data-testid="stRadio"] label[data-baseweb="radio"] input:checked + div {
     background: transparent !important;
@@ -991,6 +1002,23 @@ def hex_to_rgba(value, alpha):
     return f"rgba({r}, {g}, {b}, {alpha})"
 
 
+def _hex_luminance(hex_color):
+    hx = str(hex_color or "").strip().lstrip("#")
+    if len(hx) != 6:
+        return -1
+    r, g, b = int(hx[0:2], 16) / 255, int(hx[2:4], 16) / 255, int(hx[4:6], 16) / 255
+    def _lin(c): return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+    return 0.2126 * _lin(r) + 0.7152 * _lin(g) + 0.0722 * _lin(b)
+
+
+def readable_team_color(*hex_colors, fallback="#e2e8f0", threshold=0.08):
+    """Try each color in order; return the first one readable on a dark background."""
+    for c in hex_colors:
+        if c and _hex_luminance(c) >= threshold:
+            return c
+    return fallback
+
+
 @st.cache_data(ttl=300)
 def load_live_wikipedia_board():
     url = "https://en.wikipedia.org/wiki/2026_NFL_draft"
@@ -1048,7 +1076,25 @@ def render_live_board(df, live_board, live_error=None):
         st.markdown('<div class="sent-empty">No live draft rows available yet.</div>', unsafe_allow_html=True)
         return
 
-    name_lookup = {normalize_player_name(n): n for n in df["player_name"].dropna().tolist()}
+    _prospect_names = df["player_name"].dropna().tolist()
+    name_lookup = {normalize_player_name(n): n for n in _prospect_names}
+    # Fuzzy fallback: for live-board names that don't exact-match after normalization
+    try:
+        from rapidfuzz import process as _rfp, fuzz as _rff
+        _fuzzy_cache = {}
+        def _fuzzy_match_name(raw):
+            key = normalize_player_name(raw)
+            if key in name_lookup:
+                return name_lookup[key]
+            if key in _fuzzy_cache:
+                return _fuzzy_cache[key]
+            result = _rfp.extractOne(key, list(name_lookup.keys()), scorer=_rff.token_sort_ratio)
+            matched = name_lookup[result[0]] if result and result[1] >= 82 else None
+            _fuzzy_cache[key] = matched
+            return matched
+    except ImportError:
+        def _fuzzy_match_name(raw):
+            return name_lookup.get(normalize_player_name(raw))
     team_meta_lookup = load_nfl_team_meta()
     h1, h2, h3, h4, h5, h6 = st.columns([0.62, 0.86, 1.18, 1.75, 0.68, 0.92], vertical_alignment="center")
     with h1:
@@ -1090,7 +1136,7 @@ def render_live_board(df, live_board, live_error=None):
         player_txt = clean_display_value(draft_row["Player"])
         pos_txt = html.escape(clean_display_value(draft_row["Pos"]))
         college_txt = html.escape(clean_display_value(draft_row["College"]))
-        match_name = name_lookup.get(normalize_player_name(player_txt)) if player_txt else None
+        match_name = _fuzzy_match_name(player_txt) if player_txt else None
         cell_style = f' style="background:{row_bg};border-color:{row_border};"'
 
         c1, c2, c3, c4, c5, c6 = st.columns([0.62, 0.86, 1.18, 1.75, 0.68, 0.92], vertical_alignment="center")
@@ -1180,18 +1226,19 @@ if player_deeplink_active:
         height=0,
     )
 
+# ── Load live board once, share across tabs ────────────────────────────────
+live_board = pd.DataFrame()
+live_error = None
+try:
+    live_board = load_live_wikipedia_board()
+except Exception as exc:
+    live_error = str(exc)
+
 # ══════════════════════════════════════════════════════════════════════════════
 #  TAB 0 — MAIN BOARD
 # ══════════════════════════════════════════════════════════════════════════════
 
 with tab0:
-    live_board = pd.DataFrame()
-    live_error = None
-    try:
-        live_board = load_live_wikipedia_board()
-    except Exception as exc:
-        live_error = str(exc)
-
     render_live_board(df, live_board, live_error)
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1732,6 +1779,157 @@ with tab4:
             <div class="summary-val pred" style="color:{dc_color};">{pred_lbl.upper()}</div>
             <div class="summary-lbl">Prediction</div>
             <div class="summary-sub">Model view vs. current consensus</div>
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # ── Draft result panel (if player has been selected) ──
+    drafted_row = None
+    if not live_board.empty:
+        try:
+            from rapidfuzz import process as _rfp2, fuzz as _rff2
+            _lb_names = live_board["Player"].dropna().tolist()
+            _res = _rfp2.extractOne(sel, _lb_names, scorer=_rff2.token_sort_ratio)
+            if _res and _res[1] >= 82:
+                drafted_row = live_board[live_board["Player"] == _res[0]].iloc[0]
+        except ImportError:
+            _norm_sel = normalize_player_name(sel)
+            for _, _lr in live_board.iterrows():
+                if normalize_player_name(str(_lr["Player"])) == _norm_sel:
+                    drafted_row = _lr
+                    break
+
+    if drafted_row is not None:
+        dr_round  = int(drafted_row["Round"])
+        dr_pick   = int(drafted_row["Pick"])
+        dr_team   = str(drafted_row.get("NFL Team", "")).strip()
+        team_meta_for_card = load_nfl_team_meta()
+        dr_meta   = team_meta_for_card.get(normalize_team_name(dr_team), {})
+        # Raw color for background tinting — always use a team color, dark is fine at low opacity
+        dr_raw_color = dr_meta.get("color_1") or dr_meta.get("color_2") or "#3b82f6"
+        # Readable color for text — tries color_1 then color_2, falls back to neutral
+        dr_color  = readable_team_color(dr_meta.get("color_1"), dr_meta.get("color_2"), fallback="#3b82f6")
+        dr_logo   = dr_meta.get("team_logo_espn") or dr_meta.get("logo")
+
+        # Pick value tier
+        if dr_pick <= 32:
+            pick_tier = "Round 1"
+        elif dr_pick <= 64:
+            pick_tier = "Round 2"
+        elif dr_pick <= 105:
+            pick_tier = "Round 3"
+        elif dr_pick <= 140:
+            pick_tier = "Round 4"
+        elif dr_pick <= 175:
+            pick_tier = "Round 5"
+        elif dr_pick <= 215:
+            pick_tier = "Round 6"
+        else:
+            pick_tier = "Round 7 / UDFA"
+
+        # Rise / fall vs consensus (positive = went earlier = rose)
+        rise_fall_picks = consensus - dr_pick if isinstance(consensus, int) else None
+
+        # Prediction vs reality: derive actual tier from pick vs consensus rank,
+        # then check if it matches draft_prediction (slide/consensus/reach).
+        # Threshold scales with rank — top picks need tight accuracy, later picks
+        # have fuzzier boards so a wider band still counts as "consensus."
+        if rise_fall_picks is not None:
+            if isinstance(consensus, int):
+                if consensus <= 5:
+                    _tier_thresh = 2
+                elif consensus <= 15:
+                    _tier_thresh = 3
+                elif consensus <= 32:
+                    _tier_thresh = 4
+                elif consensus <= 64:
+                    _tier_thresh = 6
+                else:
+                    _tier_thresh = 8
+            else:
+                _tier_thresh = 5
+            if rise_fall_picks >= _tier_thresh:
+                actual_tier = "reach"   # went significantly earlier than ranked
+            elif rise_fall_picks <= -_tier_thresh:
+                actual_tier = "slide"   # fell significantly vs ranking
+            else:
+                actual_tier = "consensus"
+            predicted_tier = row["draft_prediction"]
+            if actual_tier == predicted_tier:
+                accuracy_label = "Model called it"
+                accuracy_color = "#22c55e"
+                accuracy_icon  = "✓"
+            elif actual_tier == "reach":
+                accuracy_label = "Went earlier than model predicted"
+                accuracy_color = "#f59e0b"
+                accuracy_icon  = "↑"
+            elif actual_tier == "slide":
+                accuracy_label = "Went later than model predicted"
+                accuracy_color = "#ef4444"
+                accuracy_icon  = "↓"
+            else:
+                accuracy_label = "Closer to consensus than predicted"
+                accuracy_color = "#94a3b8"
+                accuracy_icon  = "→"
+        else:
+            accuracy_label = "—"
+            accuracy_color = "#94a3b8"
+            accuracy_icon  = ""
+        if rise_fall_picks is not None:
+            if rise_fall_picks > 0:
+                rf_label = f"Rose {rise_fall_picks} spots vs consensus"
+                rf_color = "#22c55e"
+            elif rise_fall_picks < 0:
+                rf_label = f"Fell {abs(rise_fall_picks)} spots vs consensus"
+                rf_color = "#ef4444"
+            else:
+                rf_label = "Picked exactly at consensus"
+                rf_color = "#94a3b8"
+        else:
+            rf_label = "—"
+            rf_color = "#94a3b8"
+
+        team_logo_html = (
+            f'<img src="{html.escape(str(dr_logo))}" style="height:44px;object-fit:contain;display:block;" />'
+            if dr_logo else
+            f'<div style="font-size:13px;font-weight:700;color:#f1f5f9;">{html.escape(dr_team)}</div>'
+        )
+
+        dr_rgba   = hex_to_rgba(dr_raw_color, 0.18) or "rgba(59,130,246,0.18)"
+        dr_border = hex_to_rgba(dr_raw_color, 0.5) or "rgba(59,130,246,0.5)"
+
+        st.markdown(f"""
+        <div style="background:{dr_rgba};border:1px solid {dr_border};border-radius:10px;
+                    padding:18px 20px;margin:16px 0 4px;">
+          <div style="font-size:10px;font-weight:700;color:{dr_color};text-transform:uppercase;
+                      letter-spacing:1.2px;margin-bottom:12px;">DRAFTED</div>
+          <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;min-width:80px;">
+              {team_logo_html}
+              <div style="font-size:11px;color:#94a3b8;">{html.escape(dr_team)}</div>
+            </div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;flex:1;">
+              <div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:12px 18px;text-align:center;min-width:90px;">
+                <div style="font-size:24px;font-weight:900;color:{dr_color};">R{dr_round}</div>
+                <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Round</div>
+              </div>
+              <div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:12px 18px;text-align:center;min-width:90px;">
+                <div style="font-size:24px;font-weight:900;color:{dr_color};">#{dr_pick}</div>
+                <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Overall</div>
+              </div>
+              <div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:12px 18px;text-align:center;min-width:90px;">
+                <div style="font-size:15px;font-weight:700;color:#f1f5f9;">{pick_tier}</div>
+                <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Pick Value</div>
+              </div>
+              <div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:12px 18px;text-align:center;min-width:120px;">
+                <div style="font-size:15px;font-weight:700;color:{accuracy_color};">{accuracy_icon} {accuracy_label}</div>
+                <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">vs Model Prediction ({pred_lbl})</div>
+              </div>
+              <div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:12px 18px;text-align:center;min-width:120px;">
+                <div style="font-size:15px;font-weight:700;color:{rf_color};">{rf_label}</div>
+                <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">vs Consensus #{consensus}</div>
+              </div>
+            </div>
           </div>
         </div>
         """, unsafe_allow_html=True)
