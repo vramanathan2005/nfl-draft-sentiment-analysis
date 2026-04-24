@@ -712,6 +712,38 @@ def load_data():
 
 df, ng, sim_df, hist_sim_df, hist_meta = load_data()
 
+# ── Strip name/college tokens from ngrams ──────────────────────────────────
+def _build_entity_blocklist(dataframe):
+    """Build a set of words that are player name parts or college name parts."""
+    import re as _re
+    # Common words that happen to appear in names/colleges but are real scouting terms
+    _false_positives = {
+        "college", "ball", "allen", "hill", "brown", "white", "green", "long",
+        "short", "north", "south", "east", "west", "central", "state", "young",
+        "cross", "man", "men", "back", "field", "land", "ford", "son", "tion",
+        "strong", "late", "early", "run", "pass", "zone", "red",
+    }
+    tokens = set()
+    for name in dataframe["player_name"].dropna():
+        for tok in _re.split(r"\s+", name.lower()):
+            tok = _re.sub(r"[^a-z]", "", tok)
+            if len(tok) >= 4 and tok not in _false_positives:
+                tokens.add(tok)
+    for col in dataframe["college"].dropna() if "college" in dataframe.columns else []:
+        for tok in _re.split(r"\s+", col.lower()):
+            tok = _re.sub(r"[^a-z]", "", tok)
+            if len(tok) >= 4 and tok not in _false_positives:
+                tokens.add(tok)
+    return tokens
+
+_entity_tokens = _build_entity_blocklist(df)
+
+def _ngram_has_entity(phrase, blocklist):
+    words = set(re.sub(r"[^a-z\s]", "", str(phrase).lower()).split())
+    return bool(words & blocklist)
+
+ng = ng[~ng["ngram"].apply(_ngram_has_entity, blocklist=_entity_tokens)].copy()
+
 qp_player = st.query_params.get("player")
 if qp_player:
     player_match = df[df["player_name"] == qp_player]
@@ -789,7 +821,10 @@ def parse_word_str(words_str):
         if ":" in item:
             word, score = item.rsplit(":", 1)
             try:
-                result.append((word.strip(), float(score)))
+                word = word.strip()
+                # Drop any word/phrase that contains a player name or college token
+                if not _ngram_has_entity(word, _entity_tokens):
+                    result.append((word, float(score)))
             except ValueError:
                 pass
     return result
@@ -1494,6 +1529,7 @@ with tab2:
         height=380,
         column_config={
             "P(Slide) %":     st.column_config.ProgressColumn(min_value=0, max_value=100, format="%.1f%%"),
+            "P(Consensus) %": st.column_config.ProgressColumn(min_value=0, max_value=100, format="%.1f%%"),
             "P(Reach) %":     st.column_config.ProgressColumn(min_value=0, max_value=100, format="%.1f%%"),
             "Scout Conf":     st.column_config.ProgressColumn(min_value=0, max_value=100, format="%.0f"),
         },
