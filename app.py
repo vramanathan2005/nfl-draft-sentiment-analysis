@@ -944,7 +944,6 @@ def load_live_wikipedia_board():
 
 def render_live_board(df, live_board, live_error=None):
     st.markdown('<div class="sec-lbl" style="margin-top:0">Live Draft Board</div>', unsafe_allow_html=True)
-    st.caption("Wikipedia player selections cached for 5 minutes.")
     if live_error:
         st.markdown(f'<div class="sent-empty">Live board unavailable right now: {html.escape(live_error)}</div>',
                     unsafe_allow_html=True)
