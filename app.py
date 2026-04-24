@@ -498,13 +498,54 @@ def load_data():
     headshots_path = BASE / "data/raw/nfl_draft_2026_headshots.csv"
 
     # Merge raw measurables + extra fields from inference
+    SCOUT_TEXT_COLS = [
+        "beast_summary", "beast_strengths", "beast_weaknesses",
+        "pff_overview", "pff_pros", "pff_cons", "pff_bottom_line",
+        "br_positives", "br_negatives", "br_article_grade",
+    ]
     extra = [
         "Player Name", "beast_grade", "br_pro_comparison", "has_br", "has_pff",
         "text_source", "college_logo_url",
-    ] + MEAS_RAW
+    ] + MEAS_RAW + SCOUT_TEXT_COLS
     inf_sub = inf[[c for c in extra if c in inf.columns]].rename(
         columns={"Player Name": "player_name", "text_source": "inf_text_source"})
     df = exp.merge(inf_sub, on="player_name", how="left")
+
+    # Merge RAS scores for 2026
+    ras_path = BASE / "data/raw/RAS Scores.csv"
+    if ras_path.exists():
+        ras = pd.read_csv(ras_path)
+        ras_2026 = ras[ras["Year"] == 2026][["Name", "RAS", "ALLTIME"]].copy()
+        ras_2026 = ras_2026.rename(columns={"Name": "player_name", "RAS": "ras", "ALLTIME": "ras_alltime"})
+        ras_2026["player_name"] = ras_2026["player_name"].str.strip()
+        # Fuzzy-match RAS names to prospect names
+        from rapidfuzz import process as _rfp_r, fuzz as _rff_r
+        import re as _re_ras
+        def _norm_ras(n):
+            n = str(n).lower().strip()
+            n = _re_ras.sub(r"\b(jr|sr|ii|iii|iv|v)\b\.?", "", n)
+            return _re_ras.sub(r"[^a-z ]", "", n).strip()
+
+        prospect_names = df["player_name"].dropna().tolist()
+        pname_norm = {_norm_ras(n): n for n in prospect_names}
+        matched = []
+        for _, rr in ras_2026.iterrows():
+            key = _norm_ras(rr["player_name"])
+            if key in pname_norm:
+                matched.append({"player_name": pname_norm[key], "ras": rr["ras"], "ras_alltime": rr["ras_alltime"]})
+            else:
+                res = _rfp_r.extractOne(key, list(pname_norm.keys()), scorer=_rff_r.token_sort_ratio)
+                if res and res[1] >= 85:
+                    matched.append({"player_name": pname_norm[res[0]], "ras": rr["ras"], "ras_alltime": rr["ras_alltime"]})
+        if matched:
+            ras_df = pd.DataFrame(matched).drop_duplicates("player_name")
+            df = df.merge(ras_df, on="player_name", how="left")
+        if "ras" not in df.columns:
+            df["ras"] = None
+            df["ras_alltime"] = None
+    else:
+        df["ras"] = None
+        df["ras_alltime"] = None
 
     # Merge headshots
     if headshots_path.exists():
@@ -1113,6 +1154,13 @@ def render_live_board(df, live_board, live_error=None):
 
     _prospect_names = df["player_name"].dropna().tolist()
     name_lookup = {normalize_player_name(n): n for n in _prospect_names}
+    # Last-name fallback: "Vega Ioane" → last token "ioane" → "Olaivavega Ioane"
+    _lastname_lookup = {}
+    for n in _prospect_names:
+        parts = n.strip().split()
+        if parts:
+            _lastname_lookup.setdefault(parts[-1].lower(), []).append(n)
+
     # Fuzzy fallback: for live-board names that don't exact-match after normalization
     try:
         from rapidfuzz import process as _rfp, fuzz as _rff
@@ -1123,8 +1171,20 @@ def render_live_board(df, live_board, live_error=None):
                 return name_lookup[key]
             if key in _fuzzy_cache:
                 return _fuzzy_cache[key]
-            result = _rfp.extractOne(key, list(name_lookup.keys()), scorer=_rff.token_sort_ratio)
-            matched = name_lookup[result[0]] if result and result[1] >= 82 else None
+            # Last-name exact fallback
+            raw_parts = str(raw).strip().split()
+            if raw_parts:
+                last = raw_parts[-1].lower()
+                ln_matches = _lastname_lookup.get(last, [])
+                if len(ln_matches) == 1:
+                    _fuzzy_cache[key] = ln_matches[0]
+                    return ln_matches[0]
+            # Full fuzzy — use both token_sort and partial, take best
+            keys = list(name_lookup.keys())
+            r1 = _rfp.extractOne(key, keys, scorer=_rff.token_sort_ratio)
+            r2 = _rfp.extractOne(key, keys, scorer=_rff.partial_ratio)
+            best = max([r for r in [r1, r2] if r], key=lambda x: x[1], default=None)
+            matched = name_lookup[best[0]] if best and best[1] >= 80 else None
             _fuzzy_cache[key] = matched
             return matched
     except ImportError:
@@ -1230,12 +1290,13 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-tab0, tab4, tab1, tab2, tab3 = st.tabs([
+tab0, tab4, tab1, tab2, tab3, tab5 = st.tabs([
     "NFL Draft Live",
     "Player Card",
     "Class Overview",
     "Draft Board",
     "Scouting Language",
+    "Contract Outlook",
 ])
 
 if player_deeplink_active:
@@ -1825,8 +1886,10 @@ with tab4:
         try:
             from rapidfuzz import process as _rfp2, fuzz as _rff2
             _lb_names = live_board["Player"].dropna().tolist()
-            _res = _rfp2.extractOne(sel, _lb_names, scorer=_rff2.token_sort_ratio)
-            if _res and _res[1] >= 82:
+            _r1 = _rfp2.extractOne(sel, _lb_names, scorer=_rff2.token_sort_ratio)
+            _r2 = _rfp2.extractOne(sel, _lb_names, scorer=_rff2.partial_ratio)
+            _res = max([r for r in [_r1, _r2] if r], key=lambda x: x[1], default=None)
+            if _res and _res[1] >= 80:
                 drafted_row = live_board[live_board["Player"] == _res[0]].iloc[0]
         except ImportError:
             _norm_sel = normalize_player_name(sel)
@@ -2045,6 +2108,18 @@ with tab4:
                     cards_html += (f'<div class="meas-card">'
                                    f'<div class="meas-val">{val}</div>'
                                    f'<div class="meas-lbl">{lbl}{pct}</div></div>')
+                # RAS card
+                ras_val = row.get("ras")
+                if pd.notna(ras_val):
+                    ras_float = float(ras_val)
+                    ras_color = ("#22c55e" if ras_float >= 8.0
+                                 else "#3b82f6" if ras_float >= 5.0
+                                 else "#ef4444")
+                    ras_alltime = row.get("ras_alltime")
+                    ras_sub = f"All-time: {float(ras_alltime):.2f}" if pd.notna(ras_alltime) else ""
+                    cards_html += (f'<div class="meas-card" style="border-color:{ras_color}44;">'
+                                   f'<div class="meas-val" style="color:{ras_color};">{ras_float:.2f}</div>'
+                                   f'<div class="meas-lbl">RAS · /10{(" · " + ras_sub) if ras_sub else ""}</div></div>')
                 cards_html += "</div>"
                 st.markdown(cards_html, unsafe_allow_html=True)
 
@@ -2259,3 +2334,23 @@ with tab4:
     if dv_neg:
         _sl_inner += '<div class="sec-lbl" style="margin-top:20px">Concerns</div>' + render_sentences(dv_neg, is_neg=True)
     st.markdown(f'<div class="section-card">{_sl_inner}</div>', unsafe_allow_html=True)
+
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  TAB 5 — CONTRACT OUTLOOK
+# ══════════════════════════════════════════════════════════════════════════════
+
+with tab5:
+    st.markdown("""
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;
+                min-height:320px;text-align:center;gap:16px;">
+
+      <div style="font-size:22px;font-weight:800;color:#f1f5f9;letter-spacing:-0.3px;">Coming Soon</div>
+      <div style="font-size:14px;color:#64748b;max-width:420px;line-height:1.7;">
+        Once the 2026 class has had time to develop, this tab will show
+        projected second contract value, confidence ranges, and the likelihood
+        each player earns a real deal.
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
