@@ -11,6 +11,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
 import html
+import re
+import requests
 from pathlib import Path
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity as cos_sim
@@ -60,24 +62,10 @@ st.markdown("""
 .stTabs [data-baseweb="tab-list"] {
     background: #0a1020;
     border-bottom: 1px solid #1c2840;
-    padding: 0 28px;
+    padding: 0 28px 0 270px;
     gap: 0;
     display: flex;
     align-items: center;
-}
-.stTabs [data-baseweb="tab-list"]::before {
-    content: "draftIntel.";
-    display: inline-block;
-    margin-right: 26px;
-    color: transparent;
-    background: linear-gradient(90deg, #f8fafc 0 49%, #D50A0A 49% 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    font-size: 42px;
-    line-height: 1;
-    font-weight: 900;
-    letter-spacing: -1.6px;
-    white-space: nowrap;
 }
 .stTabs [data-baseweb="tab"] {
     color: #4a6179;
@@ -91,6 +79,39 @@ st.markdown("""
 .stTabs [data-baseweb="tab"]:hover { color: #94a3b8; }
 .stTabs [aria-selected="true"]     { color: #ffffff; border-bottom: 2px solid #D50A0A; }
 .stTabs [data-baseweb="tab-panel"] { padding: 28px 28px 40px; }
+.brand-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 22px;
+    padding: 0 28px;
+    margin: 0 0 -56px;
+    position: relative;
+    z-index: 5;
+    width: 0;
+}
+.brand-link {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 42px;
+    line-height: 1;
+    font-weight: 900;
+    letter-spacing: -1.6px;
+    white-space: nowrap;
+    color: #f8fafc;
+}
+.brand-link:link,
+.brand-link:visited,
+.brand-link:hover,
+.brand-link:active {
+    color: #f8fafc;
+    text-decoration: none;
+}
+.brand-link .draft {
+    color: #f8fafc;
+}
+.brand-link .intel {
+    color: #D50A0A;
+}
 
 /* ── Hero metrics ── */
 .hero-grid {
@@ -258,6 +279,88 @@ div[data-testid="stTextInput"] label p {
 .meas-card { background: #0e1520; border: 1px solid #1c2840; border-radius: 6px; padding: 14px 16px; }
 .meas-val  { font-size: 20px; font-weight: 700; color: #f1f5f9; }
 .meas-lbl  { font-size: 10px; font-weight: 600; color: #4a6179; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+.live-board-card {
+    background: linear-gradient(180deg, rgba(14,21,32,0.98), rgba(10,16,26,0.98));
+    border: 1px solid #1c2840;
+    border-radius: 10px;
+    padding: 8px 0;
+}
+.live-board-head, .live-board-row {
+    display: grid;
+    grid-template-columns: 64px 86px minmax(150px, 0.9fr) minmax(220px, 1.1fr) 70px minmax(110px, 0.8fr);
+    gap: 10px;
+    align-items: center;
+    padding: 10px 16px;
+}
+.live-board-head {
+    border-bottom: 1px solid #1c2840;
+}
+.live-head-cell,
+.live-body-cell {
+    width: 100%;
+    box-sizing: border-box;
+    height: 54px;
+    min-height: 54px;
+    max-height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid rgba(28,40,64,0.92);
+    border-radius: 8px;
+    padding: 10px 12px;
+    overflow: hidden;
+}
+.live-head-cell {
+    color: #4a6179;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+    background: rgba(15, 23, 36, 0.75);
+}
+.live-body-cell {
+    background: rgba(11, 18, 29, 0.9);
+}
+.live-cell-main {
+    color: #f1f5f9;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+}
+.live-cell-sub {
+    color: #94a3b8;
+    font-size: 12px;
+    text-align: center;
+}
+.live-player-link {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #f1f5f9 !important;
+    text-decoration: none !important;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.live-body-cell p,
+.live-head-cell p {
+    margin: 0 !important;
+}
+.live-player-link:hover,
+.live-player-link:visited,
+.live-player-link:active {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
 
 /* ── Player summary grid ── */
 .summary-grid {
@@ -498,6 +601,13 @@ def load_data():
 
 df, ng, sim_df, hist_sim_df, hist_meta = load_data()
 
+qp_player = st.query_params.get("player")
+if qp_player:
+    player_match = df[df["player_name"] == qp_player]
+    if len(player_match) > 0:
+        st.session_state["pos_pills"] = player_match.iloc[0]["position"]
+        st.session_state["player_sel"] = qp_player
+
 
 # ── Chart helpers ──────────────────────────────────────────────────────────────
 
@@ -727,14 +837,219 @@ def radar_chart(row_data):
     return fig
 
 
+def normalize_player_name(name):
+    name = str(name or "").lower()
+    name = re.sub(r"\b(jr|sr|ii|iii|iv|v)\b\.?", "", name)
+    name = re.sub(r"[^a-z0-9]+", "", name)
+    return name
+
+
+def normalize_team_name(name):
+    name = str(name or "").lower().strip()
+    name = re.sub(r"[^a-z0-9]+", " ", name)
+    return re.sub(r"\s+", " ", name).strip()
+
+
+@st.cache_data(ttl=86400)
+def load_nfl_team_meta():
+    urls = [
+        "https://raw.githubusercontent.com/nflverse/nflverse-pbp/master/teams_colors_logos.csv",
+        "https://raw.githubusercontent.com/guga31bb/nflfastR-data/master/teams_colors_logos.csv",
+    ]
+    for url in urls:
+        try:
+            teams = pd.read_csv(url)
+            if {"team_name", "team_logo_espn"}.issubset(teams.columns):
+                meta = {}
+                for _, row in teams.iterrows():
+                    team_name = row.get("team_name")
+                    if pd.isna(team_name):
+                        continue
+                    key = normalize_team_name(team_name)
+                    meta[key] = {
+                        "logo": row.get("team_logo_espn"),
+                        "color_1": row.get("team_color"),
+                        "color_2": row.get("team_color2"),
+                        "color_3": row.get("team_color3"),
+                        "color_4": row.get("team_color4"),
+                    }
+                return meta
+        except Exception:
+            pass
+    return {}
+
+
+def hex_to_rgba(value, alpha):
+    if value is None or pd.isna(value):
+        return None
+    hex_value = str(value).strip().lstrip("#")
+    if len(hex_value) != 6 or not re.fullmatch(r"[0-9a-fA-F]{6}", hex_value):
+        return None
+    r = int(hex_value[0:2], 16)
+    g = int(hex_value[2:4], 16)
+    b = int(hex_value[4:6], 16)
+    return f"rgba({r}, {g}, {b}, {alpha})"
+
+
+@st.cache_data(ttl=300)
+def load_live_wikipedia_board():
+    url = "https://en.wikipedia.org/wiki/2026_NFL_draft"
+    headers = {"User-Agent": "Mozilla/5.0 draftIntel/1.0"}
+    resp = requests.get(url, headers=headers, timeout=20)
+    resp.raise_for_status()
+
+    tables = pd.read_html(resp.text)
+    candidate = None
+    for tbl in tables:
+        cols = [str(c).strip() for c in tbl.columns]
+        if {"Rnd.", "Pick", "NFL team"}.issubset(cols):
+            candidate = tbl.copy()
+            break
+    if candidate is None:
+        return pd.DataFrame(columns=["Round", "Pick", "NFL Team", "Player", "Pos", "College"])
+
+    rename_map = {
+        "Rnd.": "Round",
+        "NFL team": "NFL Team",
+        "Pos.": "Pos",
+    }
+    candidate = candidate.rename(columns=rename_map)
+    keep_cols = [c for c in ["Round", "Pick", "NFL Team", "Player", "Pos", "College"] if c in candidate.columns]
+    board = candidate[keep_cols].copy()
+
+    for col in ["Round", "Pick", "NFL Team", "Player", "Pos", "College"]:
+        if col not in board.columns:
+            board[col] = ""
+
+    board["Round"] = board["Round"].astype(str).str.replace(r"[^0-9]", "", regex=True)
+    board["Pick"] = board["Pick"].astype(str).str.replace(r"[^0-9]", "", regex=True)
+    board["NFL Team"] = board["NFL Team"].astype(str).str.replace(r"\[.*?\]", "", regex=True).str.strip()
+    board["Player"] = board["Player"].astype(str).replace({"nan": ""}).str.replace(r"\[.*?\]", "", regex=True).str.strip()
+    board["Pos"] = board["Pos"].astype(str).replace({"nan": ""}).str.strip()
+    board["College"] = board["College"].astype(str).replace({"nan": ""}).str.replace(r"\[.*?\]", "", regex=True).str.strip()
+    board = board[board["Round"].ne("") & board["Pick"].ne("")]
+    board["Round"] = board["Round"].astype(int)
+    board["Pick"] = board["Pick"].astype(int)
+    return board.reset_index(drop=True)
+
+
+def render_live_board(df, live_board, live_error=None):
+    st.markdown('<div class="sec-lbl" style="margin-top:0">Live Draft Board</div>', unsafe_allow_html=True)
+    st.caption("Wikipedia player selections cached for 5 minutes.")
+    if live_error:
+        st.markdown(f'<div class="sent-empty">Live board unavailable right now: {html.escape(live_error)}</div>',
+                    unsafe_allow_html=True)
+        return
+    if live_board.empty:
+        st.markdown('<div class="sent-empty">No live draft rows available yet.</div>', unsafe_allow_html=True)
+        return
+
+    name_lookup = {normalize_player_name(n): n for n in df["player_name"].dropna().tolist()}
+    team_meta_lookup = load_nfl_team_meta()
+    st.markdown('<div class="live-board-card">', unsafe_allow_html=True)
+    h1, h2, h3, h4, h5, h6 = st.columns([0.62, 0.86, 1.18, 1.75, 0.68, 0.92], vertical_alignment="center")
+    with h1:
+        st.markdown('<div class="live-head-cell">Round</div>', unsafe_allow_html=True)
+    with h2:
+        st.markdown('<div class="live-head-cell">Pick</div>', unsafe_allow_html=True)
+    with h3:
+        st.markdown('<div class="live-head-cell">NFL Team</div>', unsafe_allow_html=True)
+    with h4:
+        st.markdown('<div class="live-head-cell">Player</div>', unsafe_allow_html=True)
+    with h5:
+        st.markdown('<div class="live-head-cell">Pos</div>', unsafe_allow_html=True)
+    with h6:
+        st.markdown('<div class="live-head-cell">College</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    for _, draft_row in live_board.iterrows():
+        round_txt = int(draft_row["Round"])
+        pick_txt = int(draft_row["Pick"])
+        team_txt = html.escape(str(draft_row["NFL Team"]))
+        team_meta = team_meta_lookup.get(normalize_team_name(draft_row["NFL Team"]), {})
+        team_logo_url = team_meta.get("logo")
+        row_bg = (
+            hex_to_rgba(team_meta.get("color_1"), 0.28)
+            or "rgba(11, 18, 29, 0.9)"
+        )
+        row_border = (
+            hex_to_rgba(team_meta.get("color_1"), 0.72)
+            or "rgba(28,40,64,0.92)"
+        )
+        player_txt = str(draft_row["Player"] or "").strip()
+        pos_txt = html.escape(str(draft_row["Pos"] or ""))
+        college_txt = html.escape(str(draft_row["College"] or ""))
+        match_name = name_lookup.get(normalize_player_name(player_txt)) if player_txt else None
+        cell_style = f' style="background:{row_bg};border-color:{row_border};"'
+
+        c1, c2, c3, c4, c5, c6 = st.columns([0.62, 0.86, 1.18, 1.75, 0.68, 0.92], vertical_alignment="center")
+        with c1:
+            st.markdown(f'<div class="live-body-cell"{cell_style}><div class="live-cell-main">R{round_txt}</div></div>', unsafe_allow_html=True)
+        with c2:
+            st.markdown(f'<div class="live-body-cell"{cell_style}><div class="live-cell-main">{pick_txt}</div></div>', unsafe_allow_html=True)
+        with c3:
+            if team_logo_url:
+                st.markdown(
+                    f'<div class="live-body-cell"{cell_style}><img src="{html.escape(str(team_logo_url))}" '
+                    f'style="max-height:32px;max-width:110px;object-fit:contain;display:block;margin:0 auto;" '
+                    f'alt="{team_txt}" title="{team_txt}" /></div>',
+                    unsafe_allow_html=True
+                )
+            else:
+                st.markdown(f'<div class="live-body-cell"{cell_style}><div class="live-cell-sub">{team_txt}</div></div>', unsafe_allow_html=True)
+        with c4:
+            if match_name:
+                qp_name = html.escape(match_name, quote=True)
+                st.markdown(
+                    f'<div class="live-body-cell"{cell_style}>'
+                    f'<a class="live-player-link" href="/?player={qp_name}" target="_self">{html.escape(player_txt)}</a>'
+                    f'</div>',
+                    unsafe_allow_html=True
+                )
+            else:
+                st.markdown(f'<div class="live-body-cell"{cell_style}><div class="live-cell-main">{html.escape(player_txt) if player_txt else "—"}</div></div>',
+                            unsafe_allow_html=True)
+        with c5:
+            st.markdown(f'<div class="live-body-cell"{cell_style}><div class="live-cell-sub">{pos_txt or "—"}</div></div>', unsafe_allow_html=True)
+        with c6:
+            st.markdown(f'<div class="live-body-cell"{cell_style}><div class="live-cell-sub">{college_txt or "—"}</div></div>', unsafe_allow_html=True)
+
+    st.markdown('<div class="sent-empty" style="padding-top:8px;">Clicking a matched player preloads the Player Card selection.</div>',
+                unsafe_allow_html=True)
+
+
 # ── Tabs ───────────────────────────────────────────────────────────────────────
 
-tab4, tab1, tab2, tab3 = st.tabs([
+st.markdown("""
+<div class="brand-row">
+  <a class="brand-link" href="/" target="_self">
+    <span class="draft">draft</span><span class="intel">Intel.</span>
+  </a>
+</div>
+""", unsafe_allow_html=True)
+
+tab0, tab4, tab1, tab2, tab3 = st.tabs([
+    "NFL Draft Live",
     "Player Card",
     "Class Overview",
     "Draft Board",
     "Scouting Language",
 ])
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  TAB 0 — MAIN BOARD
+# ══════════════════════════════════════════════════════════════════════════════
+
+with tab0:
+    live_board = pd.DataFrame()
+    live_error = None
+    try:
+        live_board = load_live_wikipedia_board()
+    except Exception as exc:
+        live_error = str(exc)
+
+    render_live_board(df, live_board, live_error)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1156,7 +1471,6 @@ with tab3:
 # ══════════════════════════════════════════════════════════════════════════════
 
 with tab4:
-
     # ── Two-step search: position → player ──
     POS_ORDER_DISPLAY = ["QB","RB","WR","TE","OT","IOL","DL","EDGE","LB","CB","S"]
     POS_FULL_NAMES = {
