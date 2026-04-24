@@ -7,6 +7,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -18,6 +19,7 @@ from pathlib import Path
 from io import StringIO
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity as cos_sim
+from urllib.parse import quote
 
 st.set_page_config(
     page_title="2026 NFL Draft Intelligence",
@@ -1014,10 +1016,10 @@ def render_live_board(df, live_board, live_error=None):
                 st.markdown(f'<div class="live-body-cell"{cell_style}><div class="live-cell-sub">{team_txt}</div></div>', unsafe_allow_html=True)
         with c4:
             if match_name:
-                qp_name = html.escape(match_name, quote=True)
+                qp_name = quote(match_name)
                 st.markdown(
                     f'<div class="live-body-cell"{cell_style}>'
-                    f'<a class="live-player-link" href="/?player={qp_name}" target="_self">{html.escape(player_txt)}</a>'
+                    f'<a class="live-player-link" href="?player={qp_name}" target="_self">{html.escape(player_txt)}</a>'
                     f'</div>',
                     unsafe_allow_html=True
                 )
@@ -1033,11 +1035,21 @@ def render_live_board(df, live_board, live_error=None):
                 unsafe_allow_html=True)
 
 
-# ── Tabs ───────────────────────────────────────────────────────────────────────
+# ── Tabs / Player Deeplink Router ──────────────────────────────────────────────
+
+qp_player = st.query_params.get("player")
+player_deeplink_active = False
+
+if qp_player:
+    player_match = df[df["player_name"] == qp_player]
+    if len(player_match) > 0:
+        st.session_state["pos_pills"] = player_match.iloc[0]["position"]
+        st.session_state["player_sel"] = qp_player
+        player_deeplink_active = True
 
 st.markdown("""
 <div class="brand-row">
-  <a class="brand-link" href="/" target="_self">
+  <a class="brand-link" href="?" target="_self">
     <span class="draft">draft</span><span class="intel">Intel.</span>
   </a>
 </div>
@@ -1051,6 +1063,28 @@ tab0, tab4, tab1, tab2, tab3 = st.tabs([
     "Scouting Language",
 ])
 
+if player_deeplink_active:
+    components.html(
+        """
+        <script>
+        function clickPlayerCardTab() {
+            const doc = window.parent.document;
+            const tabs = Array.from(doc.querySelectorAll('button[data-baseweb="tab"]'));
+            const playerTab = tabs.find(tab => (tab.innerText || "").trim() === "Player Card");
+
+            if (playerTab && playerTab.getAttribute("aria-selected") !== "true") {
+                playerTab.click();
+            }
+        }
+
+        setTimeout(clickPlayerCardTab, 50);
+        setTimeout(clickPlayerCardTab, 250);
+        setTimeout(clickPlayerCardTab, 750);
+        setTimeout(clickPlayerCardTab, 1250);
+        </script>
+        """,
+        height=0,
+    )
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  TAB 0 — MAIN BOARD
@@ -1066,13 +1100,11 @@ with tab0:
 
     render_live_board(df, live_board, live_error)
 
-
 # ══════════════════════════════════════════════════════════════════════════════
 #  TAB 1 — CLASS OVERVIEW
 # ══════════════════════════════════════════════════════════════════════════════
 
 with tab1:
-
     n_total   = len(df)
     n_slides  = (df["draft_prediction"] == "slide").sum()
     n_reaches = (df["draft_prediction"] == "reach").sum()
@@ -1487,6 +1519,28 @@ with tab3:
 
 with tab4:
     # ── Two-step search: position → player ──
+    if st.query_params.get("player"):
+        st.markdown(
+            """
+            <a href="?" target="_self" style="
+                display:inline-flex;
+                align-items:center;
+                justify-content:center;
+                padding:8px 14px;
+                border-radius:8px;
+                border:1px solid #1c2840;
+                background:#0e1520;
+                color:#f1f5f9;
+                font-size:13px;
+                font-weight:700;
+                text-decoration:none;
+                margin-bottom:18px;
+            ">
+                ← Back to NFL Draft Live
+        </a>
+        """,
+        unsafe_allow_html=True,
+    )
     POS_ORDER_DISPLAY = ["QB","RB","WR","TE","OT","IOL","DL","EDGE","LB","CB","S"]
     POS_FULL_NAMES = {
         "QB": "Quarterback",
