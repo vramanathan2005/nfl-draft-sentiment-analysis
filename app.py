@@ -2,6 +2,7 @@
 2026 NFL Draft Intelligence — Streamlit app
 """
 
+
 from pydoc import text
 import warnings
 warnings.filterwarnings("ignore")
@@ -498,6 +499,101 @@ def load_data():
     if headshots_path.exists():
         hs = pd.read_csv(headshots_path)[["player_name", "headshot_url"]].copy()
         hs["player_name"] = hs["player_name"].str.strip()
+        # Alias map: prospect name → headshot CSV name (apostrophes, Jr/II/III, T.J. format, nicknames)
+        _hs_aliases = {
+            "AJ Haulcy": "A.J. Haulcy",
+            "AJ Pena": "A.J. Pena",
+            "AMarion McCoy": "A'Marion McCoy",
+            "Alzillion Hamilton": "Al'zillion Hamilton",
+            "Anthony Hill": "Anthony Hill Jr.",
+            "Armaj Reed-Adams": "Ar'maj Reed-Adams",
+            "Brian Parker": "Brian Parker II",
+            "Bryan McCoy": "Bryan McCoy Jr.",
+            "Bryan Thomas": "Bryan Thomas Jr.",
+            "Byron Cardwell": "Byron Cardwell Jr.",
+            "Chris Brazzell": "Chris Brazzell II",
+            "Chris Hilton": "Chris Hilton Jr.",
+            "DJ Graham": "DJ Graham II",
+            "DaeQuan Wright": "Dae'Quan Wright",
+            "Dangelo Ponds": "D'Angelo Ponds",
+            "Darrell Jackson": "Darrell Jackson Jr.",
+            "David Blay": "David Blay Jr.",
+            "DeZhaun Stribling": "De'Zhaun Stribling",
+            "Donaven Mcculley": "Donaven McCulley",
+            "EJ Williams": "E.J. Williams Jr.",
+            "Eddie Kelly": "Eddie Kelly Jr.",
+            "Emmanuel Henderson": "Emmanuel Henderson Jr.",
+            "Enrique Cruz": "Enrique Cruz Jr.",
+            "Eric ONeill": "Eric O'Neill",
+            "Faalili Faamoe": "Fa'alili Fa'amoe",
+            "Fred Davis": "Fred Davis Ii",
+            "Gary Smith": "Gary Smith III",
+            "George Gumbs": "George Gumbs Jr.",
+            "Harold Perkins": "Harold Perkins Jr.",
+            "Harrison Wallace": "Harrison Wallace III",
+            "JC Davis": "J.C. Davis",
+            "JMari Taylor": "J'Mari Taylor",
+            "JMichael Sturdivant": "J. Michael Sturdivant",
+            "JQ Hardaway": "Jonquis Hardaway",
+            "JaKobi Lane": "Ja'Kobi Lane",
+            "JaMori Maclin": "Ja'Mori Maclin",
+            "James Neal": "James Neal III",
+            "James Thompson": "James Thompson Jr.",
+            "Jeffrey Mba": "Jeffrey M'ba",
+            "John Bock": "John Bock II",
+            "Joseph Manjack": "Joseph Manjack IV",
+            "Kaena Decambra": "Ka'ena Decambra",
+            "Keith Abney": "Keith Abney II",
+            "Kelvin Gilliam": "Kelvin Gilliam Jr.",
+            "Kevin Coleman": "Kevin Coleman Jr.",
+            "Kevin Concepcion": "KC Concepcion",
+            "LJ Johnson": "L.J. Johnson Jr.",
+            "Lance St Louis": "Lance St. Louis",
+            "Latrell McCutchin": "Latrell McCutchin Sr.",
+            "LeVeon Moss": "Le'Veon Moss",
+            "Leon Lowery": "Leon Lowery Jr.",
+            "Lorenzo Styles": "Lorenzo Styles Jr.",
+            "Marcus Burris": "Marcus Burris Jr.",
+            "Marvin Jones": "Marvin Jones Jr.",
+            "Maurice Westmoreland": "Mo Westmoreland",
+            "Max Tomzcak": "Max Tomczak",
+            "Mike Washington": "Mike Washington Jr.",
+            "Nick Degennaro": "Nick DeGennaro",
+            "Nick Singleton": "Nicholas Singleton",
+            "OMega Blake": "O'Mega Blake",
+            "Omar Cooper": "Omar Cooper Jr.",
+            "Raheem Anderson": "Raheem Anderson II",
+            "Reggie Grimes": "Reggie Grimes II",
+            "Reuben Fatheree": "Reuben Fatheree II",
+            "Robert Henry": "Robert Henry Jr.",
+            "Rueben Bain": "Rueben Bain Jr.",
+            "Samuel MPemba": "Sam M'Pemba",
+            "Shadrach Banks": "Shad Banks Jr.",
+            "Stephen Dix": "Stephen Dix Jr.",
+            "TJ Parker": "T.J. Parker",
+            "Tay Yanta": "Tay Yanta Ii",
+            "Thomas Castellanos": "Tommy Castellanos",
+            "Tim Keenan": "Tim Keenan III",
+            "Toriano Pride": "Toriano Pride Jr.",
+            "TreVonte Citizen": "Tre'Vonte Citizen",
+            "Trevion Cooley": "Trey Cooley",
+            "Trey Zuhn": "Trey Zuhn III",
+            "Tywone Malone": "Tywone Malone Jr.",
+            "Vincent Anthony": "Vincent Anthony Jr.",
+            "Vinny Anthony": "Vinny Anthony II",
+            "Wendell Moe": "Wendell Moe Jr.",
+            "Will Lee": "Will Lee III",
+            "Wydett Williams": "Wydett Williams Jr.",
+            "Xavian Sorey": "Xavian Sorey Jr.",
+        }
+        # Add alias rows so both names resolve to the same headshot
+        alias_rows = []
+        hs_lookup = hs.set_index("player_name")["headshot_url"].to_dict()
+        for prospect_name, hs_name in _hs_aliases.items():
+            if hs_name in hs_lookup and prospect_name not in hs_lookup:
+                alias_rows.append({"player_name": prospect_name, "headshot_url": hs_lookup[hs_name]})
+        if alias_rows:
+            hs = pd.concat([hs, pd.DataFrame(alias_rows)], ignore_index=True)
         df = df.merge(hs, on="player_name", how="left")
     else:
         df["headshot_url"] = None
