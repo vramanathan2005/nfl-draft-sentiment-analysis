@@ -9,3 +9,5 @@ sentence-transformers
 streamlit
 xgboost
 lxml
+html5lib
+beautifulsoup4

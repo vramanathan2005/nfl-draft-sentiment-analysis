@@ -14,6 +14,7 @@ import html
 import re
 import requests
 from pathlib import Path
+from io import StringIO
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity as cos_sim
 
@@ -898,7 +899,7 @@ def load_live_wikipedia_board():
     resp = requests.get(url, headers=headers, timeout=20)
     resp.raise_for_status()
 
-    tables = pd.read_html(resp.text)
+    tables = pd.read_html(StringIO(resp.text))
     candidate = None
     for tbl in tables:
         cols = [str(c).strip() for c in tbl.columns]
