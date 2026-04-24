@@ -954,7 +954,6 @@ def render_live_board(df, live_board, live_error=None):
 
     name_lookup = {normalize_player_name(n): n for n in df["player_name"].dropna().tolist()}
     team_meta_lookup = load_nfl_team_meta()
-    st.markdown('<div class="live-board-card">', unsafe_allow_html=True)
     h1, h2, h3, h4, h5, h6 = st.columns([0.62, 0.86, 1.18, 1.75, 0.68, 0.92], vertical_alignment="center")
     with h1:
         st.markdown('<div class="live-head-cell">Round</div>', unsafe_allow_html=True)
