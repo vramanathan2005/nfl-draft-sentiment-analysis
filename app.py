@@ -2,6 +2,7 @@
 2026 NFL Draft Intelligence — Streamlit app
 """
 
+from pydoc import text
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -925,9 +926,14 @@ def load_live_wikipedia_board():
     board["Round"] = board["Round"].astype(str).str.replace(r"[^0-9]", "", regex=True)
     board["Pick"] = board["Pick"].astype(str).str.replace(r"[^0-9]", "", regex=True)
     board["NFL Team"] = board["NFL Team"].astype(str).str.replace(r"\[.*?\]", "", regex=True).str.strip()
-    board["Player"] = board["Player"].astype(str).replace({"nan": ""}).str.replace(r"\[.*?\]", "", regex=True).str.strip()
-    board["Pos"] = board["Pos"].astype(str).replace({"nan": ""}).str.strip()
-    board["College"] = board["College"].astype(str).replace({"nan": ""}).str.replace(r"\[.*?\]", "", regex=True).str.strip()
+    for col in ["Player", "Pos", "College"]:
+        board[col] = (
+            board[col]
+            .astype(str)
+            .str.replace(r"\[.*?\]", "", regex=True)
+            .str.strip()
+            .replace({"nan": "", "NaN": "", "None": "", "<NA>": ""})
+        )
     board = board[board["Round"].ne("") & board["Pick"].ne("")]
     board["Round"] = board["Round"].astype(int)
     board["Pick"] = board["Pick"].astype(int)
@@ -977,9 +983,17 @@ def render_live_board(df, live_board, live_error=None):
             hex_to_rgba(team_meta.get("color_1"), 0.72)
             or "rgba(28,40,64,0.92)"
         )
-        player_txt = str(draft_row["Player"] or "").strip()
-        pos_txt = html.escape(str(draft_row["Pos"] or ""))
-        college_txt = html.escape(str(draft_row["College"] or ""))
+        def clean_display_value(value):
+            if pd.isna(value):
+                return ""
+            text = str(value).strip()
+            if text.lower() in ["nan", "none", "<na>", "nat"]:
+                return ""
+            return text
+
+        player_txt = clean_display_value(draft_row["Player"])
+        pos_txt = html.escape(clean_display_value(draft_row["Pos"]))
+        college_txt = html.escape(clean_display_value(draft_row["College"]))
         match_name = name_lookup.get(normalize_player_name(player_txt)) if player_txt else None
         cell_style = f' style="background:{row_bg};border-color:{row_border};"'
 
