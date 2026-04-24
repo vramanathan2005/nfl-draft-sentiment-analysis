@@ -8,3 +8,4 @@ scipy
 sentence-transformers
 streamlit
 xgboost
+lxml
