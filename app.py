@@ -1681,7 +1681,8 @@ with tab7:
             _u_college = _ur.get("college", "") or ""
             _u_cons    = int(_ur["consensus"]) if pd.notna(_ur.get("consensus")) else None
             _u_br      = int(_ur["beast_rank"]) if pd.notna(_ur.get("beast_rank")) else None
-            _u_grade   = _ur.get("beast_grade", "") or ""
+            _u_grade   = str(_ur.get("beast_grade", "") or "").strip()
+            _u_grade   = "" if _u_grade.lower() in ("nan", "none") else _u_grade
             _u_tier    = _ur.get("draft_prediction")
             _u_tc      = DRAFT_COLORS.get(_u_tier, "#475569") if _u_tier else "#475569"
             _u_tl      = DRAFT_LABELS.get(_u_tier, "—") if _u_tier else "—"
@@ -1690,7 +1691,8 @@ with tab7:
             _u_pc      = float(_ur["p_consensus"]) if pd.notna(_ur.get("p_consensus")) else 0
             _u_sc      = float(_ur.get("scout_conf", 0) or 0)
             _u_sc_col  = "#22c55e" if _u_sc >= 60 else "#3b82f6" if _u_sc >= 30 else "#64748b"
-            _u_comp    = _ur.get("br_pro_comparison", "") or ""
+            _u_comp    = str(_ur.get("br_pro_comparison", "") or "").strip()
+            _u_comp    = "" if _u_comp.lower() in ("nan", "none") else _u_comp
             _u_logo    = _ur.get("college_logo_url", "")
             _u_hs      = _ur.get("headshot_url", "")
 
