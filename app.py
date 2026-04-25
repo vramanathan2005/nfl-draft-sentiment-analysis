@@ -1455,20 +1455,23 @@ with tab1:
     st.plotly_chart(fig, use_container_width=True, key="pos_stack")
 
     # ── Rise/Fall scatter ──
-    rf_df = df[df["rise_fall"].notna()].copy()
+    rf_df = _draftable[_draftable["rise_fall"].notna()].copy()
     rf_df["rise_fall_fmt"] = rf_df["rise_fall"].round(1)
     rf_df["Draft Tier"] = rf_df["draft_prediction"].map(DRAFT_LABELS)
+    rf_df["scout_conf_sz"] = rf_df["scout_conf"].clip(lower=1)
+    _has_beast_rank = "beast_rank" in rf_df.columns and rf_df["beast_rank"].notna().any()
     fig = px.scatter(
         rf_df,
         x="consensus", y="rise_fall",
         color="draft_prediction",
         color_discrete_map=DRAFT_COLORS,
-        size="scout_conf",
+        size="scout_conf_sz",
         size_max=16,
         hover_name="player_name",
         hover_data={"consensus": True, "rise_fall": ":.0f",
                     "position": True, "Draft Tier": True, "draft_prediction": False,
-                    "beast_rank": True, "consensus_pos_rank": ":.0f", "scout_conf": ":.0f"},
+                    **( {"beast_rank": True, "consensus_pos_rank": ":.0f"} if _has_beast_rank else {}),
+                    "scout_conf": ":.0f", "scout_conf_sz": False},
         labels={"consensus": "Consensus Rank", "rise_fall": "Rise/Fall Score",
                 "draft_prediction": "Draft Tier", "scout_conf": "Scout Confidence"},
         title="Rise / Fall — Consensus Rank vs Beast Model Delta  (bubble = scout confidence)",
