@@ -1403,9 +1403,10 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-tab0, tab6, tab4, tab1, tab2, tab3, tab5 = st.tabs([
+tab0, tab6, tab7, tab4, tab1, tab2, tab3, tab5 = st.tabs([
     "NFL Draft Live",
     "Team Board",
+    "Top Undrafted",
     "Player Card",
     "Class Overview",
     "Draft Board",
@@ -1605,6 +1606,84 @@ with tab6:
                     consensus=_cons_int,
                     predicted_tier=_tier,
                 )
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  TAB 7 — TOP UNDRAFTED
+# ══════════════════════════════════════════════════════════════════════════════
+
+with tab7:
+    st.markdown('<div class="sec-lbl" style="margin-top:0">Still on the Board</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div style="color:#64748b;font-size:0.85rem;margin-bottom:16px;">'
+        'Prospects in our model who have not been picked yet. Sorted by consensus rank.</div>',
+        unsafe_allow_html=True
+    )
+
+    if live_board.empty:
+        _picked_names = set()
+    else:
+        # Build set of matched prospect names already picked
+        _ud_name_lookup = {normalize_player_name(n): n for n in df["player_name"].dropna().tolist()}
+        try:
+            from rapidfuzz import process as _rfp_ud, fuzz as _rff_ud
+            _ud_picked = set()
+            for _pn in live_board["Player"].dropna():
+                key = normalize_player_name(str(_pn))
+                if key in _ud_name_lookup:
+                    _ud_picked.add(_ud_name_lookup[key])
+                else:
+                    keys = list(_ud_name_lookup.keys())
+                    r1 = _rfp_ud.extractOne(key, keys, scorer=_rff_ud.token_sort_ratio)
+                    r2 = _rfp_ud.extractOne(key, keys, scorer=_rff_ud.partial_ratio)
+                    best = max([r for r in [r1, r2] if r], key=lambda x: x[1], default=None)
+                    if best and best[1] >= 80:
+                        _ud_picked.add(_ud_name_lookup[best[0]])
+            _picked_names = _ud_picked
+        except ImportError:
+            _picked_names = {
+                _ud_name_lookup[normalize_player_name(str(p))]
+                for p in live_board["Player"].dropna()
+                if normalize_player_name(str(p)) in _ud_name_lookup
+            }
+
+    _still_on_board = df[~df["player_name"].isin(_picked_names)].copy()
+
+    # Position filter
+    _ud_positions = ["All"] + sorted(_still_on_board["position"].dropna().unique().tolist())
+    _ud_col1, _ud_col2 = st.columns([1, 3])
+    with _ud_col1:
+        _ud_pos_sel = st.selectbox("Position", _ud_positions, key="ud_pos_sel")
+    with _ud_col2:
+        _ud_tier_opts = ["All", "Slide", "Consensus", "Riser"]
+        _ud_tier_sel = st.selectbox("Model Tier", _ud_tier_opts, key="ud_tier_sel")
+
+    _ud_show = _still_on_board.copy()
+    if _ud_pos_sel != "All":
+        _ud_show = _ud_show[_ud_show["position"] == _ud_pos_sel]
+    if _ud_tier_sel != "All":
+        _ud_show = _ud_show[_ud_show["draft_prediction"] == _ud_tier_sel.lower()]
+    _ud_show = _ud_show.sort_values("consensus").reset_index(drop=True)
+
+    n_picked = len(_picked_names)
+    n_left   = len(_still_on_board[_still_on_board["consensus"].apply(lambda x: pd.notna(x) and int(x) <= 257)])
+    st.markdown(
+        f'<div style="color:#94a3b8;font-size:0.82rem;margin-bottom:12px;">'
+        f'{n_picked} prospects picked so far &nbsp;·&nbsp; {n_left} draftable prospects still on the board</div>',
+        unsafe_allow_html=True
+    )
+
+    if _ud_show.empty:
+        st.markdown('<div class="sent-empty">No prospects match this filter.</div>', unsafe_allow_html=True)
+    else:
+        _ud_cols = ["player_name","position","college","consensus","beast_rank","draft_prediction","p_slide","p_riser","p_consensus","scout_conf"]
+        _ud_display = _ud_show[[c for c in _ud_cols if c in _ud_show.columns]].rename(columns={
+            "player_name": "Player", "position": "Pos", "college": "College",
+            "consensus": "Consensus", "beast_rank": "Beast Pos Rank",
+            "draft_prediction": "Model Tier", "p_slide": "P(Slide) %",
+            "p_riser": "P(Riser) %", "p_consensus": "P(Consensus) %",
+            "scout_conf": "Scout Conf",
+        })
+        st.dataframe(_ud_display, use_container_width=True, hide_index=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  TAB 1 — CLASS OVERVIEW
