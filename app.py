@@ -1450,6 +1450,7 @@ with tab1:
     # ── Rise/Fall scatter ──
     rf_df = df[df["rise_fall"].notna()].copy()
     rf_df["rise_fall_fmt"] = rf_df["rise_fall"].round(1)
+    rf_df["Draft Tier"] = rf_df["draft_prediction"].map(DRAFT_LABELS)
     fig = px.scatter(
         rf_df,
         x="consensus", y="rise_fall",
@@ -1459,7 +1460,7 @@ with tab1:
         size_max=16,
         hover_name="player_name",
         hover_data={"consensus": True, "rise_fall": ":.0f",
-                    "position": True, "draft_prediction": True,
+                    "position": True, "Draft Tier": True, "draft_prediction": False,
                     "beast_rank": True, "consensus_pos_rank": ":.0f", "scout_conf": ":.0f"},
         labels={"consensus": "Consensus Rank", "rise_fall": "Rise/Fall Score",
                 "draft_prediction": "Draft Tier", "scout_conf": "Scout Confidence"},
@@ -1823,7 +1824,7 @@ with tab4:
     dc_color  = DRAFT_COLORS.get(row["draft_prediction"], "#3b82f6")
     rf_val    = row.get("rise_fall")
     pred_lbl  = DRAFT_LABELS.get(row["draft_prediction"], row["draft_prediction"].title())
-    if isinstance(consensus, int) and consensus > 257:
+    if isinstance(consensus, int) and consensus > 257 and row["draft_prediction"] == "reach":
         pred_lbl = "Undrafted"
         dc_color = "#64748b"
     pos_label = f"{row['position']} Rank"
@@ -2058,11 +2059,18 @@ with tab4:
 
     with pc1:
         st.markdown('<div class="chart-lbl">DRAFT TIER PROBABILITIES</div>', unsafe_allow_html=True)
-        dv_df = pd.DataFrame({
-            "tier":  ["Slide","Consensus","Riser"],
-            "prob":  [row["p_slide"], row["p_consensus"], row["p_reach"]],
-            "color": [DRAFT_COLORS["slide"], DRAFT_COLORS["consensus"], DRAFT_COLORS["reach"]],
-        }).sort_values("prob")
+        if isinstance(consensus, int) and consensus > 257:
+            dv_df = pd.DataFrame({
+                "tier":  ["Undrafted","Drafted"],
+                "prob":  [row["p_consensus"] + row["p_slide"], row["p_reach"]],
+                "color": ["#64748b", "#22c55e"],
+            }).sort_values("prob")
+        else:
+            dv_df = pd.DataFrame({
+                "tier":  ["Slide","Consensus","Riser"],
+                "prob":  [row["p_slide"], row["p_consensus"], row["p_reach"]],
+                "color": [DRAFT_COLORS["slide"], DRAFT_COLORS["consensus"], DRAFT_COLORS["reach"]],
+            }).sort_values("prob")
         fig = go.Figure(go.Bar(
             x=dv_df["prob"], y=dv_df["tier"], orientation="h",
             marker_color=dv_df["color"],
