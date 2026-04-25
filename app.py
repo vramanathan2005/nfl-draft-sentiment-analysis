@@ -1675,15 +1675,75 @@ with tab7:
     if _ud_show.empty:
         st.markdown('<div class="sent-empty">No prospects match this filter.</div>', unsafe_allow_html=True)
     else:
-        _ud_cols = ["player_name","position","college","consensus","beast_rank","draft_prediction","p_slide","p_riser","p_consensus","scout_conf"]
-        _ud_display = _ud_show[[c for c in _ud_cols if c in _ud_show.columns]].rename(columns={
-            "player_name": "Player", "position": "Pos", "college": "College",
-            "consensus": "Consensus", "beast_rank": "Beast Pos Rank",
-            "draft_prediction": "Model Tier", "p_slide": "P(Slide) %",
-            "p_riser": "P(Riser) %", "p_consensus": "P(Consensus) %",
-            "scout_conf": "Scout Conf",
-        })
-        st.dataframe(_ud_display, use_container_width=True, hide_index=True)
+        for _, _ur in _ud_show.iterrows():
+            _u_name    = _ur["player_name"]
+            _u_pos     = _ur.get("position", "")
+            _u_college = _ur.get("college", "") or ""
+            _u_cons    = int(_ur["consensus"]) if pd.notna(_ur.get("consensus")) else None
+            _u_br      = int(_ur["beast_rank"]) if pd.notna(_ur.get("beast_rank")) else None
+            _u_grade   = _ur.get("beast_grade", "") or ""
+            _u_tier    = _ur.get("draft_prediction")
+            _u_tc      = DRAFT_COLORS.get(_u_tier, "#475569") if _u_tier else "#475569"
+            _u_tl      = DRAFT_LABELS.get(_u_tier, "—") if _u_tier else "—"
+            _u_ps      = float(_ur["p_slide"])   if pd.notna(_ur.get("p_slide"))   else 0
+            _u_pr      = float(_ur["p_riser"])   if pd.notna(_ur.get("p_riser"))   else 0
+            _u_pc      = float(_ur["p_consensus"]) if pd.notna(_ur.get("p_consensus")) else 0
+            _u_sc      = float(_ur.get("scout_conf", 0) or 0)
+            _u_sc_col  = "#22c55e" if _u_sc >= 60 else "#3b82f6" if _u_sc >= 30 else "#64748b"
+            _u_comp    = _ur.get("br_pro_comparison", "") or ""
+            _u_logo    = _ur.get("college_logo_url", "")
+            _u_hs      = _ur.get("headshot_url", "")
+
+            _u_badges = f'<span class="badge b-pos">{html.escape(_u_pos)}</span>'
+            if _u_college:
+                _u_badges += f'<span class="badge b-info">{html.escape(_u_college)}</span>'
+            if _u_cons:
+                _u_badges += f'<span class="badge b-info">Consensus #{_u_cons}</span>'
+            if _u_br:
+                _u_badges += f'<span class="badge b-src">Beast #{_u_br}</span>'
+            if _u_grade:
+                _u_badges += f'<span class="badge b-src">Beast {html.escape(_u_grade)}</span>'
+            if _u_comp and str(_u_comp) not in ("", "nan"):
+                _u_badges += f'<span class="badge b-info">Comp: {html.escape(str(_u_comp))}</span>'
+
+            _u_tier_pill = (
+                f'<span style="background:{_u_tc}22;color:{_u_tc};border:1px solid {_u_tc}55;'
+                f'border-radius:6px;padding:3px 10px;font-size:0.82rem;font-weight:600;">{_u_tl}</span>'
+            )
+            _u_logo_html = college_logo_block(_u_logo, _u_college, size=52) if _u_logo else ""
+
+            _u_col1, _u_col2 = st.columns([1, 4])
+            with _u_col1:
+                show_player_logo_panel(_u_name, _u_college,
+                                       college_logo_url=_u_logo if _u_logo else None,
+                                       headshot_url=_u_hs if _u_hs else None)
+            with _u_col2:
+                st.markdown(f"""
+                <div class="p-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+                  <div style="flex:1;min-width:0;">
+                    <p class="p-name" style="font-size:1.2rem;margin-bottom:8px;">{html.escape(_u_name)}</p>
+                    {_u_badges}
+                    <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                      <div class="chart-lbl" style="margin:0;">DRAFT TIER</div>
+                      {_u_tier_pill}
+                    </div>
+                    <div style="margin-top:10px;display:flex;gap:16px;flex-wrap:wrap;">
+                      <span style="font-size:0.8rem;color:#64748b;">P(Slide) <span style="color:#ef4444;font-weight:600;">{_u_ps:.0f}%</span></span>
+                      <span style="font-size:0.8rem;color:#64748b;">P(Riser) <span style="color:#22c55e;font-weight:600;">{_u_pr:.0f}%</span></span>
+                      <span style="font-size:0.8rem;color:#64748b;">P(Consensus) <span style="color:#3b82f6;font-weight:600;">{_u_pc:.0f}%</span></span>
+                      <span style="font-size:0.8rem;color:#64748b;">Scout Conf <span style="color:{_u_sc_col};font-weight:600;">{_u_sc:.0f}</span></span>
+                    </div>
+                  </div>
+                  {_u_logo_html}
+                </div>
+                """, unsafe_allow_html=True)
+
+            qp = quote(_u_name)
+            st.markdown(
+                f'<a href="?player={qp}" target="_self" style="font-size:0.78rem;color:#475569;'
+                f'text-decoration:none;margin-left:4px;">→ Full player card</a>',
+                unsafe_allow_html=True
+            )
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  TAB 1 — CLASS OVERVIEW
