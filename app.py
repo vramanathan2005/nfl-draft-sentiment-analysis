@@ -1595,7 +1595,7 @@ with tab2:
         "player_name":"Player","position":"Pos","college":"College",
         "consensus":"Consensus","beast_rank":"Beast Rank","rise_fall":"Rise/Fall",
         "draft_prediction":"Draft Tier","p_slide":"P(Slide) %",
-        "p_consensus":"P(Consensus) %","p_reach":"P(Reach) %",
+        "p_consensus":"P(Consensus) %","p_reach":"P(Riser) %",
         "ngram_count":"Cross-Source Phrases","scout_conf":"Scout Conf",
     }
     tbl = fdf[show_cols].rename(columns=rename_map).sort_values("Consensus")
@@ -1606,7 +1606,7 @@ with tab2:
         column_config={
             "P(Slide) %":     st.column_config.ProgressColumn(min_value=0, max_value=100, format="%.1f%%"),
             "P(Consensus) %": st.column_config.ProgressColumn(min_value=0, max_value=100, format="%.1f%%"),
-            "P(Reach) %":     st.column_config.ProgressColumn(min_value=0, max_value=100, format="%.1f%%"),
+            "P(Riser) %":     st.column_config.ProgressColumn(min_value=0, max_value=100, format="%.1f%%"),
             "Scout Conf":     st.column_config.ProgressColumn(min_value=0, max_value=100, format="%.0f"),
         },
         hide_index=True,
