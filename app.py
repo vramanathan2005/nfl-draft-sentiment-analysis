@@ -1549,7 +1549,7 @@ with tab2:
 
     with bc1:
         # Top risers: consensus >> beast_rank (consensus undervalues)
-        risers = (fdf[fdf["rise_fall"].notna()]
+        risers = (fdf[fdf["rise_fall"].notna() & (fdf["rise_fall"] > 0)]
                   .nlargest(15, "rise_fall")
                   [["player_name","position","consensus","beast_rank","consensus_pos_rank","rise_fall","draft_prediction"]])
         fig = go.Figure(go.Bar(
@@ -1571,7 +1571,7 @@ with tab2:
 
     with bc2:
         # Top sliders: beast_rank >> consensus (consensus overvalues)
-        sliders = (fdf[fdf["rise_fall"].notna()]
+        sliders = (fdf[fdf["rise_fall"].notna() & (fdf["rise_fall"] < 0)]
                    .nsmallest(15, "rise_fall")
                    [["player_name","position","consensus","beast_rank","consensus_pos_rank","rise_fall","draft_prediction"]])
         fig = go.Figure(go.Bar(
