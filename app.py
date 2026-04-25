@@ -1110,7 +1110,7 @@ def load_live_wikipedia_board():
     candidate = None
     for tbl in tables:
         cols = [str(c).strip() for c in tbl.columns]
-        if {"Rnd.", "Pick", "NFL team"}.issubset(cols):
+        if {"Rnd.", "Pick"}.issubset(cols) and ({"NFL team", "Team"} & set(cols)):
             candidate = tbl.copy()
             break
     if candidate is None:
@@ -1119,6 +1119,7 @@ def load_live_wikipedia_board():
     rename_map = {
         "Rnd.": "Round",
         "NFL team": "NFL Team",
+        "Team": "NFL Team",
         "Pos.": "Pos",
     }
     candidate = candidate.rename(columns=rename_map)
