@@ -1505,7 +1505,7 @@ with tab2:
         if st.button("Reset", key="v_reset"):
             sel_pos, sel_tier = [], []
 
-    fdf = df.copy()
+    fdf = _draftable.copy()
     if sel_pos:
         fdf = fdf[fdf["position"].isin(sel_pos)]
     label_to_tier = {v: k for k, v in DRAFT_LABELS.items()}
