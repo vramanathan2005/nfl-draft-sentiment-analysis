@@ -1347,8 +1347,9 @@ with tab0:
 
 with tab1:
     n_total   = len(df)
-    n_slides  = (df["draft_prediction"] == "slide").sum()
-    n_reaches = (df["draft_prediction"] == "reach").sum()
+    _draftable_mask = df["consensus"].apply(lambda x: pd.notna(x) and int(x) <= 257)
+    n_slides  = ((df["draft_prediction"] == "slide") & _draftable_mask).sum()
+    n_reaches = ((df["draft_prediction"] == "reach") & _draftable_mask).sum()
     n_3source = (df["ngram_count"] > 0).sum()
     pct_3src  = n_3source / n_total * 100
 
@@ -1380,8 +1381,12 @@ with tab1:
     # ── Donuts ──
     c1, c2 = st.columns(2)
 
+    # Exclude projected undrafted players from tier distribution charts —
+    # model tiers are not meaningful for consensus > 257
+    _draftable = df[df["consensus"].apply(lambda x: pd.notna(x) and int(x) <= 257)]
+
     with c1:
-        dc = df["draft_prediction"].value_counts().reset_index()
+        dc = _draftable["draft_prediction"].value_counts().reset_index()
         dc.columns = ["tier", "count"]
         dc["color"] = dc["tier"].map(DRAFT_COLORS)
         dc["label"] = dc["tier"].map(DRAFT_LABELS)
@@ -1428,8 +1433,8 @@ with tab1:
         st.plotly_chart(fig, use_container_width=True, key="src_donut")
 
     # ── Draft tier by position ──
-    pos_grp = df.groupby(["position","draft_prediction"]).size().reset_index(name="n")
-    pos_order = (df.groupby("position")["p_reach"].mean()
+    pos_grp = _draftable.groupby(["position","draft_prediction"]).size().reset_index(name="n")
+    pos_order = (_draftable.groupby("position")["p_reach"].mean()
                    .sort_values(ascending=False).index.tolist())
     fig = go.Figure()
     for tier in ["reach","consensus","slide"]:
