@@ -1548,47 +1548,47 @@ with tab2:
     bc1, bc2 = st.columns(2)
 
     with bc1:
-        # Top risers: consensus >> beast_rank (consensus undervalues)
-        risers = (fdf[fdf["rise_fall"].notna() & (fdf["rise_fall"] > 0)]
-                  .nlargest(15, "rise_fall")
-                  [["player_name","position","consensus","beast_rank","consensus_pos_rank","rise_fall","draft_prediction"]])
+        # Top predicted risers by model P(riser)
+        risers = (fdf[fdf["p_riser"].notna()]
+                  .nlargest(15, "p_riser")
+                  [["player_name","position","consensus","p_riser","p_slide","p_consensus","draft_prediction"]])
         fig = go.Figure(go.Bar(
-            x=risers["rise_fall"],
+            x=risers["p_riser"],
             y=risers["player_name"],
             orientation="h",
             marker_color="#22c55e",
-            text=[f"#{int(b)} Beast / #{int(c)} consensus pos"
-                  for b, c in zip(risers["beast_rank"], risers["consensus_pos_rank"])],
+            text=[f"#{int(c) if pd.notna(c) else '?'} consensus | {p:.0f}% riser"
+                  for c, p in zip(risers["consensus"], risers["p_riser"])],
             textposition="outside",
             textfont=dict(color="rgba(255,255,255,0.45)", size=9),
-            hovertemplate="<b>%{y}</b><br>Rise score: %{x:.0f}<extra></extra>",
+            hovertemplate="<b>%{y}</b><br>P(Riser): %{x:.1f}%<extra></extra>",
         ))
-        styled(fig, height=400, title_text="Top Risers (Beast > Consensus)",
+        styled(fig, height=400, title_text="Top Predicted Risers",
                yaxis=dict(autorange="reversed", gridcolor="#0d2a52", linecolor="#1a3a6b"),
-               xaxis=dict(gridcolor="#0d2a52", linecolor="#1a3a6b"),
-               margin=dict(l=16, r=100, t=44, b=16))
+               xaxis=dict(gridcolor="#0d2a52", linecolor="#1a3a6b", ticksuffix="%"),
+               margin=dict(l=16, r=130, t=44, b=16))
         st.plotly_chart(fig, use_container_width=True, key="risers_bar")
 
     with bc2:
-        # Top sliders: beast_rank >> consensus (consensus overvalues)
-        sliders = (fdf[fdf["rise_fall"].notna() & (fdf["rise_fall"] < 0)]
-                   .nsmallest(15, "rise_fall")
-                   [["player_name","position","consensus","beast_rank","consensus_pos_rank","rise_fall","draft_prediction"]])
+        # Top predicted sliders by model P(slide)
+        sliders = (fdf[fdf["p_slide"].notna()]
+                   .nlargest(15, "p_slide")
+                   [["player_name","position","consensus","p_slide","p_riser","p_consensus","draft_prediction"]])
         fig = go.Figure(go.Bar(
-            x=sliders["rise_fall"].abs(),
+            x=sliders["p_slide"],
             y=sliders["player_name"],
             orientation="h",
             marker_color=NFL_RED,
-            text=[f"#{int(c)} consensus pos / #{int(b)} Beast"
-                  for b, c in zip(sliders["beast_rank"], sliders["consensus_pos_rank"])],
+            text=[f"#{int(c) if pd.notna(c) else '?'} consensus | {p:.0f}% slide"
+                  for c, p in zip(sliders["consensus"], sliders["p_slide"])],
             textposition="outside",
             textfont=dict(color="rgba(255,255,255,0.45)", size=9),
-            hovertemplate="<b>%{y}</b><br>Fall score: %{x:.0f}<extra></extra>",
+            hovertemplate="<b>%{y}</b><br>P(Slide): %{x:.1f}%<extra></extra>",
         ))
-        styled(fig, height=400, title_text="Top Sliders (Consensus > Beast)",
+        styled(fig, height=400, title_text="Top Predicted Sliders",
                yaxis=dict(autorange="reversed", gridcolor="#0d2a52", linecolor="#1a3a6b"),
-               xaxis=dict(gridcolor="#0d2a52", linecolor="#1a3a6b"),
-               margin=dict(l=16, r=100, t=44, b=16))
+               xaxis=dict(gridcolor="#0d2a52", linecolor="#1a3a6b", ticksuffix="%"),
+               margin=dict(l=16, r=130, t=44, b=16))
         st.plotly_chart(fig, use_container_width=True, key="sliders_bar")
 
     # ── Full table ──
