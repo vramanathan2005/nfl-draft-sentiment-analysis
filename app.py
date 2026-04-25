@@ -1823,6 +1823,9 @@ with tab4:
     dc_color  = DRAFT_COLORS.get(row["draft_prediction"], "#3b82f6")
     rf_val    = row.get("rise_fall")
     pred_lbl  = DRAFT_LABELS.get(row["draft_prediction"], row["draft_prediction"].title())
+    if isinstance(consensus, int) and consensus > 257:
+        pred_lbl = "Undrafted"
+        dc_color = "#64748b"
     pos_label = f"{row['position']} Rank"
     college_logo_url = row.get("college_logo_url")
     headshot_url_val = row.get("headshot_url")
