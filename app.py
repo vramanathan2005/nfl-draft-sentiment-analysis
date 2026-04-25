@@ -683,6 +683,7 @@ def load_data():
                  .rename(columns={"Player.Name": "player_name"}))
     df = df.merge(ng_counts, on="player_name", how="left")
     df["ngram_count"] = df["ngram_count"].fillna(0).astype(int)
+    df = df.drop_duplicates(subset=["player_name"]).reset_index(drop=True)
     df["has_br"] = df["has_br"].fillna(0)
     ng_max = max(df["ngram_count"].max(), 1)
     df["scout_conf"] = (df["ngram_count"] / ng_max * 70 + df["has_br"] * 30).clip(0, 100).round(1)
