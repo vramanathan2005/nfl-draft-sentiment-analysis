@@ -519,7 +519,6 @@ def load_data():
         ras_2026 = ras_2026.rename(columns={"Name": "player_name", "RAS": "ras", "ALLTIME": "ras_alltime"})
         ras_2026["player_name"] = ras_2026["player_name"].str.strip()
         # Fuzzy-match RAS names to prospect names
-        from rapidfuzz import process as _rfp_r, fuzz as _rff_r
         import re as _re_ras
         def _norm_ras(n):
             n = str(n).lower().strip()
@@ -529,11 +528,16 @@ def load_data():
         prospect_names = df["player_name"].dropna().tolist()
         pname_norm = {_norm_ras(n): n for n in prospect_names}
         matched = []
+        try:
+            from rapidfuzz import process as _rfp_r, fuzz as _rff_r
+            _use_fuzzy_ras = True
+        except ImportError:
+            _use_fuzzy_ras = False
         for _, rr in ras_2026.iterrows():
             key = _norm_ras(rr["player_name"])
             if key in pname_norm:
                 matched.append({"player_name": pname_norm[key], "ras": rr["ras"], "ras_alltime": rr["ras_alltime"]})
-            else:
+            elif _use_fuzzy_ras:
                 res = _rfp_r.extractOne(key, list(pname_norm.keys()), scorer=_rff_r.token_sort_ratio)
                 if res and res[1] >= 85:
                     matched.append({"player_name": pname_norm[res[0]], "ras": rr["ras"], "ras_alltime": rr["ras_alltime"]})
@@ -1929,31 +1933,46 @@ with tab4:
         # Rise / fall vs consensus (positive = went earlier = rose)
         rise_fall_picks = consensus - dr_pick if isinstance(consensus, int) else None
 
-        # Prediction vs reality: derive actual tier from pick vs consensus rank,
-        # then check if it matches draft_prediction (slide/consensus/reach).
-        # Threshold scales with rank — top picks need tight accuracy, later picks
-        # have fuzzier boards so a wider band still counts as "consensus."
-        if rise_fall_picks is not None:
-            if isinstance(consensus, int):
-                if consensus <= 5:
-                    _tier_thresh = 2
-                elif consensus <= 15:
-                    _tier_thresh = 3
-                elif consensus <= 32:
-                    _tier_thresh = 4
-                elif consensus <= 64:
-                    _tier_thresh = 6
-                else:
-                    _tier_thresh = 8
+        _undrafted_consensus = isinstance(consensus, int) and consensus > 257
+        predicted_tier = row["draft_prediction"]
+
+        if _undrafted_consensus:
+            # Consensus had this player outside the draft — any pick is a surprise.
+            # Compare model tier: "reach" means model saw it coming, anything else is a miss.
+            if predicted_tier == "reach":
+                accuracy_label = "Model called it"
+                accuracy_color = "#22c55e"
+                accuracy_icon  = "✓"
+            elif predicted_tier == "slide":
+                accuracy_label = "Went earlier than model predicted"
+                accuracy_color = "#f59e0b"
+                accuracy_icon  = "↑"
             else:
-                _tier_thresh = 5
+                accuracy_label = "Late-round surprise"
+                accuracy_color = "#94a3b8"
+                accuracy_icon  = "→"
+            rf_label = "Projected undrafted"
+            rf_color = "#94a3b8"
+        elif rise_fall_picks is not None:
+            # Prediction vs reality: derive actual tier from pick vs consensus rank.
+            # Threshold scales with rank — top picks need tight accuracy, later picks
+            # have fuzzier boards so a wider band still counts as "consensus."
+            if consensus <= 5:
+                _tier_thresh = 2
+            elif consensus <= 15:
+                _tier_thresh = 3
+            elif consensus <= 32:
+                _tier_thresh = 4
+            elif consensus <= 64:
+                _tier_thresh = 6
+            else:
+                _tier_thresh = 8
             if rise_fall_picks >= _tier_thresh:
-                actual_tier = "reach"   # went significantly earlier than ranked
+                actual_tier = "reach"
             elif rise_fall_picks <= -_tier_thresh:
-                actual_tier = "slide"   # fell significantly vs ranking
+                actual_tier = "slide"
             else:
                 actual_tier = "consensus"
-            predicted_tier = row["draft_prediction"]
             if actual_tier == predicted_tier:
                 accuracy_label = "Model called it"
                 accuracy_color = "#22c55e"
@@ -1970,11 +1989,6 @@ with tab4:
                 accuracy_label = "Closer to consensus than predicted"
                 accuracy_color = "#94a3b8"
                 accuracy_icon  = "→"
-        else:
-            accuracy_label = "—"
-            accuracy_color = "#94a3b8"
-            accuracy_icon  = ""
-        if rise_fall_picks is not None:
             if rise_fall_picks > 0:
                 rf_label = f"Rose {rise_fall_picks} spots vs consensus"
                 rf_color = "#22c55e"
@@ -1985,6 +1999,9 @@ with tab4:
                 rf_label = "Picked exactly at consensus"
                 rf_color = "#94a3b8"
         else:
+            accuracy_label = "—"
+            accuracy_color = "#94a3b8"
+            accuracy_icon  = ""
             rf_label = "—"
             rf_color = "#94a3b8"
 
