@@ -46,7 +46,10 @@ def build_sc_features(df, texts, emb, sc_bundle):
 
 def build_dv_features(df, texts, emb, dv_bundle):
     svd_vec = dv_bundle["svd"].transform(dv_bundle["tfidf"].transform(texts))
-    X_extra = np.hstack([consensus_feature(df), has_br_flag(df)])
+    _df_cons = df.copy()
+    _draftable = _df_cons["consensus"].apply(lambda x: pd.notna(x) and float(x) <= 257)
+    _df_cons.loc[~_draftable, "consensus"] = np.nan
+    X_extra = np.hstack([consensus_feature(_df_cons), has_br_flag(df)])
     return np.hstack([svd_vec, emb, get_meas(df), np.zeros((len(df), 1)), X_extra])
 
 

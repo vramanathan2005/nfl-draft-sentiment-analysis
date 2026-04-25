@@ -58,7 +58,13 @@ X_emb   = st.encode(texts.tolist(), batch_size=64,
                     show_progress_bar=False, normalize_embeddings=True)
 X_meas  = p26[sc_bundle["z_cols"]].fillna(0.0).values
 
-X_cons     = consensus_feature(p26)
+# Compute consensus z-score using only draftable players (consensus <= 257).
+# Training data only contained drafted players, so its mu/sigma matched this range.
+# Using the full 2026 pool (mean ~357) would produce z-scores far outside training range.
+_p26_cons = p26.copy()
+_draftable_mask = _p26_cons["consensus"].apply(lambda x: pd.notna(x) and float(x) <= 257)
+_p26_cons.loc[~_draftable_mask, "consensus"] = np.nan  # undraftable → 0-imputed (mean)
+X_cons     = consensus_feature(_p26_cons)
 X_pos      = position_feature(p26)
 X_rank     = beast_rank_feature(p26)
 X_tlen     = text_length_feature(texts)

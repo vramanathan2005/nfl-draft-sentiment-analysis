@@ -2181,18 +2181,6 @@ with tab4:
     # ── Historical Comps ──
     st.markdown('<div class="sec-lbl">Most Similarly Scouted — Past Drafts</div>',
                 unsafe_allow_html=True)
-    SC_TIER_COLORS = {
-        "cornerstone":   "#D50A0A",
-        "53_man":        "#3b82f6",
-        "roster_bubble": "#64748b",
-        "out_of_league": "#334155",
-    }
-    SC_TIER_LABELS = {
-        "cornerstone":   "Cornerstone",
-        "53_man":        "53-Man",
-        "roster_bubble": "Roster Bubble",
-        "out_of_league": "Out of League",
-    }
     if not hist_sim_df.empty and sel in hist_sim_df.index:
         hist_sims = hist_sim_df.loc[sel].sort_values(ascending=False).head(30)
         # Use dict for safe position lookup (avoids ambiguous Series truth value)
@@ -2215,10 +2203,6 @@ with tab4:
             except: hrnd = "UDFA"
             try:    hpick = int(float(hrow["pick"])) if pd.notna(hrow.get("pick")) else "?"
             except: hpick = "?"
-            htier    = hrow.get("sc_contract_tier", "")
-            htier    = htier if pd.notna(htier) else ""
-            htcolor  = SC_TIER_COLORS.get(htier, "#334155")
-            htlabel  = SC_TIER_LABELS.get(htier, "2nd contract pending" if hyr >= 2023 else "—")
             pick_str = ("UDFA" if hrnd == "UDFA"
                         else f"Rd {hrnd}, Pick {hpick}" if hrnd != "?" else "—")
             college_line = f'<div class="sim-college">{html.escape(hcollege)}</div>' if hcollege else ""
@@ -2229,7 +2213,6 @@ with tab4:
               <div class="sim-meta">{hpos} · {hyr}</div>
               {college_line}
               <div class="sim-meta">{pick_str}</div>
-              <div class="sim-meta" style="color:{htcolor};font-weight:600;">{htlabel}</div>
               <div class="sim-score">{hscore:.2f}</div>
               <div class="sim-kicker" style="margin-top:4px;">Similarity score</div>
             </div>"""
