@@ -1971,22 +1971,8 @@ with tab4:
             # Prediction vs reality: derive actual tier from pick vs consensus rank.
             # Threshold scales with rank — top picks need tight accuracy, later picks
             # have fuzzier boards so a wider band still counts as "consensus."
-            if consensus <= 5:
-                _tier_thresh = 2
-            elif consensus <= 15:
-                _tier_thresh = 3
-            elif consensus <= 32:
-                _tier_thresh = 4
-            elif consensus <= 64:
-                _tier_thresh = 6
-            elif consensus <= 100:
-                _tier_thresh = 8
-            elif consensus <= 150:
-                _tier_thresh = 10
-            elif consensus <= 200:
-                _tier_thresh = 20
-            else:
-                _tier_thresh = 25
+            import math as _math
+            _tier_thresh = _math.floor(max(1, 2 * _math.log(consensus) + 0.07 * min(consensus, 200) ** 0.9))
             if rise_fall_picks >= _tier_thresh:
                 actual_tier = "reach"
             elif rise_fall_picks <= -_tier_thresh:
