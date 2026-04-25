@@ -410,7 +410,7 @@ def parse_new_format(pages: list[str], draft_year: str) -> list[dict]:
 # Header line: "QB1 Fernando Mendoza Indiana"
 # followed immediately by "GRADE" on the next line (info-box label).
 NEW_2026_HEADER_RE = re.compile(
-    r'^[ \t]*([A-Z]{1,6})(\d+)\s+([A-Z].+?)\s*\n(?=GRADE\s*\n)',
+    r'^[ \t]*([A-Z]{1,6})(\d+)\s+([A-Z].+?)\s*\n(?:[\d]+\s*\nBack to table of contents\s*\n)?(?=GRADE\s*\n)',
     re.MULTILINE
 )
 
