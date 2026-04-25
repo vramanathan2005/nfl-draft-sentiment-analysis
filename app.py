@@ -2195,68 +2195,7 @@ with tab4:
     if isinstance(consensus, int) and consensus > 257:
         pred_lbl = "Undrafted"
         dc_color = "#64748b"
-    pos_label = f"{row['position']} Rank"
-    college_logo_url = row.get("college_logo_url")
-    headshot_url_val = row.get("headshot_url")
-
-    badges = f'<span class="badge b-pos">{row["position"]}</span>'
-    if college:
-        badges += f'<span class="badge b-info">{college}</span>'
-    badges += f'<span class="badge b-info">Consensus #{consensus}</span>'
-    if beast_rnk:
-        badges += f'<span class="badge b-src">Beast #{beast_rnk}</span>'
-    if bg_grade:
-        badges += f'<span class="badge b-src">Beast {bg_grade}</span>'
-    if pro_comp:
-        badges += f'<span class="badge b-info">Comp: {pro_comp}</span>'
-
-    hero1, hero2 = st.columns([1, 3])
-    with hero1:
-        show_player_logo_panel(sel, college, college_logo_url=college_logo_url,
-                               headshot_url=headshot_url_val)
-
-    with hero2:
-        _logo_html = college_logo_block(college_logo_url, college, size=60)
-        st.markdown(f"""
-        <div class="p-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;">
-          <div style="flex:1;min-width:0;">
-            <p class="p-name">{sel}</p>
-            {badges}
-            <div style="margin-top:14px;">
-              <div class="chart-lbl">DRAFT TIER</div>
-              <span class="pred-pill" style="background:{dc_color}22;color:{dc_color};border:1px solid {dc_color}55">
-                {pred_lbl}
-              </span>
-            </div>
-          </div>
-          {_logo_html}
-        </div>
-        """, unsafe_allow_html=True)
-
-        pos_rank_str = f"#{pos_rank}" if pos_rank is not None else "N/A"
-        consensus_str = f"#{consensus}" if consensus != "?" else "N/A"
-        summary_sub = "Position-specific rank from Beast; falls back to consensus-in-position when missing."
-        st.markdown(f"""
-        <div class="summary-grid">
-          <div class="summary-card">
-            <div class="summary-val">{consensus_str}</div>
-            <div class="summary-lbl">Consensus Rank</div>
-            <div class="summary-sub">Overall board placement</div>
-          </div>
-          <div class="summary-card">
-            <div class="summary-val">{pos_rank_str}</div>
-            <div class="summary-lbl">{html.escape(pos_label)}</div>
-            <div class="summary-sub">{summary_sub}</div>
-          </div>
-          <div class="summary-card">
-            <div class="summary-val pred" style="color:{dc_color};">{pred_lbl.upper()}</div>
-            <div class="summary-lbl">Prediction</div>
-            <div class="summary-sub">Model view vs. current consensus</div>
-          </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # ── Draft result panel (if player has been selected) ──
+    # ── Resolve drafted_row early so we can show actual tier in header ──
     drafted_row = None
     if not live_board.empty:
         try:
@@ -2273,6 +2212,86 @@ with tab4:
                 if normalize_player_name(str(_lr["Player"])) == _norm_sel:
                     drafted_row = _lr
                     break
+
+    _pc_actual_tier = None
+    if drafted_row is not None:
+        _pc_actual_tier = compute_actual_tier(
+            consensus if isinstance(consensus, int) else None, int(drafted_row["Pick"])
+        )
+
+    # ── Player header ──
+    badges_html = f'<span class="badge b-pos">{row["position"]}</span>'
+    if college:
+        badges_html += f'<span class="badge b-info">{html.escape(college)}</span>'
+    badges_html += f'<span class="badge b-info">Consensus #{consensus}</span>'
+    if beast_rnk:
+        badges_html += f'<span class="badge b-src">Beast #{beast_rnk}</span>'
+    if bg_grade:
+        badges_html += f'<span class="badge b-src">Beast {bg_grade}</span>'
+    if pro_comp and str(pro_comp).strip() not in ("", "nan"):
+        badges_html += f'<span class="badge b-info">Comp: {html.escape(str(pro_comp))}</span>'
+
+    _pred_pill = (
+        f'<span title="Model prediction" style="background:{dc_color}22;color:{dc_color};'
+        f'border:1px solid {dc_color}55;border-radius:6px;padding:3px 10px;font-size:0.82rem;font-weight:600;">'
+        f'{pred_lbl}</span>'
+    )
+    _actual_pill = ""
+    if _pc_actual_tier is not None:
+        _ac = DRAFT_COLORS.get(_pc_actual_tier, "#475569")
+        _al = DRAFT_LABELS.get(_pc_actual_tier, _pc_actual_tier.title())
+        _actual_pill = (
+            f'<span title="Actual outcome" style="background:{_ac};color:#fff;'
+            f'border-radius:6px;padding:3px 10px;font-size:0.82rem;font-weight:600;">{_al}</span>'
+        )
+
+    _pc_college_logo_url = row.get("college_logo_url")
+    _pc_headshot_url     = row.get("headshot_url")
+    _pc_logo_html = college_logo_block(_pc_college_logo_url, college, size=60) if _pc_college_logo_url else ""
+
+    _ph1, _ph2 = st.columns([1, 3])
+    with _ph1:
+        show_player_logo_panel(sel, college, college_logo_url=_pc_college_logo_url,
+                               headshot_url=_pc_headshot_url)
+    with _ph2:
+        st.markdown(f"""
+        <div class="p-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;">
+          <div style="flex:1;min-width:0;">
+            <p class="p-name">{html.escape(sel)}</p>
+            {badges_html}
+            <div style="margin-top:14px;">
+              <div class="chart-lbl">DRAFT TIER</div>
+              <span style="display:inline-flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                {_pred_pill}
+                {_actual_pill}
+              </span>
+            </div>
+          </div>
+          {_pc_logo_html}
+        </div>
+        """, unsafe_allow_html=True)
+
+        pos_rank_str  = f"#{pos_rank}" if pos_rank is not None else "N/A"
+        consensus_str = f"#{consensus}" if consensus != "?" else "N/A"
+        st.markdown(f"""
+        <div class="summary-grid">
+          <div class="summary-card">
+            <div class="summary-val">{consensus_str}</div>
+            <div class="summary-lbl">Consensus Rank</div>
+            <div class="summary-sub">Overall board placement</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-val">{pos_rank_str}</div>
+            <div class="summary-lbl">{html.escape(f"{row['position']} Rank")}</div>
+            <div class="summary-sub">Position-specific rank from Beast; falls back to consensus-in-position when missing.</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-val pred" style="color:{dc_color};">{pred_lbl.upper()}</div>
+            <div class="summary-lbl">Prediction</div>
+            <div class="summary-sub">Model view vs. current consensus</div>
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     if drafted_row is not None:
         dr_round  = int(drafted_row["Round"])
