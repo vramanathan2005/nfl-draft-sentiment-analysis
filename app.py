@@ -510,6 +510,8 @@ def load_data():
     inf_sub = inf[[c for c in extra if c in inf.columns]].rename(
         columns={"Player Name": "player_name", "text_source": "inf_text_source"})
     df = exp.merge(inf_sub, on="player_name", how="left")
+    if "p_reach" in df.columns:
+        df.rename(columns={"p_reach": "p_riser"}, inplace=True)
 
     # Merge RAS scores for 2026
     ras_path = BASE / "data/raw/RAS Scores.csv"
@@ -748,7 +750,7 @@ def load_data():
 
     # #1 overall pick can't go higher — zero out riser probability and renormalize
     mask = df["consensus"] == 1
-    df.loc[mask, "p_reach"] = 0.0
+    df.loc[mask, "p_riser"] = 0.0
     total = df.loc[mask, ["p_slide","p_consensus"]].sum(axis=1)
     df.loc[mask, "p_slide"]     = df.loc[mask, "p_slide"]     / total * 100
     df.loc[mask, "p_consensus"] = df.loc[mask, "p_consensus"] / total * 100
@@ -1436,7 +1438,7 @@ with tab1:
 
     # ── Draft tier by position ──
     pos_grp = _draftable.groupby(["position","draft_prediction"]).size().reset_index(name="n")
-    pos_order = (_draftable.groupby("position")["p_reach"].mean()
+    pos_order = (_draftable.groupby("position")["p_riser"].mean()
                    .sort_values(ascending=False).index.tolist())
     fig = go.Figure()
     for tier in ["reach","consensus","slide"]:
@@ -1524,7 +1526,7 @@ with tab2:
         color_discrete_map=DRAFT_COLORS,
         hover_name="player_name",
         hover_data={"consensus": True, "p_slide": ":.1f",
-                    "p_reach": ":.1f", "position": True,
+                    "p_riser": ":.1f", "position": True,
                     "beast_rank": True, "rise_fall": ":.0f"},
         labels={"consensus": "Consensus Rank", "p_slide": "P(Slide) %",
                 "draft_prediction": "Draft Tier"},
@@ -1590,12 +1592,12 @@ with tab2:
     # ── Full table ──
     st.markdown('<div class="sec-lbl">All Prospects</div>', unsafe_allow_html=True)
     show_cols = ["player_name","position","college","consensus","beast_rank","rise_fall",
-                 "draft_prediction","p_slide","p_consensus","p_reach","ngram_count","scout_conf"]
+                 "draft_prediction","p_slide","p_consensus","p_riser","ngram_count","scout_conf"]
     rename_map = {
         "player_name":"Player","position":"Pos","college":"College",
         "consensus":"Consensus","beast_rank":"Beast Rank","rise_fall":"Rise/Fall",
         "draft_prediction":"Draft Tier","p_slide":"P(Slide) %",
-        "p_consensus":"P(Consensus) %","p_reach":"P(Riser) %",
+        "p_consensus":"P(Consensus) %","p_riser":"P(Riser) %",
         "ngram_count":"Cross-Source Phrases","scout_conf":"Scout Conf",
     }
     tbl = fdf[show_cols].rename(columns=rename_map).sort_values("Consensus")
@@ -2066,7 +2068,7 @@ with tab4:
         else:
             dv_df = pd.DataFrame({
                 "tier":  ["Slide","Consensus","Riser"],
-                "prob":  [row["p_slide"], row["p_consensus"], row["p_reach"]],
+                "prob":  [row["p_slide"], row["p_consensus"], row["p_riser"]],
                 "color": [DRAFT_COLORS["slide"], DRAFT_COLORS["consensus"], DRAFT_COLORS["reach"]],
             }).sort_values("prob")
             fig = go.Figure(go.Bar(
