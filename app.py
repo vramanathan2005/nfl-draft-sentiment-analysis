@@ -2060,29 +2060,25 @@ with tab4:
     with pc1:
         st.markdown('<div class="chart-lbl">DRAFT TIER PROBABILITIES</div>', unsafe_allow_html=True)
         if isinstance(consensus, int) and consensus > 257:
-            dv_df = pd.DataFrame({
-                "tier":  ["Undrafted","Drafted"],
-                "prob":  [row["p_consensus"] + row["p_slide"], row["p_reach"]],
-                "color": ["#64748b", "#22c55e"],
-            }).sort_values("prob")
+            st.markdown('<div style="color:#64748b;font-size:13px;padding:32px 8px;text-align:center;">Model not applicable for projected undrafted players.</div>', unsafe_allow_html=True)
         else:
             dv_df = pd.DataFrame({
                 "tier":  ["Slide","Consensus","Riser"],
                 "prob":  [row["p_slide"], row["p_consensus"], row["p_reach"]],
                 "color": [DRAFT_COLORS["slide"], DRAFT_COLORS["consensus"], DRAFT_COLORS["reach"]],
             }).sort_values("prob")
-        fig = go.Figure(go.Bar(
-            x=dv_df["prob"], y=dv_df["tier"], orientation="h",
-            marker_color=dv_df["color"],
-            text=[f"{p:.1f}%" for p in dv_df["prob"]],
-            textposition="outside", textfont=dict(color="rgba(255,255,255,0.6)", size=11),
-            hovertemplate="<b>%{y}</b><br>%{x:.1f}%<extra></extra>",
-        ))
-        styled(fig, height=220, margin=dict(l=16, r=48, t=8, b=8),
-               xaxis=dict(range=[0, 110], gridcolor="#0d2a52", linecolor="#1a3a6b",
-                          showticklabels=False),
-               yaxis=dict(gridcolor="#0d2a52", linecolor="#1a3a6b"))
-        st.plotly_chart(fig, use_container_width=True, key="pc_dv")
+            fig = go.Figure(go.Bar(
+                x=dv_df["prob"], y=dv_df["tier"], orientation="h",
+                marker_color=dv_df["color"],
+                text=[f"{p:.1f}%" for p in dv_df["prob"]],
+                textposition="outside", textfont=dict(color="rgba(255,255,255,0.6)", size=11),
+                hovertemplate="<b>%{y}</b><br>%{x:.1f}%<extra></extra>",
+            ))
+            styled(fig, height=220, margin=dict(l=16, r=48, t=8, b=8),
+                   xaxis=dict(range=[0, 110], gridcolor="#0d2a52", linecolor="#1a3a6b",
+                              showticklabels=False),
+                   yaxis=dict(gridcolor="#0d2a52", linecolor="#1a3a6b"))
+            st.plotly_chart(fig, use_container_width=True, key="pc_dv")
 
     with pc2:
         st.markdown('<div class="chart-lbl">SCOUT CONFIDENCE</div>', unsafe_allow_html=True)
