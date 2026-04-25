@@ -1458,7 +1458,7 @@ with tab1:
     rf_df = _draftable[_draftable["rise_fall"].notna()].copy()
     rf_df["rise_fall_fmt"] = rf_df["rise_fall"].round(1)
     rf_df["Draft Tier"] = rf_df["draft_prediction"].map(DRAFT_LABELS)
-    rf_df["scout_conf_sz"] = rf_df["scout_conf"].clip(lower=1)
+    rf_df["scout_conf_sz"] = rf_df["scout_conf"].clip(lower=1).astype(float)
     _has_beast_rank = "beast_rank" in rf_df.columns and rf_df["beast_rank"].notna().any()
     fig = px.scatter(
         rf_df,
