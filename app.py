@@ -1507,7 +1507,7 @@ with tab6:
             st.markdown(f'<div style="margin-bottom:16px;">{_badge_html}</div>', unsafe_allow_html=True)
 
         _pick_meta = load_nfl_team_meta().get(normalize_team_name(_sel_team), {})
-        for _pick_i, (_, _pr) in enumerate(_team_picks.iterrows()):
+        for _, _pr in _team_picks.iterrows():
             _player_raw = str(_pr["Player"]) if pd.notna(_pr["Player"]) else ""
             if not _player_raw or _player_raw.lower() in ("nan", "none", ""):
                 continue
@@ -1522,42 +1522,13 @@ with tab6:
             _p_r = f'{_mrow["p_riser"]:.0f}%' if _mrow is not None else "—"
             _pos_raw = str(_pr.get("Pos", "") or "")
 
-            _toggle_key = f"tb_expand_{_sel_team}_{_pick_i}"
-            if _toggle_key not in st.session_state:
-                st.session_state[_toggle_key] = False
+            _tier_badge = f" · {_tier_lbl}" if _tier else ""
+            _exp_label = f"R{int(_pr['Round'])} #{int(_pr['Pick'])}  {_player_raw} ({_pos_raw}){_tier_badge}  {_cons_val}"
 
-            _tier_badge_html = (
-                f'<span style="background:{_tier_col};color:#fff;border-radius:4px;'
-                f'padding:1px 8px;font-size:0.75rem;font-weight:600;margin-left:10px;">{_tier_lbl}</span>'
-                if _tier else ""
-            )
-            _row_bg     = hex_to_rgba(_team_color, 0.12) or "rgba(11,18,29,0.9)"
-            _row_border = hex_to_rgba(_team_color, 0.35) or "rgba(28,40,64,0.92)"
-
-            _rc1, _rc2 = st.columns([0.92, 0.08], vertical_alignment="center")
-            with _rc1:
-                st.markdown(
-                    f'<div style="background:{_row_bg};border:1px solid {_row_border};border-radius:8px;'
-                    f'padding:10px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">'
-                    f'<span style="color:#64748b;font-size:0.8rem;min-width:32px;">R{int(_pr["Round"])}</span>'
-                    f'<span style="font-weight:700;color:#f1f5f9;min-width:36px;">#{int(_pr["Pick"])}</span>'
-                    f'<span style="font-weight:600;color:#e2e8f0;flex:1;">{html.escape(_player_raw)}</span>'
-                    f'<span style="color:#64748b;font-size:0.82rem;">{html.escape(_pos_raw)}</span>'
-                    f'<span style="color:#94a3b8;font-size:0.82rem;">{_cons_val}</span>'
-                    f'{_tier_badge_html}'
-                    f'</div>',
-                    unsafe_allow_html=True
-                )
-            with _rc2:
-                if st.button("▼" if not st.session_state[_toggle_key] else "▲",
-                             key=f"btn_{_toggle_key}", use_container_width=True):
-                    st.session_state[_toggle_key] = not st.session_state[_toggle_key]
-                    st.rerun()
-
-            if st.session_state[_toggle_key]:
+            with st.expander(_exp_label, expanded=False):
                 if _mrow is not None:
                     st.markdown(
-                        f'<div style="display:flex;gap:16px;align-items:center;margin:4px 0 0 8px;flex-wrap:wrap;">'
+                        f'<div style="display:flex;gap:16px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">'
                         f'<span style="background:{_tier_col};color:#fff;border-radius:5px;padding:3px 10px;font-size:0.82rem;font-weight:600;">{_tier_lbl}</span>'
                         f'<span style="color:#94a3b8;font-size:0.82rem;">Consensus {_cons_val}</span>'
                         f'<span style="color:#94a3b8;font-size:0.82rem;">P(Slide) {_p_s}</span>'
