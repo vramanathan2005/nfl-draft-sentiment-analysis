@@ -1152,6 +1152,20 @@ def load_live_wikipedia_board():
     return board.reset_index(drop=True)
 
 
+def compute_actual_tier(consensus, actual_pick):
+    """Return 'riser'/'slide'/'consensus'/None using the same threshold formula as the pick card."""
+    import math as _math
+    if not isinstance(consensus, int) or consensus > 257 or actual_pick is None:
+        return None
+    rise = consensus - actual_pick
+    thresh = _math.floor(max(1, 2 * _math.log(consensus) + 0.07 * min(consensus, 200) ** 0.9))
+    if rise >= thresh:
+        return "riser"
+    elif rise <= -thresh:
+        return "slide"
+    return "consensus"
+
+
 def render_pick_card(dr_round, dr_pick, dr_team, dr_meta, consensus, predicted_tier):
     """Render the inline drafted card given pick info and model prediction."""
     import math as _math
@@ -1488,23 +1502,41 @@ with tab6:
             unsafe_allow_html=True
         )
 
-        # Summary badges: how many slide/riser/consensus
-        _tier_counts = {"riser": 0, "consensus": 0, "slide": 0, "unknown": 0}
+        # Predicted vs Actual summary badges
+        _pred_counts   = {"riser": 0, "consensus": 0, "slide": 0}
+        _actual_counts = {"riser": 0, "consensus": 0, "slide": 0}
         for _, _pr in _team_picks.iterrows():
-            _mn = _tb_match(str(_pr["Player"])) if pd.notna(_pr["Player"]) else None
-            if _mn:
-                _t = df[df["player_name"] == _mn]["draft_prediction"].values
-                _tier_counts[_t[0] if len(_t) else "unknown"] = _tier_counts.get(_t[0] if len(_t) else "unknown", 0) + 1
-            else:
-                _tier_counts["unknown"] += 1
+            if not pd.notna(_pr.get("Player")): continue
+            _mn = _tb_match(str(_pr["Player"]))
+            if not _mn: continue
+            _mr = df[df["player_name"] == _mn]
+            if not len(_mr): continue
+            _mr = _mr.iloc[0]
+            _pt = _mr["draft_prediction"]
+            if _pt in _pred_counts:
+                _pred_counts[_pt] += 1
+            _c = int(_mr["consensus"]) if pd.notna(_mr["consensus"]) else None
+            _at = compute_actual_tier(_c, int(_pr["Pick"]))
+            if _at:
+                _actual_counts[_at] += 1
 
-        _badge_html = "".join([
-            f'<span style="background:{DRAFT_COLORS.get(t,"#334155")};color:#fff;border-radius:6px;padding:3px 10px;font-size:0.8rem;font-weight:600;margin-right:6px;">'
-            f'{DRAFT_LABELS.get(t, t.title())}: {c}</span>'
-            for t, c in _tier_counts.items() if c > 0 and t != "unknown"
-        ])
-        if _badge_html:
-            st.markdown(f'<div style="margin-bottom:16px;">{_badge_html}</div>', unsafe_allow_html=True)
+        def _badge_row(label, counts):
+            badges = "".join([
+                f'<span style="background:{DRAFT_COLORS.get(t,"#334155")};color:#fff;border-radius:6px;'
+                f'padding:3px 10px;font-size:0.8rem;font-weight:600;margin-right:6px;">'
+                f'{DRAFT_LABELS.get(t, t.title())}: {c}</span>'
+                for t, c in counts.items() if c > 0
+            ])
+            return (
+                f'<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">'
+                f'<span style="color:#64748b;font-size:0.75rem;font-weight:600;min-width:64px;">{label}</span>'
+                f'{badges}</div>'
+            )
+
+        st.markdown(
+            _badge_row("Predicted", _pred_counts) + _badge_row("Actual", _actual_counts),
+            unsafe_allow_html=True
+        )
 
         _pick_meta = load_nfl_team_meta().get(normalize_team_name(_sel_team), {})
         for _pick_i, (_, _pr) in enumerate(_team_picks.iterrows()):
@@ -1610,6 +1642,61 @@ with tab1:
       </div>
     </div>
     """, unsafe_allow_html=True)
+
+    # ── Predicted vs Actual outcome badges (draftable players with live board data) ──
+    if not live_board.empty:
+        _co_name_lookup = {normalize_player_name(n): n for n in df["player_name"].dropna().tolist()}
+        try:
+            from rapidfuzz import process as _rfp_co, fuzz as _rff_co
+            def _co_match(raw):
+                key = normalize_player_name(raw)
+                if key in _co_name_lookup: return _co_name_lookup[key]
+                keys = list(_co_name_lookup.keys())
+                r1 = _rfp_co.extractOne(key, keys, scorer=_rff_co.token_sort_ratio)
+                r2 = _rfp_co.extractOne(key, keys, scorer=_rff_co.partial_ratio)
+                best = max([r for r in [r1, r2] if r], key=lambda x: x[1], default=None)
+                return _co_name_lookup[best[0]] if best and best[1] >= 80 else None
+        except ImportError:
+            def _co_match(raw): return _co_name_lookup.get(normalize_player_name(raw))
+
+        _co_pred = {"riser": 0, "consensus": 0, "slide": 0}
+        _co_actual = {"riser": 0, "consensus": 0, "slide": 0}
+        for _, _lbr in live_board.iterrows():
+            if not pd.notna(_lbr.get("Player")): continue
+            _mn = _co_match(str(_lbr["Player"]))
+            if not _mn: continue
+            _mr = df[df["player_name"] == _mn]
+            if not len(_mr): continue
+            _mr = _mr.iloc[0]
+            _pt = _mr["draft_prediction"]
+            if _pt in _co_pred:
+                _co_pred[_pt] += 1
+            _c = int(_mr["consensus"]) if pd.notna(_mr["consensus"]) else None
+            _at = compute_actual_tier(_c, int(_lbr["Pick"]))
+            if _at:
+                _co_actual[_at] += 1
+
+        def _co_badge_row(label, counts):
+            badges = "".join([
+                f'<span style="background:{DRAFT_COLORS.get(t,"#334155")};color:#fff;border-radius:6px;'
+                f'padding:3px 10px;font-size:0.8rem;font-weight:600;margin-right:6px;">'
+                f'{DRAFT_LABELS.get(t, t.title())}: {c}</span>'
+                for t, c in counts.items() if c > 0
+            ])
+            return (
+                f'<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">'
+                f'<span style="color:#64748b;font-size:0.75rem;font-weight:600;min-width:64px;">{label}</span>'
+                f'{badges}</div>'
+            )
+
+        _drafted_so_far = sum(_co_pred.values())
+        st.markdown(
+            f'<div style="margin:12px 0 4px;color:#94a3b8;font-size:0.78rem;">'
+            f'{_drafted_so_far} draftable prospects picked so far</div>'
+            + _co_badge_row("Predicted", _co_pred)
+            + _co_badge_row("Actual", _co_actual),
+            unsafe_allow_html=True
+        )
 
     # ── Donuts ──
     c1, c2 = st.columns(2)
