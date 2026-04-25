@@ -37,12 +37,12 @@ CARD    = "#0e1520"
 BORDER  = "#1c2840"
 
 DRAFT_COLORS = {
-    "reach":     "#22c55e",
+    "riser":     "#22c55e",
     "consensus": "#3b82f6",
     "slide":     "#D50A0A",
 }
 DRAFT_LABELS = {
-    "reach":     "Riser",
+    "riser":     "Riser",
     "consensus": "Consensus",
     "slide":     "Slide",
 }
@@ -512,6 +512,8 @@ def load_data():
     df = exp.merge(inf_sub, on="player_name", how="left")
     if "p_reach" in df.columns:
         df.rename(columns={"p_reach": "p_riser"}, inplace=True)
+    if "draft_prediction" in df.columns:
+        df["draft_prediction"] = df["draft_prediction"].replace("reach", "riser")
 
     # Merge RAS scores for 2026
     ras_path = BASE / "data/raw/RAS Scores.csv"
@@ -1353,7 +1355,7 @@ with tab1:
     n_total   = len(df)
     _draftable_mask = df["consensus"].apply(lambda x: pd.notna(x) and int(x) <= 257)
     n_slides  = ((df["draft_prediction"] == "slide") & _draftable_mask).sum()
-    n_reaches = ((df["draft_prediction"] == "reach") & _draftable_mask).sum()
+    n_reaches = ((df["draft_prediction"] == "riser") & _draftable_mask).sum()
     n_3source = (df["ngram_count"] > 0).sum()
     pct_3src  = n_3source / n_total * 100
 
@@ -1441,7 +1443,7 @@ with tab1:
     pos_order = (_draftable.groupby("position")["p_riser"].mean()
                    .sort_values(ascending=False).index.tolist())
     fig = go.Figure()
-    for tier in ["reach","consensus","slide"]:
+    for tier in ["riser","consensus","slide"]:
         sub = pos_grp[pos_grp["draft_prediction"] == tier]
         fig.add_trace(go.Bar(
             x=sub["position"], y=sub["n"],
@@ -1486,7 +1488,7 @@ with tab1:
     fig.add_annotation(x=rf_df["consensus"].max() * 0.8, y=rf_df["rise_fall"].min() * 0.85,
                        text="Falling stock", font=dict(color="rgba(213,10,10,0.5)", size=11),
                        showarrow=False)
-    for tier in ["reach","consensus","slide"]:
+    for tier in ["riser","consensus","slide"]:
         fig.for_each_trace(lambda t, _tier=tier: t.update(name=DRAFT_LABELS[_tier])
                            if t.name == _tier else None)
     styled(fig, height=440)
@@ -1537,7 +1539,7 @@ with tab2:
     fig.add_annotation(x=fdf["consensus"].max() * 0.75, y=70,
                        text="High slide risk", font=dict(color="rgba(213,10,10,0.4)", size=11),
                        showarrow=False)
-    for tier in ["reach","consensus","slide"]:
+    for tier in ["riser","consensus","slide"]:
         fig.for_each_trace(lambda t, _tier=tier: t.update(name=DRAFT_LABELS[_tier])
                            if t.name == _tier else None)
     styled(fig, height=400)
@@ -1708,7 +1710,7 @@ with tab3:
 
     wc1, wc2, wc3 = st.columns(3)
     tier_col_map = [
-        ("reach",     "#22c55e", wc1),
+        ("riser",     "#22c55e", wc1),
         ("consensus", "#3b82f6", wc2),
         ("slide",     "#D50A0A", wc3),
     ]
@@ -1954,8 +1956,8 @@ with tab4:
 
         if _undrafted_consensus:
             # Consensus had this player outside the draft — any pick is a surprise.
-            # Compare model tier: "reach" means model saw it coming, anything else is a miss.
-            if predicted_tier == "reach":
+            # Compare model tier: "riser" means model saw it coming, anything else is a miss.
+            if predicted_tier == "riser":
                 accuracy_label = "Model called it"
                 accuracy_color = "#22c55e"
                 accuracy_icon  = "✓"
@@ -1976,7 +1978,7 @@ with tab4:
             import math as _math
             _tier_thresh = _math.floor(max(1, 2 * _math.log(consensus) + 0.07 * min(consensus, 200) ** 0.9))
             if rise_fall_picks >= _tier_thresh:
-                actual_tier = "reach"
+                actual_tier = "riser"
             elif rise_fall_picks <= -_tier_thresh:
                 actual_tier = "slide"
             else:
@@ -1985,7 +1987,7 @@ with tab4:
                 accuracy_label = "Model called it"
                 accuracy_color = "#22c55e"
                 accuracy_icon  = "✓"
-            elif actual_tier == "reach":
+            elif actual_tier == "riser":
                 accuracy_label = "Went earlier than model predicted"
                 accuracy_color = "#f59e0b"
                 accuracy_icon  = "↑"
@@ -2069,7 +2071,7 @@ with tab4:
             dv_df = pd.DataFrame({
                 "tier":  ["Slide","Consensus","Riser"],
                 "prob":  [row["p_slide"], row["p_consensus"], row["p_riser"]],
-                "color": [DRAFT_COLORS["slide"], DRAFT_COLORS["consensus"], DRAFT_COLORS["reach"]],
+                "color": [DRAFT_COLORS["slide"], DRAFT_COLORS["consensus"], DRAFT_COLORS["riser"]],
             }).sort_values("prob")
             fig = go.Figure(go.Bar(
                 x=dv_df["prob"], y=dv_df["tier"], orientation="h",
