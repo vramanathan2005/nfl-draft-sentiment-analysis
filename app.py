@@ -1152,6 +1152,95 @@ def load_live_wikipedia_board():
     return board.reset_index(drop=True)
 
 
+def render_pick_card(dr_round, dr_pick, dr_team, dr_meta, consensus, predicted_tier):
+    """Render the inline drafted card given pick info and model prediction."""
+    import math as _math
+    dr_raw_color = dr_meta.get("color_1") or dr_meta.get("color_2") or "#3b82f6"
+    dr_color     = readable_team_color(dr_meta.get("color_1"), dr_meta.get("color_2"), fallback="#3b82f6")
+    dr_logo      = dr_meta.get("team_logo_espn") or dr_meta.get("logo")
+
+    if dr_pick <= 32:   pick_tier = "Round 1"
+    elif dr_pick <= 64: pick_tier = "Round 2"
+    elif dr_pick <= 105: pick_tier = "Round 3"
+    elif dr_pick <= 140: pick_tier = "Round 4"
+    elif dr_pick <= 175: pick_tier = "Round 5"
+    elif dr_pick <= 215: pick_tier = "Round 6"
+    else:               pick_tier = "Round 7 / UDFA"
+
+    rise_fall_picks = consensus - dr_pick if isinstance(consensus, int) else None
+    _undrafted_consensus = isinstance(consensus, int) and consensus > 257
+
+    if _undrafted_consensus:
+        accuracy_label, accuracy_color, accuracy_icon = "Beat undrafted projection", "#22c55e", "↑"
+        rf_label, rf_color = "Projected undrafted", "#94a3b8"
+    elif rise_fall_picks is not None:
+        _tier_thresh = _math.floor(max(1, 2 * _math.log(consensus) + 0.07 * min(consensus, 200) ** 0.9))
+        actual_tier = "riser" if rise_fall_picks >= _tier_thresh else ("slide" if rise_fall_picks <= -_tier_thresh else "consensus")
+        if actual_tier == predicted_tier:
+            accuracy_label, accuracy_color, accuracy_icon = "Model called it", "#22c55e", "✓"
+        elif actual_tier == "riser":
+            accuracy_label, accuracy_color, accuracy_icon = "Went earlier than model predicted", "#f59e0b", "↑"
+        elif actual_tier == "slide":
+            accuracy_label, accuracy_color, accuracy_icon = "Went later than model predicted", "#ef4444", "↓"
+        else:
+            accuracy_label, accuracy_color, accuracy_icon = "Closer to consensus than predicted", "#94a3b8", "→"
+        if rise_fall_picks > 0:
+            rf_label, rf_color = f"Rose {rise_fall_picks} spots vs consensus", "#22c55e"
+        elif rise_fall_picks < 0:
+            rf_label, rf_color = f"Fell {abs(rise_fall_picks)} spots vs consensus", "#ef4444"
+        else:
+            rf_label, rf_color = "Picked exactly at consensus", "#94a3b8"
+    else:
+        accuracy_label, accuracy_color, accuracy_icon = "—", "#94a3b8", ""
+        rf_label, rf_color = "—", "#94a3b8"
+
+    pred_lbl = DRAFT_LABELS.get(predicted_tier, predicted_tier.title() if predicted_tier else "—")
+    cons_lbl = f"#{consensus}" if isinstance(consensus, int) else "—"
+    team_logo_html = (
+        f'<img src="{html.escape(str(dr_logo))}" style="height:44px;object-fit:contain;display:block;" />'
+        if dr_logo else
+        f'<div style="font-size:13px;font-weight:700;color:#f1f5f9;">{html.escape(dr_team)}</div>'
+    )
+    dr_rgba   = hex_to_rgba(dr_raw_color, 0.18) or "rgba(59,130,246,0.18)"
+    dr_border = hex_to_rgba(dr_raw_color, 0.5)  or "rgba(59,130,246,0.5)"
+
+    st.markdown(f"""
+    <div style="background:{dr_rgba};border:1px solid {dr_border};border-radius:10px;
+                padding:18px 20px;margin:8px 0 4px;">
+      <div style="font-size:10px;font-weight:700;color:{dr_color};text-transform:uppercase;
+                  letter-spacing:1.2px;margin-bottom:12px;">DRAFTED</div>
+      <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;min-width:80px;">
+          {team_logo_html}
+          <div style="font-size:11px;color:#94a3b8;">{html.escape(dr_team)}</div>
+        </div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;flex:1;">
+          <div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:12px 18px;text-align:center;min-width:90px;">
+            <div style="font-size:24px;font-weight:900;color:{dr_color};">R{dr_round}</div>
+            <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Round</div>
+          </div>
+          <div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:12px 18px;text-align:center;min-width:90px;">
+            <div style="font-size:24px;font-weight:900;color:{dr_color};">#{dr_pick}</div>
+            <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Overall</div>
+          </div>
+          <div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:12px 18px;text-align:center;min-width:90px;">
+            <div style="font-size:15px;font-weight:700;color:#f1f5f9;">{pick_tier}</div>
+            <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Pick Value</div>
+          </div>
+          <div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:12px 18px;text-align:center;min-width:120px;">
+            <div style="font-size:15px;font-weight:700;color:{accuracy_color};">{accuracy_icon} {accuracy_label}</div>
+            <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">vs Model Prediction ({pred_lbl})</div>
+          </div>
+          <div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:12px 18px;text-align:center;min-width:120px;">
+            <div style="font-size:15px;font-weight:700;color:{rf_color};">{rf_label}</div>
+            <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">vs Consensus {cons_lbl}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
 def render_live_board(df, live_board, live_error=None):
     st.markdown('<div class="sec-lbl" style="margin-top:0">Live Draft Board</div>', unsafe_allow_html=True)
     if live_error:
@@ -1417,11 +1506,6 @@ with tab6:
         if _badge_html:
             st.markdown(f'<div style="margin-bottom:16px;">{_badge_html}</div>', unsafe_allow_html=True)
 
-        # Column headers
-        th1, th2, th3, th4, th5, th6 = st.columns([0.5, 0.6, 1.5, 0.7, 0.9, 1.2], vertical_alignment="center")
-        for col, lbl in zip([th1,th2,th3,th4,th5,th6], ["Rnd","Pick","Player","Pos","Consensus","Model Tier"]):
-            col.markdown(f'<div class="live-head-cell">{lbl}</div>', unsafe_allow_html=True)
-
         for _, _pr in _team_picks.iterrows():
             _player_raw = str(_pr["Player"]) if pd.notna(_pr["Player"]) else ""
             _mn = _tb_match(_player_raw) if _player_raw else None
@@ -1430,41 +1514,37 @@ with tab6:
             _tier     = _mrow["draft_prediction"] if _mrow is not None else None
             _tier_col = DRAFT_COLORS.get(_tier, "#334155") if _tier else "#334155"
             _tier_lbl = DRAFT_LABELS.get(_tier, "—") if _tier else "—"
-            _cons_val = f'#{int(_mrow["consensus"])}' if _mrow is not None and pd.notna(_mrow["consensus"]) else "—"
+            _cons_int = int(_mrow["consensus"]) if _mrow is not None and pd.notna(_mrow["consensus"]) else None
+            _cons_val = f'#{_cons_int}' if _cons_int else "—"
             _p_s  = f'{_mrow["p_slide"]:.0f}%' if _mrow is not None else ""
             _p_r  = f'{_mrow["p_riser"]:.0f}%' if _mrow is not None else ""
-            _hover = f'P(Slide):{_p_s} P(Riser):{_p_r}' if _mrow is not None else ""
+            _pos_raw = str(_pr.get("Pos", "") or "")
 
-            _row_bg     = hex_to_rgba(_team_color, 0.15) or "rgba(11,18,29,0.9)"
-            _row_border = hex_to_rgba(_team_color, 0.45) or "rgba(28,40,64,0.92)"
-            _cs = f'style="background:{_row_bg};border-color:{_row_border};"'
+            _exp_label = (
+                f"R{int(_pr['Round'])}  •  #{int(_pr['Pick'])}  —  "
+                f"{_player_raw or '—'}  ({_pos_raw})  "
+                f"{'  |  ' + _tier_lbl + ('  •  ' + _cons_val + ' consensus') if _tier else ''}"
+            )
 
-            c1, c2, c3, c4, c5, c6 = st.columns([0.5, 0.6, 1.5, 0.7, 0.9, 1.2], vertical_alignment="center")
-            with c1:
-                st.markdown(f'<div class="live-body-cell" {_cs}><div class="live-cell-main">R{int(_pr["Round"])}</div></div>', unsafe_allow_html=True)
-            with c2:
-                st.markdown(f'<div class="live-body-cell" {_cs}><div class="live-cell-main">{int(_pr["Pick"])}</div></div>', unsafe_allow_html=True)
-            with c3:
-                if _mn:
-                    qp = quote(_mn)
-                    st.markdown(f'<div class="live-body-cell" {_cs}><a class="live-player-link" href="?player={qp}" target="_self">{html.escape(_player_raw)}</a></div>', unsafe_allow_html=True)
-                else:
-                    st.markdown(f'<div class="live-body-cell" {_cs}><div class="live-cell-main">{html.escape(_player_raw) or "—"}</div></div>', unsafe_allow_html=True)
-            with c4:
-                st.markdown(f'<div class="live-body-cell" {_cs}><div class="live-cell-sub">{html.escape(str(_pr.get("Pos","") or ""))}</div></div>', unsafe_allow_html=True)
-            with c5:
-                st.markdown(f'<div class="live-body-cell" {_cs}><div class="live-cell-main">{_cons_val}</div></div>', unsafe_allow_html=True)
-            with c6:
-                if _tier:
+            with st.expander(_exp_label, expanded=False):
+                if _mrow is not None:
+                    # Show tier badge + probabilities
                     st.markdown(
-                        f'<div class="live-body-cell" {_cs} title="{html.escape(_hover)}">'
-                        f'<span style="background:{_tier_col};color:#fff;border-radius:5px;padding:2px 9px;font-size:0.78rem;font-weight:600;">{_tier_lbl}</span>'
-                        f'{"<span style=\\'color:#64748b;font-size:0.75rem;margin-left:6px;\\'>" + _hover + "</span>" if _hover else ""}'
-                        f'</div>',
+                        f'<span style="background:{_tier_col};color:#fff;border-radius:5px;padding:3px 10px;'
+                        f'font-size:0.8rem;font-weight:600;">{_tier_lbl}</span>'
+                        f'<span style="color:#64748b;font-size:0.8rem;margin-left:10px;">P(Slide): {_p_s} &nbsp; P(Riser): {_p_r} &nbsp; Consensus: {_cons_val}</span>',
                         unsafe_allow_html=True
                     )
-                else:
-                    st.markdown(f'<div class="live-body-cell" {_cs}><div class="live-cell-sub">—</div></div>', unsafe_allow_html=True)
+                # Drafted card
+                _pick_meta = load_nfl_team_meta().get(normalize_team_name(_sel_team), {})
+                render_pick_card(
+                    dr_round=int(_pr["Round"]),
+                    dr_pick=int(_pr["Pick"]),
+                    dr_team=_sel_team,
+                    dr_meta=_pick_meta,
+                    consensus=_cons_int,
+                    predicted_tier=_tier,
+                )
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  TAB 1 — CLASS OVERVIEW
