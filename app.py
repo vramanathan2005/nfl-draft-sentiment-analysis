@@ -1506,36 +1506,37 @@ with tab6:
         if _badge_html:
             st.markdown(f'<div style="margin-bottom:16px;">{_badge_html}</div>', unsafe_allow_html=True)
 
-        _pick_meta = load_nfl_team_meta().get(normalize_team_name(_sel_team), {})
         for _, _pr in _team_picks.iterrows():
             _player_raw = str(_pr["Player"]) if pd.notna(_pr["Player"]) else ""
-            if not _player_raw or _player_raw.lower() in ("nan", "none", ""):
-                continue
-            _mn   = _tb_match(_player_raw)
+            _mn = _tb_match(_player_raw) if _player_raw else None
             _mrow = df[df["player_name"] == _mn].iloc[0] if _mn and len(df[df["player_name"] == _mn]) else None
+
             _tier     = _mrow["draft_prediction"] if _mrow is not None else None
-            _tier_col = DRAFT_COLORS.get(_tier, "#475569") if _tier else "#475569"
+            _tier_col = DRAFT_COLORS.get(_tier, "#334155") if _tier else "#334155"
             _tier_lbl = DRAFT_LABELS.get(_tier, "—") if _tier else "—"
             _cons_int = int(_mrow["consensus"]) if _mrow is not None and pd.notna(_mrow["consensus"]) else None
-            _cons_val = f"#{_cons_int}" if _cons_int else "—"
-            _p_s = f'{_mrow["p_slide"]:.0f}%' if _mrow is not None else "—"
-            _p_r = f'{_mrow["p_riser"]:.0f}%' if _mrow is not None else "—"
+            _cons_val = f'#{_cons_int}' if _cons_int else "—"
+            _p_s  = f'{_mrow["p_slide"]:.0f}%' if _mrow is not None else ""
+            _p_r  = f'{_mrow["p_riser"]:.0f}%' if _mrow is not None else ""
             _pos_raw = str(_pr.get("Pos", "") or "")
 
-            _tier_badge = f"  [{_tier_lbl}]" if _tier else ""
-            _exp_label = f"R{int(_pr['Round'])}  #{int(_pr['Pick'])}  —  {_player_raw}  ({_pos_raw}){_tier_badge}"
+            _exp_label = (
+                f"R{int(_pr['Round'])}  •  #{int(_pr['Pick'])}  —  "
+                f"{_player_raw or '—'}  ({_pos_raw})  "
+                f"{'  |  ' + _tier_lbl + ('  •  ' + _cons_val + ' consensus') if _tier else ''}"
+            )
 
             with st.expander(_exp_label, expanded=False):
                 if _mrow is not None:
+                    # Show tier badge + probabilities
                     st.markdown(
-                        f'<div style="display:flex;gap:16px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">'
-                        f'<span style="background:{_tier_col};color:#fff;border-radius:5px;padding:3px 10px;font-size:0.82rem;font-weight:600;">{_tier_lbl}</span>'
-                        f'<span style="color:#94a3b8;font-size:0.82rem;">Consensus {_cons_val}</span>'
-                        f'<span style="color:#94a3b8;font-size:0.82rem;">P(Slide) {_p_s}</span>'
-                        f'<span style="color:#94a3b8;font-size:0.82rem;">P(Riser) {_p_r}</span>'
-                        f'</div>',
+                        f'<span style="background:{_tier_col};color:#fff;border-radius:5px;padding:3px 10px;'
+                        f'font-size:0.8rem;font-weight:600;">{_tier_lbl}</span>'
+                        f'<span style="color:#64748b;font-size:0.8rem;margin-left:10px;">P(Slide): {_p_s} &nbsp; P(Riser): {_p_r} &nbsp; Consensus: {_cons_val}</span>',
                         unsafe_allow_html=True
                     )
+                # Drafted card
+                _pick_meta = load_nfl_team_meta().get(normalize_team_name(_sel_team), {})
                 render_pick_card(
                     dr_round=int(_pr["Round"]),
                     dr_pick=int(_pr["Pick"]),
