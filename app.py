@@ -1545,7 +1545,7 @@ with tab2:
     styled(fig, height=400)
     st.plotly_chart(fig, use_container_width=True, key="board_scatter")
 
-    bc1, bc2 = st.columns(2)
+    bc1, bc2, bc3 = st.columns(3)
 
     with bc1:
         # Top predicted risers by model P(riser)
@@ -1590,6 +1590,46 @@ with tab2:
                xaxis=dict(gridcolor="#0d2a52", linecolor="#1a3a6b", ticksuffix="%"),
                margin=dict(l=16, r=130, t=44, b=16))
         st.plotly_chart(fig, use_container_width=True, key="sliders_bar")
+
+    with bc3:
+        # Sleepers: undrafted consensus but Beast ranks them within the draftable range at their position
+        _beast_cutoff = (
+            _draftable[_draftable["beast_rank"].notna()]
+            .groupby("position")["beast_rank"]
+            .max()
+            .rename("beast_draft_cutoff")
+        )
+        _undrafted = fdf[fdf["consensus"].apply(lambda x: pd.notna(x) and int(x) > 257)].copy()
+        _undrafted = _undrafted.merge(_beast_cutoff.reset_index(), on="position", how="left")
+        sleepers = (
+            _undrafted[
+                _undrafted["beast_rank"].notna() &
+                _undrafted["beast_draft_cutoff"].notna() &
+                (_undrafted["beast_rank"] <= _undrafted["beast_draft_cutoff"])
+            ]
+            .nlargest(15, "rise_fall")
+            [["player_name","position","consensus","beast_rank","beast_draft_cutoff","rise_fall"]]
+        )
+        if len(sleepers):
+            fig = go.Figure(go.Bar(
+                x=sleepers["rise_fall"],
+                y=sleepers["player_name"],
+                orientation="h",
+                marker_color="#f59e0b",
+                text=[f"#{int(b):.0f} Beast pos / consensus #{int(c)}"
+                      for b, c in zip(sleepers["beast_rank"], sleepers["consensus"])],
+                textposition="outside",
+                textfont=dict(color="rgba(255,255,255,0.45)", size=9),
+                hovertemplate="<b>%{y}</b><br>Beast rise score: %{x:.0f}<extra></extra>",
+            ))
+            styled(fig, height=400, title_text="Sleepers (Undrafted → Beast Says Drafted)",
+                   yaxis=dict(autorange="reversed", gridcolor="#0d2a52", linecolor="#1a3a6b"),
+                   xaxis=dict(gridcolor="#0d2a52", linecolor="#1a3a6b"),
+                   margin=dict(l=16, r=150, t=44, b=16))
+            st.plotly_chart(fig, use_container_width=True, key="sleepers_bar")
+        else:
+            st.markdown('<div style="color:#64748b;padding:2rem 0">No sleepers found for this filter.</div>',
+                        unsafe_allow_html=True)
 
     # ── Full table ──
     st.markdown('<div class="sec-lbl">All Prospects</div>', unsafe_allow_html=True)
