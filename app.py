@@ -1300,8 +1300,9 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-tab0, tab4, tab1, tab2, tab3, tab5 = st.tabs([
+tab0, tab6, tab4, tab1, tab2, tab3, tab5 = st.tabs([
     "NFL Draft Live",
+    "Team Board",
     "Player Card",
     "Class Overview",
     "Draft Board",
@@ -1346,6 +1347,124 @@ except Exception as exc:
 
 with tab0:
     render_live_board(df, live_board, live_error)
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  TAB 6 — TEAM BOARD
+# ══════════════════════════════════════════════════════════════════════════════
+
+with tab6:
+    st.markdown('<div class="sec-lbl" style="margin-top:0">Team Draft Board</div>', unsafe_allow_html=True)
+    if live_board.empty:
+        st.markdown('<div class="sent-empty">No draft picks available yet.</div>', unsafe_allow_html=True)
+    else:
+        # Build name→model-row lookup
+        _tb_name_lookup = {normalize_player_name(n): n for n in df["player_name"].dropna().tolist()}
+        try:
+            from rapidfuzz import process as _rfp_tb, fuzz as _rff_tb
+            _tb_fuzzy_cache = {}
+            def _tb_match(raw):
+                key = normalize_player_name(raw)
+                if key in _tb_name_lookup:
+                    return _tb_name_lookup[key]
+                if key in _tb_fuzzy_cache:
+                    return _tb_fuzzy_cache[key]
+                keys = list(_tb_name_lookup.keys())
+                r1 = _rfp_tb.extractOne(key, keys, scorer=_rff_tb.token_sort_ratio)
+                r2 = _rfp_tb.extractOne(key, keys, scorer=_rff_tb.partial_ratio)
+                best = max([r for r in [r1, r2] if r], key=lambda x: x[1], default=None)
+                result = _tb_name_lookup[best[0]] if best and best[1] >= 80 else None
+                _tb_fuzzy_cache[key] = result
+                return result
+        except ImportError:
+            def _tb_match(raw):
+                return _tb_name_lookup.get(normalize_player_name(raw))
+
+        # Team selector
+        _teams = sorted(live_board["NFL Team"].dropna().unique().tolist())
+        _sel_team = st.selectbox("Select Team", _teams, key="team_board_sel")
+
+        _team_picks = live_board[live_board["NFL Team"] == _sel_team].copy()
+        team_meta_tb = load_nfl_team_meta()
+        _tmeta = team_meta_tb.get(normalize_team_name(_sel_team), {})
+        _team_color = _tmeta.get("color_1") or "#3b82f6"
+        _team_logo  = _tmeta.get("team_logo_espn") or _tmeta.get("logo")
+
+        # Team header
+        logo_html = f'<img src="{html.escape(str(_team_logo))}" style="height:48px;object-fit:contain;vertical-align:middle;margin-right:12px;" />' if _team_logo else ""
+        st.markdown(
+            f'<div style="display:flex;align-items:center;margin:12px 0 20px;">'
+            f'{logo_html}<span style="font-size:1.4rem;font-weight:700;color:#e2e8f0;">{html.escape(_sel_team)}</span>'
+            f'<span style="margin-left:12px;color:#64748b;font-size:0.95rem;">{len(_team_picks)} pick{"s" if len(_team_picks)!=1 else ""}</span>'
+            f'</div>',
+            unsafe_allow_html=True
+        )
+
+        # Summary badges: how many slide/riser/consensus
+        _tier_counts = {"riser": 0, "consensus": 0, "slide": 0, "unknown": 0}
+        for _, _pr in _team_picks.iterrows():
+            _mn = _tb_match(str(_pr["Player"])) if pd.notna(_pr["Player"]) else None
+            if _mn:
+                _t = df[df["player_name"] == _mn]["draft_prediction"].values
+                _tier_counts[_t[0] if len(_t) else "unknown"] = _tier_counts.get(_t[0] if len(_t) else "unknown", 0) + 1
+            else:
+                _tier_counts["unknown"] += 1
+
+        _badge_html = "".join([
+            f'<span style="background:{DRAFT_COLORS.get(t,"#334155")};color:#fff;border-radius:6px;padding:3px 10px;font-size:0.8rem;font-weight:600;margin-right:6px;">'
+            f'{DRAFT_LABELS.get(t, t.title())}: {c}</span>'
+            for t, c in _tier_counts.items() if c > 0 and t != "unknown"
+        ])
+        if _badge_html:
+            st.markdown(f'<div style="margin-bottom:16px;">{_badge_html}</div>', unsafe_allow_html=True)
+
+        # Column headers
+        th1, th2, th3, th4, th5, th6 = st.columns([0.5, 0.6, 1.5, 0.7, 0.9, 1.2], vertical_alignment="center")
+        for col, lbl in zip([th1,th2,th3,th4,th5,th6], ["Rnd","Pick","Player","Pos","Consensus","Model Tier"]):
+            col.markdown(f'<div class="live-head-cell">{lbl}</div>', unsafe_allow_html=True)
+
+        for _, _pr in _team_picks.iterrows():
+            _player_raw = str(_pr["Player"]) if pd.notna(_pr["Player"]) else ""
+            _mn = _tb_match(_player_raw) if _player_raw else None
+            _mrow = df[df["player_name"] == _mn].iloc[0] if _mn and len(df[df["player_name"] == _mn]) else None
+
+            _tier     = _mrow["draft_prediction"] if _mrow is not None else None
+            _tier_col = DRAFT_COLORS.get(_tier, "#334155") if _tier else "#334155"
+            _tier_lbl = DRAFT_LABELS.get(_tier, "—") if _tier else "—"
+            _cons_val = f'#{int(_mrow["consensus"])}' if _mrow is not None and pd.notna(_mrow["consensus"]) else "—"
+            _p_s  = f'{_mrow["p_slide"]:.0f}%' if _mrow is not None else ""
+            _p_r  = f'{_mrow["p_riser"]:.0f}%' if _mrow is not None else ""
+            _hover = f'P(Slide):{_p_s} P(Riser):{_p_r}' if _mrow is not None else ""
+
+            _row_bg     = hex_to_rgba(_team_color, 0.15) or "rgba(11,18,29,0.9)"
+            _row_border = hex_to_rgba(_team_color, 0.45) or "rgba(28,40,64,0.92)"
+            _cs = f'style="background:{_row_bg};border-color:{_row_border};"'
+
+            c1, c2, c3, c4, c5, c6 = st.columns([0.5, 0.6, 1.5, 0.7, 0.9, 1.2], vertical_alignment="center")
+            with c1:
+                st.markdown(f'<div class="live-body-cell" {_cs}><div class="live-cell-main">R{int(_pr["Round"])}</div></div>', unsafe_allow_html=True)
+            with c2:
+                st.markdown(f'<div class="live-body-cell" {_cs}><div class="live-cell-main">{int(_pr["Pick"])}</div></div>', unsafe_allow_html=True)
+            with c3:
+                if _mn:
+                    qp = quote(_mn)
+                    st.markdown(f'<div class="live-body-cell" {_cs}><a class="live-player-link" href="?player={qp}" target="_self">{html.escape(_player_raw)}</a></div>', unsafe_allow_html=True)
+                else:
+                    st.markdown(f'<div class="live-body-cell" {_cs}><div class="live-cell-main">{html.escape(_player_raw) or "—"}</div></div>', unsafe_allow_html=True)
+            with c4:
+                st.markdown(f'<div class="live-body-cell" {_cs}><div class="live-cell-sub">{html.escape(str(_pr.get("Pos","") or ""))}</div></div>', unsafe_allow_html=True)
+            with c5:
+                st.markdown(f'<div class="live-body-cell" {_cs}><div class="live-cell-main">{_cons_val}</div></div>', unsafe_allow_html=True)
+            with c6:
+                if _tier:
+                    st.markdown(
+                        f'<div class="live-body-cell" {_cs} title="{html.escape(_hover)}">'
+                        f'<span style="background:{_tier_col};color:#fff;border-radius:5px;padding:2px 9px;font-size:0.78rem;font-weight:600;">{_tier_lbl}</span>'
+                        f'{"<span style=\\'color:#64748b;font-size:0.75rem;margin-left:6px;\\'>" + _hover + "</span>" if _hover else ""}'
+                        f'</div>',
+                        unsafe_allow_html=True
+                    )
+                else:
+                    st.markdown(f'<div class="live-body-cell" {_cs}><div class="live-cell-sub">—</div></div>', unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  TAB 1 — CLASS OVERVIEW
