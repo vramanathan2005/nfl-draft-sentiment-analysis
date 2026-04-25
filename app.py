@@ -1995,20 +1995,10 @@ with tab4:
         predicted_tier = row["draft_prediction"]
 
         if _undrafted_consensus:
-            # Consensus had this player outside the draft — any pick is a surprise.
-            # Compare model tier: "riser" means model saw it coming, anything else is a miss.
-            if predicted_tier == "riser":
-                accuracy_label = "Model called it"
-                accuracy_color = "#22c55e"
-                accuracy_icon  = "✓"
-            elif predicted_tier == "slide":
-                accuracy_label = "Went earlier than model predicted"
-                accuracy_color = "#f59e0b"
-                accuracy_icon  = "↑"
-            else:
-                accuracy_label = "Late-round surprise"
-                accuracy_color = "#94a3b8"
-                accuracy_icon  = "→"
+            # Consensus had this player outside the draft — getting drafted at all is the story.
+            accuracy_label = "Beat undrafted projection"
+            accuracy_color = "#22c55e"
+            accuracy_icon  = "↑"
             rf_label = "Projected undrafted"
             rf_color = "#94a3b8"
         elif rise_fall_picks is not None:
