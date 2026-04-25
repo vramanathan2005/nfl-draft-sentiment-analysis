@@ -1979,8 +1979,14 @@ with tab4:
                 _tier_thresh = 4
             elif consensus <= 64:
                 _tier_thresh = 6
-            else:
+            elif consensus <= 100:
                 _tier_thresh = 8
+            elif consensus <= 150:
+                _tier_thresh = 10
+            elif consensus <= 200:
+                _tier_thresh = 20
+            else:
+                _tier_thresh = 25
             if rise_fall_picks >= _tier_thresh:
                 actual_tier = "reach"
             elif rise_fall_picks <= -_tier_thresh:
