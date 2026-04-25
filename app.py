@@ -1506,37 +1506,65 @@ with tab6:
         if _badge_html:
             st.markdown(f'<div style="margin-bottom:16px;">{_badge_html}</div>', unsafe_allow_html=True)
 
-        for _, _pr in _team_picks.iterrows():
+        _pick_meta = load_nfl_team_meta().get(normalize_team_name(_sel_team), {})
+        for _pick_i, (_, _pr) in enumerate(_team_picks.iterrows()):
             _player_raw = str(_pr["Player"]) if pd.notna(_pr["Player"]) else ""
-            _mn = _tb_match(_player_raw) if _player_raw else None
+            if not _player_raw or _player_raw.lower() in ("nan", "none", ""):
+                continue
+            _mn   = _tb_match(_player_raw)
             _mrow = df[df["player_name"] == _mn].iloc[0] if _mn and len(df[df["player_name"] == _mn]) else None
-
             _tier     = _mrow["draft_prediction"] if _mrow is not None else None
-            _tier_col = DRAFT_COLORS.get(_tier, "#334155") if _tier else "#334155"
+            _tier_col = DRAFT_COLORS.get(_tier, "#475569") if _tier else "#475569"
             _tier_lbl = DRAFT_LABELS.get(_tier, "—") if _tier else "—"
             _cons_int = int(_mrow["consensus"]) if _mrow is not None and pd.notna(_mrow["consensus"]) else None
-            _cons_val = f'#{_cons_int}' if _cons_int else "—"
-            _p_s  = f'{_mrow["p_slide"]:.0f}%' if _mrow is not None else ""
-            _p_r  = f'{_mrow["p_riser"]:.0f}%' if _mrow is not None else ""
+            _cons_val = f"#{_cons_int}" if _cons_int else "—"
+            _p_s = f'{_mrow["p_slide"]:.0f}%' if _mrow is not None else "—"
+            _p_r = f'{_mrow["p_riser"]:.0f}%' if _mrow is not None else "—"
             _pos_raw = str(_pr.get("Pos", "") or "")
 
-            _exp_label = (
-                f"R{int(_pr['Round'])}  •  #{int(_pr['Pick'])}  —  "
-                f"{_player_raw or '—'}  ({_pos_raw})  "
-                f"{'  |  ' + _tier_lbl + ('  •  ' + _cons_val + ' consensus') if _tier else ''}"
-            )
+            _toggle_key = f"tb_expand_{_sel_team}_{_pick_i}"
+            if _toggle_key not in st.session_state:
+                st.session_state[_toggle_key] = False
 
-            with st.expander(_exp_label, expanded=False):
+            _tier_badge_html = (
+                f'<span style="background:{_tier_col};color:#fff;border-radius:4px;'
+                f'padding:1px 8px;font-size:0.75rem;font-weight:600;margin-left:10px;">{_tier_lbl}</span>'
+                if _tier else ""
+            )
+            _row_bg     = hex_to_rgba(_team_color, 0.12) or "rgba(11,18,29,0.9)"
+            _row_border = hex_to_rgba(_team_color, 0.35) or "rgba(28,40,64,0.92)"
+
+            _rc1, _rc2 = st.columns([0.92, 0.08], vertical_alignment="center")
+            with _rc1:
+                st.markdown(
+                    f'<div style="background:{_row_bg};border:1px solid {_row_border};border-radius:8px;'
+                    f'padding:10px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">'
+                    f'<span style="color:#64748b;font-size:0.8rem;min-width:32px;">R{int(_pr["Round"])}</span>'
+                    f'<span style="font-weight:700;color:#f1f5f9;min-width:36px;">#{int(_pr["Pick"])}</span>'
+                    f'<span style="font-weight:600;color:#e2e8f0;flex:1;">{html.escape(_player_raw)}</span>'
+                    f'<span style="color:#64748b;font-size:0.82rem;">{html.escape(_pos_raw)}</span>'
+                    f'<span style="color:#94a3b8;font-size:0.82rem;">{_cons_val}</span>'
+                    f'{_tier_badge_html}'
+                    f'</div>',
+                    unsafe_allow_html=True
+                )
+            with _rc2:
+                if st.button("▼" if not st.session_state[_toggle_key] else "▲",
+                             key=f"btn_{_toggle_key}", use_container_width=True):
+                    st.session_state[_toggle_key] = not st.session_state[_toggle_key]
+                    st.rerun()
+
+            if st.session_state[_toggle_key]:
                 if _mrow is not None:
-                    # Show tier badge + probabilities
                     st.markdown(
-                        f'<span style="background:{_tier_col};color:#fff;border-radius:5px;padding:3px 10px;'
-                        f'font-size:0.8rem;font-weight:600;">{_tier_lbl}</span>'
-                        f'<span style="color:#64748b;font-size:0.8rem;margin-left:10px;">P(Slide): {_p_s} &nbsp; P(Riser): {_p_r} &nbsp; Consensus: {_cons_val}</span>',
+                        f'<div style="display:flex;gap:16px;align-items:center;margin:4px 0 0 8px;flex-wrap:wrap;">'
+                        f'<span style="background:{_tier_col};color:#fff;border-radius:5px;padding:3px 10px;font-size:0.82rem;font-weight:600;">{_tier_lbl}</span>'
+                        f'<span style="color:#94a3b8;font-size:0.82rem;">Consensus {_cons_val}</span>'
+                        f'<span style="color:#94a3b8;font-size:0.82rem;">P(Slide) {_p_s}</span>'
+                        f'<span style="color:#94a3b8;font-size:0.82rem;">P(Riser) {_p_r}</span>'
+                        f'</div>',
                         unsafe_allow_html=True
                     )
-                # Drafted card
-                _pick_meta = load_nfl_team_meta().get(normalize_team_name(_sel_team), {})
                 render_pick_card(
                     dr_round=int(_pr["Round"]),
                     dr_pick=int(_pr["Pick"]),
