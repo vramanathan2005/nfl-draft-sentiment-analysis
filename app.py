@@ -2390,13 +2390,13 @@ with tab4:
     badges_html += f'<span class="badge b-info">Consensus #{consensus}</span>'
     if beast_rnk:
         badges_html += f'<span class="badge b-src">Beast #{beast_rnk}</span>'
-    if bg_grade:
-        badges_html += f'<span class="badge b-src">Beast {bg_grade}</span>'
+    if isinstance(bg_grade, str) and bg_grade.strip() and bg_grade.lower() not in ("nan", "none"):
+        badges_html += f'<span class="badge b-src">Beast {html.escape(bg_grade)}</span>'
     if pro_comp and str(pro_comp).strip() not in ("", "nan"):
         badges_html += f'<span class="badge b-info">Comp: {html.escape(str(pro_comp))}</span>'
 
     _pred_pill = (
-        f'<span title="Model prediction" style="background:{dc_color}22;color:{dc_color};'
+        f'<span style="background:{dc_color}22;color:{dc_color};'
         f'border:1px solid {dc_color}55;border-radius:6px;padding:3px 10px;font-size:0.82rem;font-weight:600;">'
         f'{pred_lbl}</span>'
     )
@@ -2405,13 +2405,14 @@ with tab4:
         _ac = DRAFT_COLORS.get(_pc_actual_tier, "#475569")
         _al = DRAFT_LABELS.get(_pc_actual_tier, _pc_actual_tier.title() if isinstance(_pc_actual_tier, str) else "—")
         _actual_pill = (
-            f'<span title="Actual outcome" style="background:{_ac};color:#fff;'
+            f'<span style="background:{_ac};color:#fff;'
             f'border-radius:6px;padding:3px 10px;font-size:0.82rem;font-weight:600;">{_al}</span>'
         )
 
     _pc_college_logo_url = row.get("college_logo_url")
     _pc_headshot_url     = row.get("headshot_url")
-    _pc_logo_html = college_logo_block(_pc_college_logo_url, college, size=60) if _pc_college_logo_url else ""
+    _has_logo_url = pd.notna(_pc_college_logo_url) and str(_pc_college_logo_url).strip() not in ("", "nan")
+    _pc_logo_html = college_logo_block(_pc_college_logo_url, college, size=60) if _has_logo_url else ""
 
     _ph1, _ph2 = st.columns([1, 3])
     with _ph1:
@@ -2425,10 +2426,7 @@ with tab4:
             {badges_html}
             <div style="margin-top:14px;">
               <div class="chart-lbl">DRAFT TIER</div>
-              <span style="display:inline-flex;gap:6px;flex-wrap:wrap;align-items:center;">
-                {_pred_pill}
-                {_actual_pill}
-              </span>
+              <div style="display:inline-flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:4px;">{_pred_pill}{_actual_pill}</div>
             </div>
           </div>
           {_pc_logo_html}
