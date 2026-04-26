@@ -1615,7 +1615,7 @@ with tab7:
     st.markdown('<div class="sec-lbl" style="margin-top:0">Still on the Board</div>', unsafe_allow_html=True)
     st.markdown(
         '<div style="color:#64748b;font-size:0.85rem;margin-bottom:16px;">'
-        'Prospects in our model who have not been picked yet. Sorted by consensus rank.</div>',
+        'Prospects in our model who have not been picked. Sorted by consensus rank.</div>',
         unsafe_allow_html=True
     )
 
@@ -1664,11 +1664,10 @@ with tab7:
         _ud_show = _ud_show[_ud_show["draft_prediction"] == _ud_tier_sel.lower()]
     _ud_show = _ud_show.sort_values("consensus").reset_index(drop=True)
 
-    n_picked = len(_picked_names)
-    n_left   = len(_still_on_board[_still_on_board["consensus"].apply(lambda x: pd.notna(x) and int(x) <= 257)])
+    n_total_picked = len(live_board) if not live_board.empty else 0
     st.markdown(
         f'<div style="color:#94a3b8;font-size:0.82rem;margin-bottom:12px;">'
-        f'{n_picked} prospects picked so far &nbsp;·&nbsp; {n_left} draftable prospects still on the board</div>',
+        f'{n_total_picked} prospects picked so far</div>',
         unsafe_allow_html=True
     )
 
