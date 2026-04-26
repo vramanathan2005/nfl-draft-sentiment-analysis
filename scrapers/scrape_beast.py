@@ -407,6 +407,31 @@ def parse_new_format(pages: list[str], draft_year: str) -> list[dict]:
 # 2026 format parser
 # ---------------------------------------------------------------------------
 
+# "BEST OF THE REST" measurables-only section detector.
+BOTR_SECTION_RE = re.compile(r'BEST\s+OF\s+THE\s+REST', re.IGNORECASE)
+
+# Single BOTR row: rank + ALL-CAPS name (1-5 words) + school + height + rest.
+# The name words are all-uppercase; school starts with a capital then lowercase.
+# Backtracking handles schools that are all-caps (e.g. "USC") by requiring
+# at least one char between name and height.
+BOTR_ROW_RE = re.compile(
+    r'^\s*(\d+)\s+'
+    r'((?:[A-Z][A-Z\'\-\.]*\s+){1,5})'   # ALL-CAPS name words
+    r'(.+?)\s+'                             # school (lazy — stops at height)
+    r'([56]\d{3})\s+'                       # height token (e.g. 6045)
+    r'(.+?)\s*$',                           # remaining measurements
+    re.MULTILINE
+)
+
+# 2026 BOTR column order after the height token:
+# WT  40  20  10  VJ  BJ  SS  3C  BP  HAND  ARM  WING
+BOTR_2026_COLS_AFTER_HT = [
+    "c_wt",
+    "c_40", "c_20", "c_10",
+    "c_vj", "c_bj", "c_ss", "c_3c", "c_bp",
+    "c_hand", "c_arm", "c_wing",
+]
+
 # Header line: "QB1 Fernando Mendoza Indiana"
 # followed immediately by "GRADE" on the next line (info-box label).
 NEW_2026_HEADER_RE = re.compile(
@@ -480,7 +505,71 @@ def parse_2026_format(pages: list[str], draft_year: str) -> list[dict]:
             **combine,
         })
 
-    print(f"  [2026] {draft_year}: {len(records)} players parsed")
+    botr_records = _parse_2026_botr(full_text, hits, draft_year)
+    records.extend(botr_records)
+
+    print(f"  [2026] {draft_year}: {len(records)} players parsed ({len(records) - len(botr_records)} full write-ups, {len(botr_records)} BOTR)")
+    return records
+
+
+def _parse_2026_botr(full_text: str, hits: list, draft_year: str) -> list[dict]:
+    """Parse BEST OF THE REST measurables-only rows from the 2026 Beast PDF."""
+    records = []
+    botr_sections = list(BOTR_SECTION_RE.finditer(full_text))
+    hit_starts = [h.start() for h in hits]
+
+    for botr_m in botr_sections:
+        botr_start = botr_m.start()
+
+        # Position = abbreviation from the last full-write-up player before this BOTR.
+        pos_abbrev = "DL"  # fallback
+        for h in reversed(hits):
+            if h.start() < botr_start:
+                pos_abbrev = h.group(1)
+                break
+        position = POS_ABBREV_2025.get(pos_abbrev, pos_abbrev)
+
+        # BOTR section ends at the next full player entry or next BOTR header.
+        next_hit = next((s for s in hit_starts if s > botr_start), len(full_text))
+        next_botr = next((b.start() for b in botr_sections if b.start() > botr_start), len(full_text))
+        botr_end = min(next_hit, next_botr)
+
+        botr_text = full_text[botr_start:botr_end]
+
+        for row_m in BOTR_ROW_RE.finditer(botr_text):
+            rank   = row_m.group(1)
+            name   = clean(row_m.group(2))
+            school = clean(row_m.group(3))
+            height = row_m.group(4)
+            rest   = row_m.group(5)
+
+            tokens  = _tokenize_values(rest)
+            combine = {col: "" for col in COMBINE_COLS}
+            combine["c_ht"] = height
+            for idx, col in enumerate(BOTR_2026_COLS_AFTER_HT):
+                if idx < len(tokens) and not tokens[idx].startswith("("):
+                    combine[col] = tokens[idx]
+
+            records.append({
+                "draft_year": draft_year,
+                "position":   position,
+                "rank":       rank,
+                "name":       name,
+                "school":     school,
+                "year_class": "",
+                "height":     height,
+                "weight":     combine.get("c_wt", ""),
+                "hometown":   "",
+                "birthday":   "",
+                "age":        "",
+                "jersey":     "",
+                "strengths":  "",
+                "weaknesses": "",
+                "summary":    "",
+                "grade":      "",
+                **combine,
+            })
+
     return records
 
 
