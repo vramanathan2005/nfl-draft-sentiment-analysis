@@ -150,6 +150,27 @@ results["pred_apy_pct_hi"]   = (apy_preds + apy_resid).clip(0, 1).round(3)
 results["p_real_contract"]   = (p_real_contract * 100).round(1)
 results["expected_apy_pct"]  = (p_real_contract * apy_preds).round(3)
 
+# ── append BOTR prospects (no scouting text, model predictions = NaN) ─────────
+p26_all = df[df["draft_year"] == 2026].copy().reset_index(drop=True)
+no_text = p26_all[~(p26_all["beast_summary"].notna() | p26_all["pff_overview"].notna())].copy()
+if len(no_text):
+    botr_rows = no_text[["Player Name", "Position", "College", "consensus",
+                          "beast_grade", "br_article_grade", "br_pro_comparison"]].copy()
+    for col in MEAS_COLS + TEXT_COLS:
+        if col in no_text.columns:
+            botr_rows[col] = no_text[col].values
+    botr_rows["text_source"]   = "none"
+    botr_rows["has_br"]        = False
+    botr_rows["has_pff"]       = False
+    # All model prediction columns are NaN for BOTR players
+    for col in ["p_cornerstone","p_53_man","p_roster_bubble","p_out_of_league",
+                "sc_prediction","p_slide","p_consensus","p_reach","draft_prediction",
+                "pred_apy_pct","pred_apy_pct_lo","pred_apy_pct_hi",
+                "p_real_contract","expected_apy_pct"]:
+        botr_rows[col] = np.nan
+    results = pd.concat([results, botr_rows], ignore_index=True)
+    print(f"Appended {len(botr_rows)} BOTR prospects (no model predictions)")
+
 results.to_csv(BASE / "data/processed/inference_2026.csv", index=False)
 print(f"Saved → inference_2026.csv\n")
 

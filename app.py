@@ -510,6 +510,28 @@ def load_data():
     inf_sub = inf[[c for c in extra if c in inf.columns]].rename(
         columns={"Player Name": "player_name", "text_source": "inf_text_source"})
     df = exp.merge(inf_sub, on="player_name", how="left")
+
+    # Include BOTR players (in inference but not in explain — no scouting text)
+    _botr = inf[inf.get("text_source", pd.Series()).eq("none") if "text_source" in inf.columns
+                else pd.Series(False, index=inf.index)].copy()
+    _botr_new = _botr[~_botr["Player Name"].isin(df["player_name"])].copy()
+    if len(_botr_new):
+        _botr_rows = {col: np.nan for col in df.columns}
+        _botr_rows["player_name"] = _botr_new["Player Name"].values
+        _botr_df = pd.DataFrame({k: v if hasattr(v, "__len__") else [v]*len(_botr_new)
+                                  for k, v in _botr_rows.items()})
+        _botr_df["player_name"]    = _botr_new["Player Name"].values
+        _botr_df["position"]       = _botr_new["Position"].values if "Position" in _botr_new else np.nan
+        _botr_df["college"]        = _botr_new["College"].values  if "College"  in _botr_new else np.nan
+        _botr_df["consensus"]      = _botr_new["consensus"].values if "consensus" in _botr_new else np.nan
+        _botr_df["inf_text_source"] = "none"
+        _botr_df["has_br"]         = False
+        _botr_df["has_pff"]        = False
+        for _c in MEAS_RAW + SCOUT_TEXT_COLS + ["beast_grade"]:
+            if _c in _botr_new.columns:
+                _botr_df[_c] = _botr_new[_c].values
+        df = pd.concat([df, _botr_df], ignore_index=True)
+
     if "p_reach" in df.columns:
         df.rename(columns={"p_reach": "p_riser"}, inplace=True)
     if "draft_prediction" in df.columns:
