@@ -770,6 +770,7 @@ def load_data():
     hist_cols = ["Position","draft_year","round","pick","sc_contract_tier","sc_contract_type"]
     if "College" in hist.columns:
         hist_cols.append("College")
+    hist_cols = [c for c in hist_cols if c in hist.columns]
     hist_meta = hist.set_index("Player Name")[hist_cols].copy()
 
     # #1 overall pick can't go higher — zero out riser probability and renormalize
@@ -1547,7 +1548,7 @@ with tab6:
             badges = "".join([
                 f'<span style="background:{DRAFT_COLORS.get(t,"#334155")};color:#fff;border-radius:6px;'
                 f'padding:3px 10px;font-size:0.8rem;font-weight:600;margin-right:6px;">'
-                f'{DRAFT_LABELS.get(t, t.title())}: {c}</span>'
+                f'{DRAFT_LABELS.get(t, t.title() if isinstance(t, str) else "—")}: {c}</span>'
                 for t, c in counts.items() if c > 0
             ])
             return (
@@ -1842,7 +1843,7 @@ with tab1:
             badges = "".join([
                 f'<span style="background:{DRAFT_COLORS.get(t,"#334155")};color:#fff;border-radius:6px;'
                 f'padding:3px 10px;font-size:0.8rem;font-weight:600;margin-right:6px;">'
-                f'{DRAFT_LABELS.get(t, t.title())}: {c}</span>'
+                f'{DRAFT_LABELS.get(t, t.title() if isinstance(t, str) else "—")}: {c}</span>'
                 for t, c in counts.items() if c > 0
             ])
             return (
@@ -2353,7 +2354,8 @@ with tab4:
     pro_comp  = row.get("br_pro_comparison", "")
     dc_color  = DRAFT_COLORS.get(row["draft_prediction"], "#3b82f6")
     rf_val    = row.get("rise_fall")
-    pred_lbl  = DRAFT_LABELS.get(row["draft_prediction"], row["draft_prediction"].title())
+    _dp = row["draft_prediction"]
+    pred_lbl  = DRAFT_LABELS.get(_dp, _dp.title() if isinstance(_dp, str) else "—")
     if isinstance(consensus, int) and consensus > 257:
         pred_lbl = "Undrafted"
         dc_color = "#64748b"
@@ -2401,7 +2403,7 @@ with tab4:
     _actual_pill = ""
     if _pc_actual_tier is not None:
         _ac = DRAFT_COLORS.get(_pc_actual_tier, "#475569")
-        _al = DRAFT_LABELS.get(_pc_actual_tier, _pc_actual_tier.title())
+        _al = DRAFT_LABELS.get(_pc_actual_tier, _pc_actual_tier.title() if isinstance(_pc_actual_tier, str) else "—")
         _actual_pill = (
             f'<span title="Actual outcome" style="background:{_ac};color:#fff;'
             f'border-radius:6px;padding:3px 10px;font-size:0.82rem;font-weight:600;">{_al}</span>'
@@ -2808,7 +2810,7 @@ with tab4:
                     {logo_html}
                   </div>
                   <div class="sim-meta">{sim_pos} · #{sim_cons}</div>
-                  <div class="sim-meta" style="color:{sim_color};font-weight:700;">{DRAFT_LABELS.get(sim_tier, sim_tier.title())}</div>
+                  <div class="sim-meta" style="color:{sim_color};font-weight:700;">{DRAFT_LABELS.get(sim_tier, sim_tier.title() if isinstance(sim_tier, str) else "—")}</div>
                 </div>
               </div>
               <div class="sim-score">{score:.2f}</div>
