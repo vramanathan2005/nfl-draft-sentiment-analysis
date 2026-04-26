@@ -2424,9 +2424,12 @@ with tab4:
           <div style="flex:1;min-width:0;">
             <p class="p-name">{html.escape(sel)}</p>
             {badges_html}
-            <div style="margin-top:14px;">
-              <div class="chart-lbl">DRAFT TIER</div>
-              <div style="display:inline-flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:4px;">{_pred_pill}{_actual_pill}</div>
+            <div style="margin-top:14px;display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;">
+              <div>
+                <div class="chart-lbl">PREDICTED</div>
+                <div style="margin-top:4px;">{_pred_pill}</div>
+              </div>
+              {f'<div><div class="chart-lbl">ACTUAL</div><div style="margin-top:4px;">{_actual_pill}</div></div>' if _actual_pill else ''}
             </div>
           </div>
           {_pc_logo_html}
