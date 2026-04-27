@@ -70,7 +70,7 @@ def encode_draft_tier(dv):
     if dv < -20:
         return "slide"
     if dv > 20:
-        return "reach"
+        return "riser"
     return "consensus"
 
 df["draft_tier"] = df["draft_value"].map(encode_draft_tier)

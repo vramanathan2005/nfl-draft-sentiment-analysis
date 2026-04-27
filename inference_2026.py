@@ -127,7 +127,7 @@ idx_out_of_league  = sc_classes.index("out_of_league")
 
 idx_slide     = dv_classes.index("slide")
 idx_consensus = dv_classes.index("consensus")
-idx_reach     = dv_classes.index("reach")
+idx_reach     = dv_classes.index("riser")
 
 results["p_cornerstone"]       = (sc_proba[:, idx_cornerstone] * 100).round(1)
 results["p_53_man"]            = (sc_proba[:, idx_53man]       * 100).round(1)

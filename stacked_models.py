@@ -187,7 +187,7 @@ print("  Saved → model_sc_tier.pkl")
 
 section("TASK 2: draft_tier 3-class  (Beast text, 2019-2025)")
 
-dv_df = df[has_beast & df["draft_tier"].isin(["slide","consensus","reach"])
+dv_df = df[has_beast & df["draft_tier"].isin(["slide","consensus","riser"])
            & df["round"].notna()].copy().reset_index(drop=True)
 
 texts_dv   = unified_text(dv_df)

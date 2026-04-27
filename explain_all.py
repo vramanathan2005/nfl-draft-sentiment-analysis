@@ -185,7 +185,7 @@ idx_roster_bubble = sc_classes.index("roster_bubble")
 idx_out_of_league = sc_classes.index("out_of_league")
 idx_slide         = dv_classes.index("slide")
 idx_consensus     = dv_classes.index("consensus")
-idx_reach         = dv_classes.index("reach")
+idx_reach         = dv_classes.index("riser")
 
 print("Building explanation rows...")
 rows = []

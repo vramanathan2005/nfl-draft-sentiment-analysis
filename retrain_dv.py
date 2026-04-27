@@ -33,7 +33,7 @@ st = SentenceTransformer(MODEL_NAME)
 
 has_beast = df["beast_summary"].notna()
 
-dv_df = df[has_beast & df["draft_tier"].isin(["slide","consensus","reach"])
+dv_df = df[has_beast & df["draft_tier"].isin(["slide","consensus","riser"])
            & df["round"].notna()].copy().reset_index(drop=True)
 
 texts_dv  = unified_text(dv_df)
