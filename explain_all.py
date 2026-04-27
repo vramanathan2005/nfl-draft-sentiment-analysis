@@ -27,7 +27,7 @@ from features import (
     unified_text, text_source_flag, has_br_flag, get_meas,
     consensus_feature, beast_rank_feature, text_length_feature,
     round_feature, position_feature,
-    deduplicate_ngrams, find_source_sentences,
+    deduplicate_ngrams, find_source_sentences, _STOPWORD_UNIGRAMS,
 )
 
 warnings.filterwarnings("ignore")
@@ -66,9 +66,12 @@ def word_contribs(tfidf_bundle, coef_vec, tfidf_row):
 
 def top_words_str(wc, positive=True, n=8):
     """Top N words by contribution for given sign. Returns pipe-separated 'word:score'."""
-    filtered = [(w, c) for w, c in wc if (c > 0) == positive and abs(c) >= 0.001][:n]
+    def _ok(w):
+        tokens = w.lower().split()
+        return not (len(tokens) == 1 and tokens[0] in _STOPWORD_UNIGRAMS)
+    filtered = [(w, c) for w, c in wc if (c > 0) == positive and abs(c) >= 0.001 and _ok(w)][:n]
     if not filtered:
-        filtered = [(w, c) for w, c in wc if (c > 0) == positive][:n]
+        filtered = [(w, c) for w, c in wc if (c > 0) == positive and _ok(w)][:n]
     return "|".join(f"{w}:{c:.4f}" for w, c in filtered)
 
 

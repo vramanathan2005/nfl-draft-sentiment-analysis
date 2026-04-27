@@ -132,6 +132,18 @@ def position_feature(df: pd.DataFrame) -> np.ndarray:
 
 # ── Explanation helpers ───────────────────────────────────────────────────────
 
+_STOPWORD_UNIGRAMS = {
+    "a","an","the","and","or","but","in","of","to","for","on","at","by","as",
+    "is","are","was","were","be","been","has","had","have","it","its","he","his",
+    "him","they","them","their","we","with","from","into","up","so","if","no",
+    "not","can","do","does","did","all","some","any","this","that","which",
+    "when","where","while","who","what","how","then","just","very","more","like",
+    "also","than","yet","too","even","both","each","few","own","same","will",
+    "would","could","should","may","might","much","many","most","over","out",
+    "off","use","uses","used","per","one","two","three","four","five","six",
+    "such","other","after","before","about","upon","only","new","there","here",
+}
+
 _STOPWORD_BIGRAMS = {
     # generic prepositions / articles
     "to be","in the","of the","on the","and on","as an","to the","he is",
@@ -145,6 +157,13 @@ _STOPWORD_BIGRAMS = {
     "is an","but he","runner and","athlete with","allow him","allows him",
     "ability to","is to","he can","though he","him to","the way","in the way",
     "when playing","or plays","and tight","or carry","when he",
+    # high-frequency generic phrases found in output
+    "where he","his best","percent of","he has","he was","off the","up in",
+    "from his","his way","how to","the ball","top of","with his","because of",
+    "his first","in run","his college","so he","to make","has been","in man",
+    "of just","in back","his second","on both","to find","to get","to use",
+    "and has","and is","and he","he also","he will","who has","who is",
+    "they are","there is","it was","there are","to do","to play","to help",
 }
 
 
