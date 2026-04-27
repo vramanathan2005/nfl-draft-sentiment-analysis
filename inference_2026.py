@@ -20,7 +20,7 @@ from sentence_transformers import SentenceTransformer
 from features import (
     Z_COLS, unified_text, text_source_flag, has_br_flag,
     consensus_feature, beast_rank_feature, text_length_feature,
-    round_feature, position_feature,
+    round_feature, position_feature, riser_headroom_feature,
 )
 
 warnings.filterwarnings("ignore")
@@ -70,7 +70,7 @@ X_rank     = beast_rank_feature(p26)
 X_tlen     = text_length_feature(texts)
 X_rnd      = round_feature(p26)   # all 2026 rows imputed from consensus (round col is NaN)
 X_extra_sc = np.hstack([X_cons, X_br, X_pos, X_rank, X_tlen, X_rnd])  # sc: full extras
-X_extra_dv = X_br                                                        # dv: text/measurables only
+X_extra_dv = np.hstack([X_br, riser_headroom_feature(p26)])              # dv: br + headroom
 
 X_tfidf_sc = sc_bundle["svd"].transform(sc_bundle["tfidf"].transform(texts))
 X_tfidf_dv = dv_bundle["svd"].transform(dv_bundle["tfidf"].transform(texts))
@@ -90,9 +90,28 @@ else:
 sc_pred    = le_sc.inverse_transform(sc_proba.argmax(axis=1))
 
 le_dv      = dv_bundle["le"]
-dv_classes = list(le_dv.classes_)   # ['consensus', 'reach', 'slide']
+dv_classes = list(le_dv.classes_)   # ['consensus', 'riser', 'slide']
 dv_proba   = dv_bundle["clf"].predict_proba(X_dv)
-dv_pred    = le_dv.inverse_transform(dv_bundle["clf"].predict(X_dv))
+
+# Hard constraint: picks 1-7 have headroom=0 by formula, so riser is physically impossible.
+# Redistribute riser probability to consensus and slide proportionally.
+_idx_ri  = dv_classes.index("riser")
+_idx_con = dv_classes.index("consensus")
+_idx_sl  = dv_classes.index("slide")
+for _i in range(len(p26)):
+    _cons = p26["consensus"].iloc[_i]
+    if pd.notna(_cons) and float(_cons) <= 7:
+        _p_ri = dv_proba[_i, _idx_ri]
+        if _p_ri > 0:
+            _other = dv_proba[_i, _idx_con] + dv_proba[_i, _idx_sl]
+            if _other > 0:
+                dv_proba[_i, _idx_con] += _p_ri * (dv_proba[_i, _idx_con] / _other)
+                dv_proba[_i, _idx_sl]  += _p_ri * (dv_proba[_i, _idx_sl]  / _other)
+            else:
+                dv_proba[_i, _idx_con] = _p_ri
+            dv_proba[_i, _idx_ri] = 0.0
+
+dv_pred    = le_dv.inverse_transform(dv_proba.argmax(axis=1))
 
 # APY percentile — same feature matrix as sc (identical extra features)
 X_tfidf_ap  = apy_bundle["svd"].transform(apy_bundle["tfidf"].transform(texts))

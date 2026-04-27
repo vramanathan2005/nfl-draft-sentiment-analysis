@@ -26,7 +26,7 @@ from features import (
     POS_TO_GROUP, POS_ORDER, MEAS_LABELS,
     unified_text, text_source_flag, has_br_flag, get_meas,
     consensus_feature, beast_rank_feature, text_length_feature,
-    round_feature, position_feature,
+    round_feature, position_feature, riser_headroom_feature,
     deduplicate_ngrams, find_source_sentences, _STOPWORD_UNIGRAMS, _STOPWORD_BIGRAMS,
 )
 
@@ -46,7 +46,10 @@ def build_sc_features(df, texts, emb, sc_bundle):
 
 def build_dv_features(df, texts, emb, dv_bundle):
     svd_vec = dv_bundle["svd"].transform(dv_bundle["tfidf"].transform(texts))
-    X_extra = has_br_flag(df)  # consensus removed: DV is text/measurables-driven
+    _df_cons = df.copy()
+    _draftable = _df_cons["consensus"].apply(lambda x: pd.notna(x) and float(x) <= 257)
+    _df_cons.loc[~_draftable, "consensus"] = np.nan
+    X_extra = np.hstack([has_br_flag(df), riser_headroom_feature(df)])  # headroom replaces consensus
     return np.hstack([svd_vec, emb, get_meas(df), np.zeros((len(df), 1)), X_extra])
 
 
@@ -108,13 +111,14 @@ def sc_feat_contribs(X_row, coef_vec):
 
 
 def dv_feat_contribs(X_row, coef_vec):
-    """Named feature contributions for the DV 931d layout (no consensus)."""
+    """Named feature contributions for the DV 933d layout (cons + br + headroom)."""
     c = coef_vec
     x = X_row
     out = {
         "text_tfidf_svd": float(c[:150]   @ x[:150]),
         "text_embedding": float(c[150:918] @ x[150:918]),
         "br_flag":        float(c[930]     * x[930]),
+        "headroom":       float(c[931]     * x[931]),
     }
     meas_contribs = {MEAS_LABELS[i]: float(c[918+i] * x[918+i]) for i in range(11)}
     top_m = max(meas_contribs, key=lambda k: abs(meas_contribs[k]))

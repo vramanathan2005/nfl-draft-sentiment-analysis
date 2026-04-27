@@ -72,7 +72,7 @@ def encode_draft_tier(row):
     if pd.isna(dv) or pd.isna(cons) or cons <= 0:
         return np.nan
     thresh = int(np.floor(2 * np.log(cons) + 0.07 * cons**0.9))
-    thresh = max(thresh, 3)  # floor of 3 so pick #1 isn't trivially a riser
+    thresh = max(thresh, 7)  # floor of 7: picks #1-7 can never be risers
     if dv < -thresh:
         return "riser"
     if dv > thresh:

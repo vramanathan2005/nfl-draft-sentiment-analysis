@@ -17,7 +17,7 @@ from xgboost import XGBClassifier
 
 from features import (
     BEAST_COLS, BR_COLS, Z_COLS,
-    unified_text, has_br_flag, get_meas,
+    unified_text, has_br_flag, get_meas, consensus_feature, riser_headroom_feature,
 )
 
 warnings.filterwarnings("ignore")
@@ -38,8 +38,9 @@ dv_df = df[has_beast & df["draft_tier"].isin(["slide","consensus","riser"])
 
 texts_dv  = unified_text(dv_df)
 X_src_dv  = np.zeros((len(dv_df), 1))
-X_br_dv   = has_br_flag(dv_df)
-X_extra_dv = X_br_dv  # no consensus — purely text/measurables driven
+X_br_dv       = has_br_flag(dv_df)
+X_headroom_dv = riser_headroom_feature(dv_df)
+X_extra_dv    = np.hstack([X_br_dv, X_headroom_dv])  # headroom replaces consensus z-score
 X_emb_dv  = st.encode(texts_dv.tolist(), batch_size=64,
                        show_progress_bar=True, normalize_embeddings=True)
 X_meas_dv = get_meas(dv_df)

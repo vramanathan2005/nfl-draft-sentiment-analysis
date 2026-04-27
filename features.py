@@ -70,6 +70,22 @@ def get_meas(df: pd.DataFrame) -> np.ndarray:
 
 # ── Numeric features ──────────────────────────────────────────────────────────
 
+def riser_headroom_feature(df: pd.DataFrame) -> np.ndarray:
+    """
+    Fraction of draft picks a player could physically rise above consensus.
+    headroom = max(0, consensus - thresh) / 257
+    thresh = max(floor(2*log(cons) + 0.07*cons^0.9), 7)
+    = 0 for picks 1-7 (can't be risers), increases for later picks.
+    Shape (n, 1).
+    """
+    def _headroom(cons):
+        if pd.isna(cons) or cons <= 0:
+            return 0.0
+        thresh = max(int(np.floor(2 * np.log(cons) + 0.07 * cons**0.9)), 7)
+        return max(0.0, (cons - thresh)) / 257.0
+    return df["consensus"].map(_headroom).fillna(0.0).values.reshape(-1, 1)
+
+
 def consensus_feature(df: pd.DataFrame) -> np.ndarray:
     """Per-year z-score of consensus rank, 0-imputed for missing. Shape (n, 1)."""
     out = np.zeros(len(df))
