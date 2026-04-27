@@ -189,6 +189,20 @@ def deduplicate_ngrams(contribs: list) -> list:
     return selected
 
 
+_NEGATIVE_MARKERS = {
+    "lack", "lacks", "lacking", "limited", "limitation", "below", "struggle",
+    "struggles", "struggling", "average", "weak", "weakness", "weaknesses",
+    "poor", "needs", "need to", "must", "concern", "concerns", "issue", "issues",
+    "can't", "cannot", "doesn't", "doesn't have", "does not", "not", "without",
+    "though", "however", "but", "despite", "although", "worrisome", "inconsistent",
+    "unreliable", "disappointing", "question mark", "raw", "underdeveloped",
+    "overmatched", "misses", "missed", "miss", "loses", "lost", "slow", "late",
+    "short", "small", "thin", "narrow", "stiff", "tight", "rigid", "pad level",
+    "overpowered", "outmatched", "rarely", "seldom", "never", "only", "just",
+    "improve", "improvement", "development", "developmental", "project",
+}
+
+
 def find_source_sentences(text: str, contribs: list, n: int = 3,
                            positive: bool = True, top_per_sent: int = 3,
                            min_contrib: float = 0.005) -> list:
@@ -198,6 +212,8 @@ def find_source_sentences(text: str, contribs: list, n: int = 3,
     and drops phrases below min_contrib to remove TF-IDF noise.
     Beast reports use ● as bullet separators; also splits on . and newlines.
     Returns list of (sentence, [(phrase, score), ...]).
+    For concern sentences (positive=False), requires at least one negative
+    language marker so pure-positive sentences aren't mislabeled as concerns.
     """
     raw = re.split(r'[●•|\n]|(?<=[a-z])\.\s+', text)
     sentences = [s.strip() for s in raw if len(s.strip()) > 20]
@@ -219,7 +235,14 @@ def find_source_sentences(text: str, contribs: list, n: int = 3,
 
     ranked = sorted(sentence_scores, key=sentence_scores.get, reverse=True)
     out = []
-    for s in ranked[:n]:
+    for s in ranked:
+        if len(out) >= n:
+            break
+        if not positive:
+            words = set(re.sub(r"[^\w\s]", " ", s.lower()).split())
+            if not (words & _NEGATIVE_MARKERS or
+                    any(m in s.lower() for m in _NEGATIVE_MARKERS if " " in m)):
+                continue
         top = sorted(sentence_phrases.get(s, []), key=lambda x: -abs(x[1]))[:top_per_sent]
         out.append((s, top))
     return out
