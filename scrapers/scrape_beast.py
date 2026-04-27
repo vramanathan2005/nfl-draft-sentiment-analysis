@@ -463,9 +463,17 @@ def parse_2026_format(pages: list[str], draft_year: str) -> list[dict]:
         name_school = m.group(3).strip()
 
         # First two words are the player name; remainder is the school.
-        parts  = name_school.split()
-        name   = " ".join(parts[:2]) if len(parts) >= 2 else name_school
-        school = " ".join(parts[2:]) if len(parts) > 2 else ""
+        # Exception: if parts[0] is a single letter (initial like "R"), use 3 words.
+        parts = name_school.split()
+        if len(parts) >= 3 and len(parts[0]) == 1 and parts[0].isupper():
+            name   = " ".join(parts[:3])
+            school = " ".join(parts[3:])
+        elif len(parts) >= 2:
+            name   = " ".join(parts[:2])
+            school = " ".join(parts[2:])
+        else:
+            name   = name_school
+            school = ""
 
         position = POS_ABBREV_2025.get(pos_abbrev, pos_abbrev)
 
