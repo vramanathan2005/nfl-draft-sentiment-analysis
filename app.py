@@ -1573,8 +1573,7 @@ with tab6:
             _cons_int = int(_mrow["consensus"]) if _mrow is not None and pd.notna(_mrow["consensus"]) else None
             _cons_val = f"#{_cons_int}" if _cons_int else "—"
             _p_s = f'{_mrow["p_slide"]:.0f}%' if _mrow is not None else "—"
-            _p_r = f'{_mrow["p_riser"]:.0f}%' if _mrow is
-            not None else "—"
+            _p_r = f'{_mrow["p_riser"]:.0f}%' if _mrow is not None else "—"
             _pos_raw = str(_pr.get("Pos", "") or "")
 
             _toggle_key = f"tb_expand_{_sel_team}_{_pick_i}"
