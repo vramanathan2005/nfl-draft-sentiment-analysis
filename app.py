@@ -863,7 +863,7 @@ def parse_sentences(text):
 
 def render_sentences(sent_list, is_neg=False):
     cls  = "sent-neg" if is_neg else "sent-pos"
-    ptag = "ph-neg"   if is_neg else "ph-tag"
+    ptag = "ph-tag ph-neg" if is_neg else "ph-tag"
     html = '<div class="sent-wrap">'
     for sent, phrases in sent_list:
         tags = "".join(f'<span class="{ptag}">{p}</span>' for p in phrases)

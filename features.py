@@ -142,6 +142,14 @@ _STOPWORD_UNIGRAMS = {
     "would","could","should","may","might","much","many","most","over","out",
     "off","use","uses","used","per","one","two","three","four","five","six",
     "such","other","after","before","about","upon","only","new","there","here",
+    # generic scouting-adjacent words with no standalone signal
+    "regular","ground","middle","first","career","similar","numbers","primarily",
+    "football","overall","general","current","recent","previous","next","later",
+    "further","already","still","often","always","usually","typically","well",
+    "able","back","full","high","low","good","big","long","hard","quick","fast",
+    "make","made","made","made","get","got","give","given","take","taken","take",
+    "year","game","games","team","teams","player","players","season","seasons",
+    "time","times","side","way","type","role","level","area","part","set","form",
 }
 
 _STOPWORD_BIGRAMS = {
@@ -161,7 +169,7 @@ _STOPWORD_BIGRAMS = {
     "where he","his best","percent of","he has","he was","off the","up in",
     "from his","his way","how to","the ball","top of","with his","because of",
     "his first","in run","his college","so he","to make","has been","in man",
-    "of just","in back","his second","on both","to find","to get","to use",
+    "of just","in back","his second","on both","to find","to get","to use","to create",
     "and has","and is","and he","he also","he will","who has","who is",
     "they are","there is","it was","there are","to do","to play","to help",
 }
