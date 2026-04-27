@@ -1573,7 +1573,8 @@ with tab6:
             _cons_int = int(_mrow["consensus"]) if _mrow is not None and pd.notna(_mrow["consensus"]) else None
             _cons_val = f"#{_cons_int}" if _cons_int else "—"
             _p_s = f'{_mrow["p_slide"]:.0f}%' if _mrow is not None else "—"
-            _p_r = f'{_mrow["p_riser"]:.0f}%' if _mrow is not None else "—"
+            _p_r = f'{_mrow["p_riser"]:.0f}%' if _mrow is
+            not None else "—"
             _pos_raw = str(_pr.get("Pos", "") or "")
 
             _toggle_key = f"tb_expand_{_sel_team}_{_pick_i}"
@@ -2683,11 +2684,11 @@ with tab4:
     st.markdown('<div class="sec-lbl">Structural Drivers — Draft Model</div>',
                 unsafe_allow_html=True)
     feat_vals  = [
-        row["draft_feat_consensus"],
-        row["draft_top_measurable_contrib"],
+        row.get("draft_feat_br", 0.0),
+        row.get("draft_top_measurable_contrib", 0.0),
     ]
     feat_lbls  = [
-        "Consensus Rank",
+        "BR Coverage",
         f"Top Measurable ({row['draft_top_measurable']})" if pd.notna(row.get("draft_top_measurable")) else "Top Measurable",
     ]
     feat_df = pd.DataFrame({"feature": feat_lbls, "contribution": feat_vals})
