@@ -70,7 +70,7 @@ X_rank     = beast_rank_feature(p26)
 X_tlen     = text_length_feature(texts)
 X_rnd      = round_feature(p26)   # all 2026 rows imputed from consensus (round col is NaN)
 X_extra_sc = np.hstack([X_cons, X_br, X_pos, X_rank, X_tlen, X_rnd])  # sc: full extras
-X_extra_dv = np.hstack([X_cons, X_br])                                  # dv: unchanged
+X_extra_dv = X_br                                                        # dv: text/measurables only
 
 X_tfidf_sc = sc_bundle["svd"].transform(sc_bundle["tfidf"].transform(texts))
 X_tfidf_dv = dv_bundle["svd"].transform(dv_bundle["tfidf"].transform(texts))

@@ -46,10 +46,7 @@ def build_sc_features(df, texts, emb, sc_bundle):
 
 def build_dv_features(df, texts, emb, dv_bundle):
     svd_vec = dv_bundle["svd"].transform(dv_bundle["tfidf"].transform(texts))
-    _df_cons = df.copy()
-    _draftable = _df_cons["consensus"].apply(lambda x: pd.notna(x) and float(x) <= 257)
-    _df_cons.loc[~_draftable, "consensus"] = np.nan
-    X_extra = np.hstack([consensus_feature(_df_cons), has_br_flag(df)])
+    X_extra = has_br_flag(df)  # consensus removed: DV is text/measurables-driven
     return np.hstack([svd_vec, emb, get_meas(df), np.zeros((len(df), 1)), X_extra])
 
 
@@ -111,14 +108,13 @@ def sc_feat_contribs(X_row, coef_vec):
 
 
 def dv_feat_contribs(X_row, coef_vec):
-    """Named feature contributions for the DV 932d layout."""
+    """Named feature contributions for the DV 931d layout (no consensus)."""
     c = coef_vec
     x = X_row
     out = {
         "text_tfidf_svd": float(c[:150]   @ x[:150]),
         "text_embedding": float(c[150:918] @ x[150:918]),
-        "consensus":      float(c[930]     * x[930]),
-        "br_flag":        float(c[931]     * x[931]),
+        "br_flag":        float(c[930]     * x[930]),
     }
     meas_contribs = {MEAS_LABELS[i]: float(c[918+i] * x[918+i]) for i in range(11)}
     top_m = max(meas_contribs, key=lambda k: abs(meas_contribs[k]))
@@ -252,7 +248,7 @@ for i in range(len(p26)):
         "draft_concerns":       fmt_sentences(dv_neg_sents),
 
         # draft structural features
-        "draft_feat_consensus": round(dv_feat["consensus"], 4),
+        "draft_feat_br":        round(dv_feat["br_flag"], 4),
         "draft_top_measurable": dv_feat["top_measurable"],
         "draft_top_measurable_contrib": round(dv_feat["top_measurable_contrib"], 4),
 

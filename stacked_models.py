@@ -193,8 +193,7 @@ dv_df = df[has_beast & df["draft_tier"].isin(["slide","consensus","reach"])
 texts_dv   = unified_text(dv_df)
 X_src_dv   = np.zeros((len(dv_df), 1))
 X_br_dv    = has_br_flag(dv_df)
-X_cons_dv  = consensus_feature(dv_df)
-X_extra_dv = np.hstack([X_cons_dv, X_br_dv])
+X_extra_dv = X_br_dv  # consensus removed: DV is text/measurables-driven
 X_emb_dv   = st.encode(texts_dv.tolist(), batch_size=64,
                         show_progress_bar=False, normalize_embeddings=True)
 X_meas_dv  = get_meas(dv_df)
