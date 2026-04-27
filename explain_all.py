@@ -243,7 +243,7 @@ for i in range(len(p26)):
         "draft_prediction": dv_pred_cls,
         "p_slide":          round(dv_proba[i, idx_slide]     * 100, 1),
         "p_consensus":      round(dv_proba[i, idx_consensus]  * 100, 1),
-        "p_reach":          round(dv_proba[i, idx_reach]      * 100, 1),
+        "p_riser":          round(dv_proba[i, idx_reach]      * 100, 1),
         "draft_key_sentences":  fmt_sentences(dv_pos_sents),
         "draft_concerns":       fmt_sentences(dv_neg_sents),
 

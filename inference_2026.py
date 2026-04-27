@@ -136,7 +136,7 @@ results["p_out_of_league"]     = (sc_proba[:, idx_out_of_league]  * 100).round(1
 results["sc_prediction"]       = sc_pred
 results["p_slide"]             = (dv_proba[:, idx_slide]       * 100).round(1)
 results["p_consensus"]         = (dv_proba[:, idx_consensus]   * 100).round(1)
-results["p_reach"]             = (dv_proba[:, idx_reach]       * 100).round(1)
+results["p_riser"]             = (dv_proba[:, idx_reach]       * 100).round(1)
 results["draft_prediction"]    = dv_pred
 results["text_source"]         = ["pff" if f else "beast" for f in X_src[:, 0]]
 results["has_br"]  = p26["br_positives"].notna()
@@ -164,7 +164,7 @@ if len(no_text):
     botr_rows["has_pff"]       = False
     # All model prediction columns are NaN for BOTR players
     for col in ["p_cornerstone","p_53_man","p_roster_bubble","p_out_of_league",
-                "sc_prediction","p_slide","p_consensus","p_reach","draft_prediction",
+                "sc_prediction","p_slide","p_consensus","p_riser","draft_prediction",
                 "pred_apy_pct","pred_apy_pct_lo","pred_apy_pct_hi",
                 "p_real_contract","expected_apy_pct"]:
         botr_rows[col] = np.nan
@@ -196,7 +196,7 @@ show("TOP 20 — Highest P(cornerstone)  [elite second contract projection]",
 top_slide = results.nlargest(20, "p_slide")
 show("TOP 20 — Highest P(slide)  [likely to fall below consensus]",
      top_slide,
-     ["Player Name","Position","consensus","p_slide","p_consensus","p_reach","p_cornerstone"])
+     ["Player Name","Position","consensus","p_slide","p_consensus","p_riser","p_cornerstone"])
 
 # Potential steals: outside top 100, high P(cornerstone)
 steals = results[results["consensus"] > 100].nlargest(15, "p_cornerstone")

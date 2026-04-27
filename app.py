@@ -532,8 +532,6 @@ def load_data():
                 _botr_df[_c] = _botr_new[_c].values
         df = pd.concat([df, _botr_df], ignore_index=True)
 
-    if "p_reach" in df.columns:
-        df.rename(columns={"p_reach": "p_riser"}, inplace=True)
     if "draft_prediction" in df.columns:
         df["draft_prediction"] = df["draft_prediction"].replace("reach", "riser")
 
