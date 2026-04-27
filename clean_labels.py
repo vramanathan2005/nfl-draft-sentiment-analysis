@@ -63,17 +63,23 @@ df["sc_rank"] = df.apply(
     axis=1,
 )
 
-# Label 3: draft_tier — 3-class version of draft_value (±20 pick threshold)
-def encode_draft_tier(dv):
-    if pd.isna(dv):
+# Label 3: draft_tier — 3-class version of draft_value (position-scaled threshold)
+# threshold(pick) = floor(2*log(pick) + 0.07*pick^0.9)
+# R1: ~5-8 picks | R3: ~11 picks | R5: ~15 picks | R7: ~19 picks
+def encode_draft_tier(row):
+    dv = row["draft_value"]
+    cons = row["consensus"]
+    if pd.isna(dv) or pd.isna(cons) or cons <= 0:
         return np.nan
-    if dv < -20:
-        return "slide"
-    if dv > 20:
+    thresh = int(np.floor(2 * np.log(cons) + 0.07 * cons**0.9))
+    thresh = max(thresh, 3)  # floor of 3 so pick #1 isn't trivially a riser
+    if dv < -thresh:
         return "riser"
+    if dv > thresh:
+        return "slide"
     return "consensus"
 
-df["draft_tier"] = df["draft_value"].map(encode_draft_tier)
+df["draft_tier"] = df.apply(encode_draft_tier, axis=1)
 
 # Label 4: sc_contract_tier — 4-class career outcome using NFL front-office lingo
 # APY thresholds computed per position group (p33/p67 of real_contract players)

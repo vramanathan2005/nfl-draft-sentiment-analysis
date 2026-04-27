@@ -82,7 +82,7 @@ print(f"  XGBoost   f1={s_xgb.mean():.3f} ±{s_xgb.std():.3f}")
 s_lr  = manual_cv(texts_dv, X_emb_dv, X_meas_dv, X_src_dv, X_extra_dv, y_dv, lr_dv,  cv5_dv)
 print(f"  LogReg    f1={s_lr.mean():.3f} ±{s_lr.std():.3f}")
 
-best_fn = xgb_dv if s_xgb.mean() >= s_lr.mean() else lr_dv
+best_fn = lr_dv  # force LogReg for interpretable word contributions in explain layer
 
 dv_tr_mask = dv_df["draft_year"].between(2019, 2023)
 dv_te_mask = dv_df["draft_year"].between(2024, 2025)
