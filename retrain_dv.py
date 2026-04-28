@@ -70,7 +70,8 @@ def manual_cv(texts, X_emb, X_meas, X_src, X_extra, y, clf_fn, cv):
 def xgb_dv(): return XGBClassifier(n_estimators=400, max_depth=3, learning_rate=0.05,
                                     subsample=0.8, colsample_bytree=0.8,
                                     eval_metric="mlogloss", verbosity=0, random_state=42)
-def lr_dv():  return LogisticRegression(max_iter=1000, class_weight="balanced", C=1.0)
+def lr_dv():  return LogisticRegression(max_iter=1000, C=1.0,
+                                        class_weight={0: 1.0, 1: 0.6, 2: 1.0})  # 0=consensus,1=riser,2=slide
 def dummy():  return DummyClassifier(strategy="stratified")
 
 zeros = np.zeros((len(dv_df), 0))
