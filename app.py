@@ -2723,6 +2723,8 @@ with tab4:
             if hname not in hist_meta.index:
                 continue
             hrow     = hist_meta.loc[hname]
+            if isinstance(hrow, pd.DataFrame):
+                hrow = hrow.iloc[0]
             hyr      = int(hrow["draft_year"]) if pd.notna(hrow.get("draft_year")) else "?"
             hpos     = hrow.get("Position", "")
             hcollege = hrow.get("College", "") or ""
