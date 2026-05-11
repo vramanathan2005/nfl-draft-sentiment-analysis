@@ -1424,11 +1424,12 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-tab0, tab6, tab7, tab4, tab1, tab2, tab3, tab5 = st.tabs([
+tab0, tab6, tab7, tab4, tab8, tab1, tab2, tab3, tab5 = st.tabs([
     "NFL Draft Live",
     "Team Board",
     "Top Undrafted",
     "Player Card",
+    "Walkthrough",
     "Class Overview",
     "Draft Board",
     "Scouting Language",
@@ -1766,6 +1767,269 @@ with tab7:
                 f'text-decoration:none;margin-left:4px;">→ Full player card</a>',
                 unsafe_allow_html=True
             )
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  TAB 8 — WALKTHROUGH
+# ══════════════════════════════════════════════════════════════════════════════
+
+with tab8:
+    _case_pool = df[
+        df["consensus"].apply(lambda x: pd.notna(x) and int(x) <= 257) &
+        df["draft_prediction"].notna()
+    ].copy()
+    _case_pool["case_sort"] = _case_pool["p_slide"].fillna(0)
+    _case_options = (
+        _case_pool.sort_values(["case_sort", "scout_conf"], ascending=False)
+        ["player_name"].head(30).tolist()
+    )
+    if not _case_options:
+        _case_options = df["player_name"].dropna().head(30).tolist()
+
+    st.markdown('<div class="sec-lbl" style="margin-top:0">Draft Room Walkthrough</div>',
+                unsafe_allow_html=True)
+    st.markdown("""
+    <div class="section-card" style="margin-bottom:18px;">
+      <div style="font-size:22px;font-weight:850;color:#f1f5f9;letter-spacing:-0.2px;margin-bottom:8px;">
+        Use case: should we trust a slide recommendation?
+      </div>
+      <div style="font-size:13px;color:#94a3b8;line-height:1.7;max-width:980px;">
+        This page turns one player recommendation into a draft-room narrative:
+        what the model is saying, what evidence is driving it, and what a human should verify before changing the board.
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    _case_name = st.selectbox("Player use case", _case_options, index=0, key="walkthrough_player")
+    case = df[df["player_name"] == _case_name].iloc[0]
+    case_ng = ng[ng["Player.Name"] == _case_name].copy()
+
+    case_tier = case.get("draft_prediction", "")
+    case_color = DRAFT_COLORS.get(case_tier, "#3b82f6")
+    case_label = DRAFT_LABELS.get(case_tier, str(case_tier).title())
+    case_cons = int(case["consensus"]) if pd.notna(case.get("consensus")) else None
+    case_beast = int(case["beast_rank"]) if pd.notna(case.get("beast_rank")) else None
+    case_pos = case.get("position", "")
+    case_college = "" if pd.isna(case.get("college")) else str(case.get("college", ""))
+    case_slide = float(case.get("p_slide", 0) or 0)
+    case_consensus_p = float(case.get("p_consensus", 0) or 0)
+    case_riser = float(case.get("p_riser", 0) or 0)
+    case_conf = float(case.get("scout_conf", 0) or 0)
+    case_ng_count = int(case.get("ngram_count", 0) or 0)
+    case_has_br = int(case.get("has_br", 0)) if pd.notna(case.get("has_br")) else 0
+    case_cons_txt = f"#{case_cons}" if case_cons is not None else "N/A"
+    case_beast_txt = f"#{case_beast}" if case_beast is not None else "N/A"
+    case_conf_color = "#22c55e" if case_conf >= 60 else "#3b82f6" if case_conf >= 30 else "#64748b"
+
+    case_badges = f'<span class="badge b-pos">{html.escape(str(case_pos))}</span>'
+    if case_college:
+        case_badges += f'<span class="badge b-info">{html.escape(case_college)}</span>'
+    case_badges += f'<span class="badge b-info">Consensus {case_cons_txt}</span>'
+    if case_beast is not None:
+        case_badges += f'<span class="badge b-src">Beast {case_beast_txt}</span>'
+
+    st.markdown(f"""
+    <div class="p-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;">
+      <div style="flex:1;min-width:0;">
+        <p class="p-name" style="margin-bottom:12px;">{html.escape(_case_name)}</p>
+        {case_badges}
+        <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <span style="background:{case_color}22;color:{case_color};border:1px solid {case_color}55;
+                       border-radius:6px;padding:4px 12px;font-size:0.85rem;font-weight:700;">{case_label}</span>
+          <span style="font-size:12px;color:#94a3b8;">Recommendation compared with public consensus</span>
+        </div>
+      </div>
+      <div style="min-width:180px;text-align:right;color:#94a3b8;font-size:12px;line-height:1.7;">
+        <div><b style="color:#f1f5f9;">Question:</b> Is the market too high, too low, or about right?</div>
+        <div><b style="color:#f1f5f9;">Decision:</b> Use as a second opinion, not an auto-pick.</div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="summary-val" style="color:{DRAFT_COLORS['slide']};">{case_slide:.0f}%</div>
+        <div class="summary-lbl">P(Slide)</div>
+        <div class="summary-sub">Chance the model thinks he goes later than consensus.</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-val" style="color:{DRAFT_COLORS['consensus']};">{case_consensus_p:.0f}%</div>
+        <div class="summary-lbl">P(Consensus)</div>
+        <div class="summary-sub">Chance the market is roughly right.</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-val" style="color:{DRAFT_COLORS['riser']};">{case_riser:.0f}%</div>
+        <div class="summary-lbl">P(Riser)</div>
+        <div class="summary-sub">Chance teams value him above consensus.</div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    story_left, story_right = st.columns([1.15, 0.85])
+    with story_left:
+        st.markdown('<div class="sec-lbl">How to read the recommendation</div>',
+                    unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="section-card">
+          <div style="display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:start;margin-bottom:18px;">
+            <div style="height:28px;width:28px;border-radius:6px;background:#1c2840;color:#f1f5f9;
+                        display:flex;align-items:center;justify-content:center;font-weight:800;">1</div>
+            <div>
+              <div style="font-size:14px;font-weight:800;color:#f1f5f9;margin-bottom:4px;">Start with the market</div>
+              <div style="font-size:13px;color:#94a3b8;line-height:1.7;">
+                Consensus has this player at {case_cons_txt}. The model asks whether the scouting profile
+                looks like past players who actually went around that spot.
+              </div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:start;margin-bottom:18px;">
+            <div style="height:28px;width:28px;border-radius:6px;background:#1c2840;color:#f1f5f9;
+                        display:flex;align-items:center;justify-content:center;font-weight:800;">2</div>
+            <div>
+              <div style="font-size:14px;font-weight:800;color:#f1f5f9;margin-bottom:4px;">Compare the language to history</div>
+              <div style="font-size:13px;color:#94a3b8;line-height:1.7;">
+                Scouting text becomes TF-IDF/SVD features and sentence embeddings, then gets compared with
+                historical draft outcomes. This is language pattern matching, not a simple sentiment score.
+              </div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:start;">
+            <div style="height:28px;width:28px;border-radius:6px;background:{case_color}22;color:{case_color};
+                        border:1px solid {case_color}55;display:flex;align-items:center;justify-content:center;font-weight:800;">3</div>
+            <div>
+              <div style="font-size:14px;font-weight:800;color:#f1f5f9;margin-bottom:4px;">Make it falsifiable</div>
+              <div style="font-size:13px;color:#94a3b8;line-height:1.7;">
+                The model says <b style="color:{case_color};">{case_label}</b>. The room should inspect the exact words,
+                repeated phrases, measurables, and comparable profiles below before trusting that recommendation.
+              </div>
+            </div>
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with story_right:
+        st.markdown('<div class="sec-lbl">Confidence Check</div>', unsafe_allow_html=True)
+        conf_terms_html, conf_summary = render_confidence_terms(case_ng)
+        br_line = "Bleacher Report coverage included" if case_has_br else "No Bleacher Report coverage"
+        st.markdown(f"""
+        <div class="section-card" style="min-height:298px;">
+          <div style="font-size:46px;font-weight:900;color:{case_conf_color};line-height:1;">{case_conf:.0f}</div>
+          <div style="font-size:11px;font-weight:700;color:{case_conf_color};text-transform:uppercase;
+                      letter-spacing:1.2px;margin-top:4px;">Scout Confidence</div>
+          <div style="font-size:13px;color:#94a3b8;line-height:1.7;margin-top:12px;">
+            {case_ng_count} repeated cross-source phrase{"s" if case_ng_count != 1 else ""}. {br_line}.
+          </div>
+          <div style="font-size:12px;color:#cbd5e1;line-height:1.6;margin-top:12px;">{conf_summary}</div>
+          <div style="margin-top:12px;">{conf_terms_html}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown('<div class="sec-lbl">What drove the text side</div>', unsafe_allow_html=True)
+    pos_words_html = render_word_chips(case.get("draft_pos_words", ""), positive=True)
+    neg_words_html = render_word_chips(case.get("draft_neg_words", ""), positive=False)
+    inline_summary = render_inline_summary(case.get("draft_pos_words", ""), case.get("draft_neg_words", ""))
+    word_left, word_right = st.columns(2)
+    with word_left:
+        st.markdown(f"""
+        <div class="section-card" style="min-height:180px;">
+          <div class="chart-lbl">Words supporting the model call</div>
+          <div style="font-size:12px;color:#94a3b8;line-height:1.7;margin-bottom:10px;">
+            These original scouting words had the strongest positive contribution after the SVD text features were mapped back.
+          </div>
+          {pos_words_html if pos_words_html else '<div class="sent-empty">No positive word drivers available.</div>'}
+        </div>
+        """, unsafe_allow_html=True)
+    with word_right:
+        st.markdown(f"""
+        <div class="section-card" style="min-height:180px;">
+          <div class="chart-lbl">Words pushing against it</div>
+          <div style="font-size:12px;color:#94a3b8;line-height:1.7;margin-bottom:10px;">
+            These words point the other way, which is why this should be discussed instead of accepted blindly.
+          </div>
+          {neg_words_html if neg_words_html else '<div class="sent-empty">No negative word drivers available.</div>'}
+        </div>
+        """, unsafe_allow_html=True)
+
+    dv_pos = parse_sentences(case.get("draft_key_sentences", ""))
+    dv_neg = parse_sentences(case.get("draft_concerns", ""))
+    sent_inner = ""
+    if inline_summary:
+        sent_inner += f'<div style="font-size:13px;line-height:1.8;margin-bottom:12px;">{inline_summary}</div>'
+    sent_inner += render_sentences(dv_pos, is_neg=False) if dv_pos else '<div class="sent-empty">No high-signal supporting sentences found.</div>'
+    if dv_neg:
+        sent_inner += '<div class="sec-lbl" style="margin-top:18px;">Counter-evidence</div>' + render_sentences(dv_neg, is_neg=True)
+    st.markdown('<div class="sec-lbl">Exact scouting language to discuss</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="section-card">{sent_inner}</div>', unsafe_allow_html=True)
+
+    lower_left, lower_right = st.columns(2)
+    with lower_left:
+        st.markdown('<div class="sec-lbl">Repeated phrases across sources</div>',
+                    unsafe_allow_html=True)
+        if len(case_ng):
+            phrase_rows = ""
+            case_ng_sorted = case_ng.sort_values(["sources_present", "total_count"], ascending=False).head(8)
+            for _, nr in case_ng_sorted.iterrows():
+                chips = ""
+                if nr["beast_n"] > 0:
+                    chips += f'<span class="src-chip s-beast">BEAST ×{int(nr["beast_n"])}</span>'
+                if nr["pff_n"] > 0:
+                    chips += f'<span class="src-chip s-pff">PFF ×{int(nr["pff_n"])}</span>'
+                if nr["br_n"] > 0:
+                    chips += f'<span class="src-chip s-br">BR ×{int(nr["br_n"])}</span>'
+                phrase_rows += (
+                    f'<tr><td>{html.escape(str(nr["ngram"]))}</td><td>{chips}</td>'
+                    f'<td style="color:#94a3b8;font-size:12px">{int(nr["sources_present"])} sources</td></tr>'
+                )
+            st.markdown(f'<div class="table-wrap"><table class="ng-table">'
+                        f'<thead><tr><th>Term</th><th>Sources</th><th>Agreement</th></tr></thead>'
+                        f'<tbody>{phrase_rows}</tbody></table></div>', unsafe_allow_html=True)
+        else:
+            st.markdown('<div class="section-card"><div class="sent-empty">No repeated cross-source phrases found.</div></div>',
+                        unsafe_allow_html=True)
+
+    with lower_right:
+        st.markdown('<div class="sec-lbl">Closest historical scouting comps</div>',
+                    unsafe_allow_html=True)
+        if not hist_sim_df.empty and _case_name in hist_sim_df.index:
+            hist_pos_lookup = hist_meta["Position"].to_dict()
+            hist_sims = hist_sim_df.loc[_case_name].sort_values(ascending=False).head(20)
+            same_pos = [n for n in hist_sims.index if hist_pos_lookup.get(n) == case_pos]
+            top_hist = hist_sims[hist_sims.index.isin(same_pos)].head(4) if len(same_pos) >= 2 else hist_sims.head(4)
+            comp_html = '<div class="section-card">'
+            for hname, hscore in top_hist.items():
+                if hname not in hist_meta.index:
+                    continue
+                hrow = hist_meta.loc[hname]
+                if isinstance(hrow, pd.DataFrame):
+                    hrow = hrow.iloc[0]
+                hyr = int(hrow["draft_year"]) if pd.notna(hrow.get("draft_year")) else "?"
+                hpos = hrow.get("Position", "")
+                try:
+                    hpick = int(float(hrow["pick"])) if pd.notna(hrow.get("pick")) else "?"
+                    hrnd = int(float(hrow["round"])) if pd.notna(hrow.get("round")) else "?"
+                    pick_txt = f"Rd {hrnd}, Pick {hpick}"
+                except Exception:
+                    pick_txt = "UDFA"
+                comp_html += (
+                    f'<div style="display:flex;justify-content:space-between;gap:12px;'
+                    f'border-bottom:1px solid rgba(28,40,64,0.65);padding:10px 0;">'
+                    f'<div><div style="font-size:14px;font-weight:800;color:#f1f5f9;">{html.escape(str(hname))}</div>'
+                    f'<div style="font-size:12px;color:#7b91a8;">{html.escape(str(hpos))} · {hyr} · {pick_txt}</div></div>'
+                    f'<div style="font-size:18px;font-weight:850;color:#f1f5f9;">{hscore:.2f}</div></div>'
+                )
+            comp_html += '</div>'
+            st.markdown(comp_html, unsafe_allow_html=True)
+        else:
+            st.markdown('<div class="section-card"><div class="sent-empty">Historical comp data not available.</div></div>',
+                        unsafe_allow_html=True)
+
+    qp_case = quote(_case_name)
+    st.markdown(
+        f'<a href="?player={qp_case}" target="_self" style="display:inline-flex;margin-top:18px;'
+        f'padding:10px 14px;border-radius:8px;border:1px solid #1c2840;background:#0e1520;'
+        f'color:#f1f5f9;text-decoration:none;font-size:13px;font-weight:800;">Open full player card</a>',
+        unsafe_allow_html=True
+    )
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  TAB 1 — CLASS OVERVIEW
