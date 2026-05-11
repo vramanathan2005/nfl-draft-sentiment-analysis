@@ -1424,12 +1424,12 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-tab0, tab6, tab7, tab4, tab8, tab1, tab2, tab3, tab5 = st.tabs([
+tab8, tab0, tab6, tab7, tab4, tab1, tab2, tab3, tab5 = st.tabs([
+    "Walkthrough",
     "NFL Draft Live",
     "Team Board",
     "Top Undrafted",
     "Player Card",
-    "Walkthrough",
     "Class Overview",
     "Draft Board",
     "Scouting Language",
