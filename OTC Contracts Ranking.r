@@ -11,7 +11,7 @@ nfl_contracts <- load_contracts() |> #filter(is_active == T) |>
 # Do the above with the APY and such just for purposes of the contracts 
 # signed between december 2024 and now, but be careful about exact dates
 
-OTC_contacts <- read.csv("OTC_Contracts.csv")
+OTC_contacts <- read.csv("OTC_Database_2013_2026.csv")
 
 OTC_contracts_clean <- OTC_contacts |> 
   mutate(
@@ -19,7 +19,7 @@ OTC_contracts_clean <- OTC_contacts |>
     date_ended = na_if(date_ended, "0000-00-00"),
     date_ended = mdy(date_ended)
   ) |> 
-  select(ID, player_id, team_id, Position, contract_type, date_signed, date_ended, 
+  select(ID, player_id, team_id, Position, contract_type, date_signed, date_ended, YEAR_END, 
          APY, Years, Total, Guarantee, total_guarantees, signing_bonus) |> 
   left_join(nfl_contracts, by = c("player_id" = "otc_id"), relationship = "many-to-many") |> 
   distinct() |> 
@@ -40,7 +40,7 @@ OTC_contracts_clean <- OTC_contacts |>
 
 # before 2017 contracts signed don't matter
 free_agency_start_dates <- tibble(
-  Year = c(2014:2024),
+  Year = c(2014:2026),
   Date = as.Date(c(
     "2014-03-11",
     "2015-03-10",
@@ -53,37 +53,45 @@ free_agency_start_dates <- tibble(
     "2022-03-16",
     "2023-03-15",
     "2024-03-13",
+    "2025-03-12",
+    "2026-03-11"
   ))
 )
 
-cutoff_date <- as.Date("2024-11-14")
 
+# if NEXT contract type is UFA, make the end date into the free_agency_start_date
 
 OTC_contracts_clean2 <- OTC_contracts_clean |>
+  mutate(YEAR_END = ifelse(YEAR_END %in% 2020:2023, YEAR_END + 1, YEAR_END)) |>  # Everybody is seemingly behind
   mutate(
     date_signed = as.Date(date_signed),
     date_ended  = as.Date(date_ended),
-    exp_year = year(date_signed) + Years
+    year_ended_date = year(date_ended),
+    YEAR_END = ifelse(!is.na(year_ended_date), year_ended_date, YEAR_END)
   ) |>
   left_join(
     free_agency_start_dates,
-    by = c("exp_year" = "Year")
+    by = c("YEAR_END" = "Year")
   ) |>
+  arrange(player_id, date_signed) |> # arrange by player ID and date signed first, to use lead funct
+  group_by(player_id) |> 
   mutate(
-    date_ended = case_when(
-      is.na(date_signed) ~ date_ended,
-      is.na(date_ended) & !is.na(Date) & Date < cutoff_date ~ Date,
-      TRUE ~ date_ended
-    )
-  ) |>
-  select(-Date) |> 
-  filter(exp_year > 2017)
-
-
-
-
-
-
+    free_agency_date = as.Date(Date),
+      date_ended = if_else(
+        lead(contract_type) %in% c("UFA", "RFA", "ERFA", "SFA") | is.na(date_ended),
+        free_agency_date,
+        date_ended
+      ),
+    year_ended_date = year(date_ended)
+    ) |>
+  ungroup() |> 
+  filter(year_ended_date > 2017 | is.na(year_ended_date)) |> 
+  select(-Date, -year_ended_date) |> 
+  # AARON DONALD IS A DT!! (ACTUALLY ALL DE's SHOULD BE DTs)
+  mutate(Position = case_when(
+    Position == "DE" ~ "DT",
+    TRUE ~ Position
+  ))
 
 
 
@@ -128,7 +136,7 @@ contracts_ranked <- OTC_contracts_clean2  |>
 #   )
 # })
 
-contracts_ranked <- contracts_ranked %>%
+contracts_ranked <- contracts_ranked |>
   mutate(row_id = row_number())
 
 contracts_by_pos <- split(contracts_ranked, contracts_ranked$Position)
@@ -139,16 +147,16 @@ rank_table <- map_dfr(names(contracts_by_pos), function(pos) {
   
   map_dfr(unique(df$date_signed), function(signing_day) {
     
-    active_contracts <- df %>%
+    active_contracts <- df |>
       filter(
         date_signed <= signing_day,
         is.na(date_ended) | date_ended >= signing_day
       )
     
-    focal <- df %>%
+    focal <- df |>
       filter(date_signed == signing_day)
     
-    focal %>%
+    focal |>
       mutate(
         rank_on_date_APY = sapply(APY, function(x) {
           vals <- c(active_contracts$APY, x)
@@ -163,25 +171,28 @@ rank_table <- map_dfr(names(contracts_by_pos), function(pos) {
           min_rank(desc(vals))[length(vals)]
         }),
         active_n = nrow(active_contracts)
-      ) %>%
+      ) |>
       select(row_id, rank_on_date_APY, rank_on_date_Total, rank_on_date_Guarantee, active_n)
     
   })
 })
 
 
-contracts_ranked <- contracts_ranked %>%
-  left_join(rank_table, by = "row_id") %>%
+contracts_ranked <- contracts_ranked |>
+  left_join(rank_table, by = "row_id") |>
   select(-row_id)
 
 
 
 contracts_ranked_important <- contracts_ranked |> 
-  select(player, team_id, Position, date_signed, date_ended, contract_type, APY, Years, draft_year, rank_on_date_APY) |> 
+  select(player_id, player, team_id, Position, date_signed, date_ended, contract_type, APY, Years, draft_year, rank_on_date_APY) |> 
   unique() |> 
   filter(draft_year >= 2017) |> 
-  filter(!(Position %in% c("T", "G", "NULL"))) |> 
-  select(!c(team_id, date_ended)) |> unique()
+  filter(!(Position %in% c("T", "G", "IDL", "NULL"))) |> 
+  select(!c(team_id, date_ended)) |> unique() |> 
+  filter(!contract_type == "Practice") # don't want practcie squad
+
+
 
 
 contracts_ranked_important_flag <- contracts_ranked_important |> 
@@ -189,10 +200,17 @@ contracts_ranked_important_flag <- contracts_ranked_important |>
   filter(date_signed >= "2017-5-01") |> 
   mutate(contract_num = row_number()) |> 
   filter(contract_num == 2) |> 
-  filter(Position != "IDL") # This was just an extra position for a random irrelevent player, not even enough work to make specifically not
+  filter(Position != "IDL") |>  # This was just an extra position for a random irrelevent player, not even enough work to make specifically not
+  filter(!contract_type == "Drafted") # don't want drafted
+
+#write.csv(contracts_ranked_important_flag, "ranked_second_contracts.csv")
+
+#write.csv(contracts_ranked, "contracts_ranked_signing.csv")
 
 
 
+
+#### BIG BOARD STUFF
 
 
 files <- list.files(
@@ -201,9 +219,9 @@ files <- list.files(
 )
 
 big_boards_all <- map_dfr(files, function(f) {
-  draft_year <- str_extract(basename(f), "\\d{4}") %>% as.integer()
+  draft_year <- str_extract(basename(f), "\\d{4}") |> as.integer()
   
-  read_csv(f, show_col_types = FALSE) %>%
+  read_csv(f, show_col_types = FALSE) |>
     mutate(draft_year = draft_year)
 })
 
@@ -282,9 +300,9 @@ big_board_fall <- big_boards_all_pick_real |>
 ### Clean the prospects in consensus
 
 # Only for other stuff
-# contracts_ranked_important_interesting <- contracts_ranked_important %>%
-#   group_by(player, date_signed, rank_on_date_APY) %>%
-#   filter((n() > 1 & date_signed == date_ended)) %>%
+# contracts_ranked_important_interesting <- contracts_ranked_important  |> 
+#   group_by(player, date_signed, rank_on_date_APY) |>
+#   filter((n() > 1 & date_signed == date_ended)) |>
 #   ungroup()
   
 
